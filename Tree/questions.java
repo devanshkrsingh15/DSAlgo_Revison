@@ -93,4 +93,50 @@ public class questions {
         fillBurningNode(root.left,t+1,block,list);
         fillBurningNode(root.right,t+1,block,list);
     }
+
+    public List<Integer> distanceK_withoutExtraSpace(TreeNode root, TreeNode target, int k){
+        ArrayList<Integer>ans = new ArrayList<>();
+        findHelper(root,target,k,ans);
+        return ans;
+    }
+
+    public int findHelper(TreeNode root, TreeNode tar, int k,ArrayList<Integer>ans){
+        if(root==null) return 0;
+
+        if(root.val==tar.val){
+            fillAns(root,k,null,ans);
+            return 1;
+        }
+
+        int ldis = findHelper(root.left,tar,k,ans);
+        if(ldis>0){
+            fillAns(root,k-ldis,root.left,ans);
+            return ldis+1;
+        }
+
+        int rdis = findHelper(root.right,tar,k,ans);
+        if(rdis>0){
+            fillAns(root,k-rdis,root.right,ans);
+            return rdis+1;
+        }
+
+        return 0;
+    }
+    //in terms of edges
+    public int NodeToRootDistance(TreeNode root,int tar){
+        if(root==null) return -1;
+
+        if(root.val==tar) return 0;
+
+        int ldis = NodeToRootDistance(root.left,tar);
+        if(ldis>=0) return  ldis+1;
+
+        int rdis = NodeToRootDistance(root.right,tar);
+        if(rdis>=0) return  rdis+1;
+
+        return -1;
+
+    }
+
+
 }
