@@ -63,4 +63,28 @@ public class Tree{
         return res || find(root.left,tar) || find(root.right,tar) ; 
 
     }
+
+    //if we take  two  nodes, and if  they  are  stretched, the  dist between them will act as  a diameter of  a circle  covering all nodes
+    //this distance will be the diameter of a  binary  tree
+    //in-terms of edges
+    public int diameter(TreeNode root){
+        if(root==null) return 0;
+
+        int[]arr= diameterHelper(root);//{ht,dia}
+        return arr[1];
+    }
+
+    public int[] diameterHelper(TreeNode root){
+        if(root==null) return  new int[]{-1,0};
+
+        int[]larr =diameterHelper(root.left);
+        int[]rarr =diameterHelper(root.right);
+
+        int myHt= Math.max(larr[0],rarr[0])+1;
+        int myDia =Math.max(larr[1],Math.max(rarr[1],larr[0]+rarr[0]+2));
+
+        return new int[]{myHt,myDia};
+    }
+
+    
 }
