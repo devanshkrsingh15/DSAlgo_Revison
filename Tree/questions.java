@@ -195,11 +195,11 @@ public class questions {
         if (root == null)
             return 0;
 
-        int[] arr = maxPathSumHelper(root); // {max dist from any node to curr node ,any node to any node}
+        int[] arr = maxPathSumHelper_(root); // {max dist from any node to curr node ,any node to any node}
         return arr[1];
     }
 
-    public int[]  maxPathSumHelper(TreeNode  root){
+    public int[]  maxPathSumHelper_(TreeNode  root){
         if(root==null) return new int[]{0,-(int)1e9};
         
         int[]larr = maxPathSumHelper(root.left);
@@ -267,4 +267,80 @@ public class questions {
 
     }
 
+    // Leetcode 98
+    public boolean isValidBST(TreeNode root) {
+        return isValidBST_helper(root, new long[] { Long.MIN_VALUE });
+    }
+
+    public boolean isValidBST_helper(TreeNode root, long[] arr) {
+        if (root == null)
+            return true;
+
+        boolean res = true;
+        res = res && isValidBST_helper(root.left, arr);
+
+        res = res && (arr[0] < (long) root.val);
+        arr[0] = (long) root.val;
+
+        res = res && isValidBST_helper(root.right, arr);
+
+        return res;
+    }
+
+    // Leetcode 437
+    public int pathSumIII(TreeNode root, int targetSum) {
+        HashMap<Long, Integer> hm = new HashMap<>();
+        hm.put((long) 0, 1);
+        int[] cnt = new int[1];
+        pathSumIII_(root, targetSum, hm, 0, cnt);
+
+        return cnt[0];
+    }
+
+    public void pathSumIII_(TreeNode root, long tar, HashMap<Long, Integer> hm, long csum, int[] cnt) {
+        if (root == null)
+            return;
+
+        csum += (long) root.val;
+        long diff = csum - tar;
+        cnt[0] += hm.getOrDefault(diff, 0);
+        hm.put(csum, hm.getOrDefault(csum, 0) + 1);
+
+        pathSumIII_(root.left, tar, hm, csum, cnt);
+        pathSumIII_(root.right, tar, hm, csum, cnt);
+
+        hm.put(csum, hm.get(csum) - 1);
+        if (hm.get(csum) == 0)
+            hm.remove(csum);
+        csum -= (long) root.val;
+    }
+
+
+    //Leetcode 99
+    public void recoverTree(TreeNode root) {
+        TreeNode arr[]   =  new TreeNode[3];
+        recoverTree_(root,arr); //{a,b,prev}
+
+        TreeNode a = arr[0];
+        TreeNode b = arr[1];
+        if(a!=null  &&  b!=null){
+            int t  = a.val;
+            a.val  = b.val;
+            b.val = t;
+        }
+    }
+
+    //always use array,if static variable not allowed
+    //variale will give ptrs/value  errors => due to stack
+    public  void  recoverTree_(TreeNode  root,TreeNode arr[] ){
+        if(root==null) return ;
+
+        recoverTree_(root.left,arr);
+
+        if(arr[2]!=null && arr[0]==null && root.val<arr[2].val) arr[0] = arr[2];
+        if(arr[2]!=null && arr[0]!=null && root.val<arr[2].val) arr[1] = root;
+
+        arr[2] = root;
+        recoverTree_(root.right,arr);
+    }
 }
