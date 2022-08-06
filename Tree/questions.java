@@ -315,32 +315,290 @@ public class questions {
         csum -= (long) root.val;
     }
 
-
-    //Leetcode 99
+    // Leetcode 99
     public void recoverTree(TreeNode root) {
-        TreeNode arr[]   =  new TreeNode[3];
-        recoverTree_(root,arr); //{a,b,prev}
+        TreeNode arr[] = new TreeNode[3];
+        recoverTree_(root, arr); // {a,b,prev}
 
         TreeNode a = arr[0];
         TreeNode b = arr[1];
-        if(a!=null  &&  b!=null){
-            int t  = a.val;
-            a.val  = b.val;
+        if (a != null && b != null) {
+            int t = a.val;
+            a.val = b.val;
             b.val = t;
         }
     }
 
-    //always use array,if static variable not allowed
-    //variale will give ptrs/value  errors => due to stack
-    public  void  recoverTree_(TreeNode  root,TreeNode arr[] ){
-        if(root==null) return ;
+    // always use array,if static variable not allowed
+    // variale will give ptrs/value errors => due to stack
+    public void recoverTree_(TreeNode root, TreeNode arr[]) {
+        if (root == null)
+            return;
 
-        recoverTree_(root.left,arr);
+        recoverTree_(root.left, arr);
 
-        if(arr[2]!=null && arr[0]==null && root.val<arr[2].val) arr[0] = arr[2];
-        if(arr[2]!=null && arr[0]!=null && root.val<arr[2].val) arr[1] = root;
+        if (arr[2] != null && arr[0] == null && root.val < arr[2].val)
+            arr[0] = arr[2];
+        if (arr[2] != null && arr[0] != null && root.val < arr[2].val)
+            arr[1] = root;
 
         arr[2] = root;
-        recoverTree_(root.right,arr);
+        recoverTree_(root.right, arr);
     }
+
+    // Leetcode 102
+    public List<List<Integer>> levelOrder(TreeNode root) {
+
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+        Queue<TreeNode> q = new ArrayDeque<>();
+        q.add(root);
+
+        while (q.size() != 0) {
+            int s = q.size();
+            ArrayList<Integer> tmp = new ArrayList<>();
+            while (s-- > 0) {
+                TreeNode rn = q.remove();
+                tmp.add(rn.val);
+                if (rn.left != null)
+                    q.add(rn.left);
+                if (rn.right != null)
+                    q.add(rn.right);
+            }
+
+            ans.add(tmp);
+        }
+
+        return ans;
+    }
+
+    // Leetcode 199
+    public List<Integer> rightSideView(TreeNode root) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+
+        ArrayDeque<TreeNode> q = new ArrayDeque<>();
+        q.add(root);
+
+        while (q.size() != 0) {
+            int s = q.size();
+            ans.add(q.getLast().val);
+            while (s-- > 0) {
+                TreeNode rn = q.remove();
+
+                if (rn.left != null)
+                    q.add(rn.left);
+                if (rn.right != null)
+                    q.add(rn.right);
+            }
+
+        }
+
+        return ans;
+    }
+
+
+    public List<Integer> leftSideView(TreeNode root) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+
+        ArrayDeque<TreeNode> q = new ArrayDeque<>();
+        q.add(root);
+
+        while (q.size() != 0) {
+            int s = q.size();
+            ans.add(q.getFirst().val);
+            while (s-- > 0) {
+                TreeNode rn = q.remove();
+
+                if (rn.left != null)
+                    q.add(rn.left);
+                if (rn.right != null)
+                    q.add(rn.right);
+            }
+        }
+
+        return ans;
+    }
+
+    // 987
+    public class Vpair {
+        TreeNode node;
+        int vidx;
+        int lidx;
+
+        Vpair(TreeNode node, int vidx, int lidx) {
+            this.node = node;
+            this.vidx = vidx;
+            this.lidx = lidx;
+        }
+    }
+
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+        HashMap<Integer, ArrayList<Integer>> hm = new HashMap<>();
+
+        PriorityQueue<Vpair> q = new PriorityQueue<>((a, b) -> {
+            if (a.lidx != b.lidx)
+                return a.lidx - b.lidx;
+            else if (a.vidx != b.vidx)
+                return a.vidx - b.vidx;
+            else {
+                return a.node.val - b.node.val;
+            }
+        });
+        q.add(new Vpair(root, 0, 0));
+        int min = (int) 1e9;
+        int max = -(int) 1e9;
+
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                Vpair rv = q.remove();
+                min = Math.min(min, rv.vidx);
+                max = Math.max(max, rv.vidx);
+
+                hm.putIfAbsent(rv.vidx, new ArrayList<>());
+                hm.get(rv.vidx).add(rv.node.val);
+
+                if (rv.node.left != null)
+                    q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
+                if (rv.node.right != null)
+                    q.add(new Vpair(rv.node.right, rv.vidx + 1, rv.lidx + 1));
+            }
+        }
+
+        for (int i = min; i <= max; i++) {
+            ans.add(hm.get(i));
+        }
+
+        return ans;
+    }
+
+    public void findMinMaxValues(TreeNode root, int vidx, int[] arr) {
+        if (root == null)
+            return;
+        arr[0] = Math.min(arr[0], vidx);
+        arr[1] = Math.max(arr[1], vidx);
+
+        findMinMaxValues(root.left, vidx - 1, arr);
+        findMinMaxValues(root.right, vidx + 1, arr);
+    }
+
+
+    public int[] VerticalSum(TreeNode root){
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (root == null)
+            return new int[0];
+        
+        Queue<Vpair> q = new ArrayDeque<>();
+      
+        int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
+        findMinMaxValues(root, 0, arr);
+
+        int[]fans = new int[arr[1]- arr[0]+1];
+     //   Arrays.fill(fans,-(int)1e9);
+
+        q.add(new Vpair(root, -arr[0], 0));
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                Vpair rv = q.remove();
+
+
+                fans[rv.vidx]+=rv.node.val;
+            
+                if (rv.node.left != null)
+                    q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
+                if (rv.node.right != null)
+                    q.add(new Vpair(rv.node.right, rv.vidx + 1, rv.lidx + 1));
+            }
+        }
+
+       
+
+        return fans;
+    }
+
+
+
+    public int[]  TopView(TreeNode root){
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (root == null)
+            return new int[0];
+        
+        Queue<Vpair> q = new ArrayDeque<>();
+      
+        int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
+        findMinMaxValues(root, 0, arr);
+
+        int[]fans = new int[arr[1]- arr[0]+1];
+        Arrays.fill(fans,-(int)1e9);
+
+        q.add(new Vpair(root, -arr[0], 0));
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                Vpair rv = q.remove();
+
+
+                if(fans[rv.vidx]==-(int)1e9)fans[rv.vidx]=rv.node.val;
+            
+                if (rv.node.left != null)
+                    q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
+                if (rv.node.right != null)
+                    q.add(new Vpair(rv.node.right, rv.vidx + 1, rv.lidx + 1));
+            }
+        }
+
+       
+
+        return fans;
+    }
+
+    public int[] BottomView(TreeNode root){
+        ArrayList<Integer> ans = new ArrayList<>();
+        if (root == null)
+            return new int[0];
+        
+        Queue<Vpair> q = new ArrayDeque<>();
+      
+        int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
+        findMinMaxValues(root, 0, arr);
+
+        int[]fans = new int[arr[1]- arr[0]+1];
+        Arrays.fill(fans,-(int)1e9);
+
+        q.add(new Vpair(root, -arr[0], 0));
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                Vpair rv = q.remove();
+
+
+                fans[rv.vidx]=rv.node.val;
+            
+                if (rv.node.left != null)
+                    q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
+                if (rv.node.right != null)
+                    q.add(new Vpair(rv.node.right, rv.vidx + 1, rv.lidx + 1));
+            }
+        }
+
+       
+
+        return fans;
+    }
+
+
+
 }
