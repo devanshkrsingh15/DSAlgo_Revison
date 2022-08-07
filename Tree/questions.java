@@ -399,7 +399,6 @@ public class questions {
         return ans;
     }
 
-
     public List<Integer> leftSideView(TreeNode root) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (root == null)
@@ -491,19 +490,18 @@ public class questions {
         findMinMaxValues(root.right, vidx + 1, arr);
     }
 
-
-    public int[] VerticalSum(TreeNode root){
+    public int[] VerticalSum(TreeNode root) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (root == null)
             return new int[0];
-        
+
         Queue<Vpair> q = new ArrayDeque<>();
-      
+
         int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
         findMinMaxValues(root, 0, arr);
 
-        int[]fans = new int[arr[1]- arr[0]+1];
-     //   Arrays.fill(fans,-(int)1e9);
+        int[] fans = new int[arr[1] - arr[0] + 1];
+        // Arrays.fill(fans,-(int)1e9);
 
         q.add(new Vpair(root, -arr[0], 0));
         while (q.size() != 0) {
@@ -512,9 +510,8 @@ public class questions {
             while (s-- > 0) {
                 Vpair rv = q.remove();
 
+                fans[rv.vidx] += rv.node.val;
 
-                fans[rv.vidx]+=rv.node.val;
-            
                 if (rv.node.left != null)
                     q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
                 if (rv.node.right != null)
@@ -522,25 +519,21 @@ public class questions {
             }
         }
 
-       
-
         return fans;
     }
 
-
-
-    public int[]  TopView(TreeNode root){
+    public int[] TopView(TreeNode root) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (root == null)
             return new int[0];
-        
+
         Queue<Vpair> q = new ArrayDeque<>();
-      
+
         int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
         findMinMaxValues(root, 0, arr);
 
-        int[]fans = new int[arr[1]- arr[0]+1];
-        Arrays.fill(fans,-(int)1e9);
+        int[] fans = new int[arr[1] - arr[0] + 1];
+        Arrays.fill(fans, -(int) 1e9);
 
         q.add(new Vpair(root, -arr[0], 0));
         while (q.size() != 0) {
@@ -549,9 +542,9 @@ public class questions {
             while (s-- > 0) {
                 Vpair rv = q.remove();
 
+                if (fans[rv.vidx] == -(int) 1e9)
+                    fans[rv.vidx] = rv.node.val;
 
-                if(fans[rv.vidx]==-(int)1e9)fans[rv.vidx]=rv.node.val;
-            
                 if (rv.node.left != null)
                     q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
                 if (rv.node.right != null)
@@ -559,23 +552,21 @@ public class questions {
             }
         }
 
-       
-
         return fans;
     }
 
-    public int[] BottomView(TreeNode root){
+    public int[] BottomView(TreeNode root) {
         ArrayList<Integer> ans = new ArrayList<>();
         if (root == null)
             return new int[0];
-        
+
         Queue<Vpair> q = new ArrayDeque<>();
-      
+
         int[] arr = new int[] { (int) 1e9, -(int) 1e9 }; // {min,max};
         findMinMaxValues(root, 0, arr);
 
-        int[]fans = new int[arr[1]- arr[0]+1];
-        Arrays.fill(fans,-(int)1e9);
+        int[] fans = new int[arr[1] - arr[0] + 1];
+        Arrays.fill(fans, -(int) 1e9);
 
         q.add(new Vpair(root, -arr[0], 0));
         while (q.size() != 0) {
@@ -584,9 +575,8 @@ public class questions {
             while (s-- > 0) {
                 Vpair rv = q.remove();
 
+                fans[rv.vidx] = rv.node.val;
 
-                fans[rv.vidx]=rv.node.val;
-            
                 if (rv.node.left != null)
                     q.add(new Vpair(rv.node.left, rv.vidx - 1, rv.lidx + 1));
                 if (rv.node.right != null)
@@ -594,11 +584,68 @@ public class questions {
             }
         }
 
-       
-
         return fans;
     }
 
+    // Boundary Traversal of binary tree (GFG)
+    public List<TreeNode> BoundaryTraversal(TreeNode root) {
+        ArrayList<TreeNode> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
 
+        ans.add(root);
+        if (root.left == null && root.right == null)
+            return ans;
+
+        fillLeftBoundary(root.left, ans);
+        fillLeavesNode(root, ans);
+        fillRightBoundary(root.right, ans);
+
+        return ans;
+    }
+
+    public void fillLeftBoundary(TreeNode root, ArrayList<TreeNode> ans) {
+        if (root == null)
+            return;
+        if (root.left == null && root.right == null) {
+            return;
+        }
+
+        ans.add(root);
+        if (root.left != null)
+            fillLeftBoundary(root.left, ans);
+        else if (root.right != null)
+            fillLeftBoundary(root.right, ans);
+
+    }
+
+    public void fillLeavesNode(TreeNode root, ArrayList<TreeNode> ans) {
+        if (root == null)
+            return;
+        if (root.left == null && root.right == null) {
+            ans.add(root);
+            return;
+        }
+
+        fillLeavesNode(root.left, ans);
+        fillLeavesNode(root.right, ans);
+
+    }
+
+    public void fillRightBoundary(TreeNode root, ArrayList<TreeNode> ans) {
+        if (root == null)
+            return;
+        if (root.left == null && root.right == null) {
+            return;
+        }
+
+        ans.add(root);
+        if (root.right != null)
+            fillRightBoundary(root.right, ans);
+        else if (root.left != null)
+            fillRightBoundary(root.left, ans);
+
+        ans.add(root);
+    }
 
 }
