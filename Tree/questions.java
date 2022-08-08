@@ -195,17 +195,10 @@ public class questions {
         if (root == null)
             return 0;
 
-        int[] arr = maxPathSumHelper_(root); // {max dist from any node to curr node ,any node to any node}
+        int[] arr = maxPathSumHelper(root); // {max dist from any node to curr node ,any node to any node}
         return arr[1];
     }
 
-    public int[]  maxPathSumHelper_(TreeNode  root){
-        if(root==null) return new int[]{0,-(int)1e9};
-        
-        int[]larr = maxPathSumHelper(root.left);
-        int[]rarr = maxPathSumHelper(root.right);
-
-        int temp[]= new int[2];
 
     public int[] maxPathSumHelper(TreeNode root) {
         if (root == null)
@@ -649,3 +642,4 @@ public class questions {
     }
 
 }
+
