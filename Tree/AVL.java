@@ -1,7 +1,10 @@
 package Tree;
 
 public class AVL {
+    // always call getRotations -> whenever we fire return statement
     // -1<=(lh - rh)<=1 Balancing Factor
+    // modifications in tree -> always POST ORDER
+    // traversal -> BT: PRE ORDER ,BST: IN ORDER
 
     /*
      * BL
@@ -93,19 +96,19 @@ public class AVL {
 
     public TreeNode insertIntoAVL(TreeNode root, int v) {
         if (root == null)
-            return new TreeNode(v);
+            return getRotations(new TreeNode(v));
 
         if (root.val > v)
             root.left = insertIntoAVL(root.left, v);
         else if (root.val < v)
             root.right = insertIntoAVL(root.right, v);
 
-        return root;
+        return getRotations(root);
     }
 
     public TreeNode deleteFromAVL(TreeNode root, int v) {
         if (root == null)
-            return new TreeNode(v);
+            return null;
 
         if (root.val > v)
             root.left = deleteFromAVL(root.left, v);
@@ -116,7 +119,7 @@ public class AVL {
             if (root.left == null && root.right == null)
                 return null;
             else if (root.left == null || root.right == null)
-                return (root.left != null) ? root.left : root.right;
+                return (root.left != null) ? getRotations(root.left) : getRotations(root.right);
             else {
                 int lmax = getMax(root.left);
                 root.val = lmax;
@@ -125,7 +128,7 @@ public class AVL {
 
         }
 
-        return root;
+        return getRotations(root);
     }
 
     public int getMax(TreeNode root) {
@@ -140,3 +143,6 @@ public class AVL {
     }
 
 }
+
+
+//UPDATE IN  BST  => DELETE AND ADD
