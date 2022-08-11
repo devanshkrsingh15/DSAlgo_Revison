@@ -2,6 +2,7 @@ package Tree;
 
 import java.util.*;
 
+import LinkedList.DLListNode;
 import Tree.Tree.TreeNode;
 
 public class questions {
@@ -198,7 +199,6 @@ public class questions {
         int[] arr = maxPathSumHelper(root); // {max dist from any node to curr node ,any node to any node}
         return arr[1];
     }
-
 
     public int[] maxPathSumHelper(TreeNode root) {
         if (root == null)
@@ -641,5 +641,113 @@ public class questions {
         ans.add(root);
     }
 
-}
+    // 114. Flatten Binary Tree to Linked List
+    public void flatten(TreeNode root) {
+        flatten_On2(root);
+        flatten_On(root);
+    }
 
+    private TreeNode flatten_On2(TreeNode root) {
+        if (root == null)
+            return null;
+
+        TreeNode rt = root;
+        TreeNode lc = root.left;
+        TreeNode rc = root.right;
+        TreeNode left = flatten_On2(root.left);
+        TreeNode right = flatten_On2(root.right);
+
+        root.left = null;
+        if (left == null)
+            return root;
+        TreeNode tail = lc;
+        while (tail.right != null)
+            tail = tail.right;
+
+        root.right = lc;
+        if (right == null)
+            return root;
+        tail.right = right;
+
+        return root;
+    }
+
+    private TreeNode flatten_On(TreeNode root) {
+        if (root == null)
+            return null;
+        if (root.left == null && root.right == null)
+            return root;
+
+        TreeNode lchild = root.left;
+        TreeNode rchild = root.right;
+
+        TreeNode ltail = flatten_On(root.left);
+        TreeNode rtail = flatten_On(root.right);
+
+        if (ltail == null) {
+            return rtail;
+        }
+
+        root.left = null;
+        if (root.right == null) {
+            root.right = lchild;
+            return ltail;
+
+        }
+
+        root.right = lchild;
+        ltail.right = rchild;
+
+        return rtail;
+    }
+
+    // 426. Convert Binary Search Tree to Sorted Doubly Linked List
+    public TreeNode ConvertBSTtoDLL(TreeNode root) {
+        TreeNode[] arr = new TreeNode[2]; // {head,curr}
+        ConvertBSTtoDLL_helper(root, arr);
+        return arr[0];
+    }
+
+    private void ConvertBSTtoDLL_helper(TreeNode root, TreeNode[] arr) {
+        if (root == null)
+            return;
+        ConvertBSTtoDLL_helper(root.left, arr);
+
+        if (arr[0] == null) {
+            arr[0] = arr[1] = root;
+        } else {
+            arr[1].right = root;
+            root.left = arr[1];
+            arr[1] = arr[1].right;
+        }
+
+        ConvertBSTtoDLL_helper(root.right, arr);
+    }
+
+    // GFG : Convert Binary Tree to Circular Doubly Linked List
+    public TreeNode ConvertBinaryTreetoCircularDoublyLinkedList(TreeNode root) {
+        TreeNode[] arr = new TreeNode[2]; // {head,curr}
+        ConvertBinaryTreetoCircularDoublyLinkedList_Helper(root, arr);
+        // making it circular
+        arr[1].right = arr[0];
+        arr[0].left = arr[1];
+        return arr[0];
+    }
+
+    private void ConvertBinaryTreetoCircularDoublyLinkedList_Helper(TreeNode root, TreeNode[] arr) {
+        if (root == null)
+            return;
+        ConvertBinaryTreetoCircularDoublyLinkedList_Helper(root.left, arr);
+
+        if (arr[0] == null) {
+            arr[0] = arr[1] = root;
+        } else {
+            arr[1].right = root;
+            root.left = arr[1];
+            arr[1] = arr[1].right;
+        }
+
+        ConvertBinaryTreetoCircularDoublyLinkedList_Helper(root.right, arr);
+    }
+
+}

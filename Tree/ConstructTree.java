@@ -4,6 +4,7 @@ import java.util.*;
 
 public class ConstructTree {
 
+    //TC - O(nlogn) worst -  O(n^2)
     public class TreeNode {
         public int val;
         public TreeNode left;
@@ -26,6 +27,7 @@ public class ConstructTree {
         }
 
     }
+
 
     public TreeNode constructFromPreIn(int[] preorder, int[] inorder) {
         int[] indices = new int[4]; // {pre_st,pre_en,in_st,in_en}
