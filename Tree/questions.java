@@ -7,6 +7,29 @@ import Tree.Tree.TreeNode;
 
 public class questions {
 
+    public class TreeNode {
+        public int val;
+        public TreeNode left;
+        public TreeNode right;
+
+        public TreeNode() {
+
+        }
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+
+        public TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+    }
+
     public ArrayList<TreeNode> NodeToRootPath(TreeNode root, TreeNode tar) {
         if (root == null)
             return new ArrayList<TreeNode>();
@@ -748,6 +771,140 @@ public class questions {
         }
 
         ConvertBinaryTreetoCircularDoublyLinkedList_Helper(root.right, arr);
+    }
+
+    // Construct BST from its given level order traversal (GFG)
+    public class Pair {
+        TreeNode node;
+        int max;
+        int min;
+
+        Pair(TreeNode node, int min, int max) {
+            this.node = node;
+            this.max = max;
+            this.min = min;
+        }
+
+    }
+
+
+    public TreeNode ConnstructFromLevelOrder(int[] lvlOrder) {
+        if (lvlOrder.length == 0)
+            return null;
+
+        int ptr = 0;
+        TreeNode root = null;
+        Queue<Pair> q = new ArrayDeque<>();
+        q.add(new Pair(null, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        while (q.size() != 0) {
+            if (ptr == lvlOrder.length) {
+                break;
+            }
+            TreeNode curr = new TreeNode(lvlOrder[ptr]);
+
+            Pair rp = q.remove();
+            TreeNode node = rp.node;
+            int min = rp.min;
+            int max = rp.max;
+
+            if (max > curr.val && min < curr.val) {
+
+                if (node == null) {
+                    root = curr;
+                } else {
+                    if (curr.val < node.val)
+                        node.left = curr;
+                    else if (curr.val > node.val)
+                        node.right = curr;
+                }
+                q.add(new Pair(curr, min, curr.val));
+                q.add(new Pair(curr, curr.val, max));
+                ptr++;
+            }
+
+        }
+
+        return root;
+    }
+
+    //NOTE - for  binary tree from level order, LEVEL ORDER SHOULD HAVE  -1 FOR NULL  VALUES
+
+    // Leetcode 968. Binary Tree Cameras
+    public int minCameraCover(TreeNode root) {
+        if (root == null)
+            return 0;
+        int[] minCam = new int[1];
+        int temp = minCameraCoverHelper(root, minCam);
+        // checking if root need a cam or not
+        if (temp == -1)
+            minCam[0]++;
+        return minCam[0];
+    }
+    /*
+     * 0 - i have a cam
+     * -1 - i need a cam
+     * 1 - my child has a cam / i am covered
+     */
+
+    public int minCameraCoverHelper(TreeNode root, int[] minCam) {
+        if (root == null)
+            return 1;
+
+        int lc = minCameraCoverHelper(root.left, minCam);
+        int rc = minCameraCoverHelper(root.right, minCam);
+
+        if (lc == -1 || rc == -1) {
+            minCam[0]++;
+            return 0;
+        } else if (lc == 0 || rc == 0) {
+            return 1;
+        }
+        return -1;
+    }
+
+    //Binary tree from level and inorder
+    public TreeNode BTfromLvlandInorder(int[]levelorder,int[]inorder){
+        return  BTfromLvlandInorder_(levelorder,inorder);
+    }
+
+    public TreeNode BTfromLvlandInorder_(int[]lvl,int[]in){
+        if(lvl.length==1) return  new TreeNode(lvl[0]);
+        if(lvl.length==0) return  null;
+
+        TreeNode root = new TreeNode(lvl[0]);
+        int ptr =  0;
+        for(int i =0;  i<in.length;i++){
+            if(in[i]==root.val) ptr =i;
+        }
+
+        int[]leftIn = new int[ptr]; int[]rightIn = new int[in.length-ptr];
+        HashSet<Integer>leftMap = new HashSet<>();  
+        HashSet<Integer>rightMap = new HashSet<>();
+        int  li=0,ri= 0;
+        for(int i =0;  i<in.length;i++){
+            if(i<ptr){
+                leftIn[li++]=in[i];
+                leftMap.add(in[i]);
+            }else if(i>ptr){
+                rightIn[ri++]=in[i];
+                rightMap.add(in[i]);
+            }
+        }
+        li=0;ri= 0;
+        int[]leftLevel = new int[leftMap.size()]; int[]righLevel = new int[rightMap.size()];
+        for(int i =1 ;i<lvl.length;i++){
+            if(leftMap.contains(lvl[i])){
+                leftLevel[li++]= lvl[i];
+            }else if(rightMap.contains(lvl[i])){
+                righLevel[ri++]= lvl[i];
+            }
+        }
+
+        root.left= BTfromLvlandInorder_(leftLevel,leftIn);
+        root.right= BTfromLvlandInorder_(righLevel,rightIn);
+
+        return root;
+
     }
 
 }
