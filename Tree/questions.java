@@ -787,7 +787,6 @@ public class questions {
 
     }
 
-
     public TreeNode ConnstructFromLevelOrder(int[] lvlOrder) {
         if (lvlOrder.length == 0)
             return null;
@@ -827,7 +826,8 @@ public class questions {
         return root;
     }
 
-    //NOTE - for  binary tree from level order, LEVEL ORDER SHOULD HAVE  -1 FOR NULL  VALUES
+    // NOTE - for binary tree from level order, LEVEL ORDER SHOULD HAVE -1 FOR NULL
+    // VALUES
 
     // Leetcode 968. Binary Tree Cameras
     public int minCameraCover(TreeNode root) {
@@ -862,49 +862,314 @@ public class questions {
         return -1;
     }
 
-    //Binary tree from level and inorder
-    public TreeNode BTfromLvlandInorder(int[]levelorder,int[]inorder){
-        return  BTfromLvlandInorder_(levelorder,inorder);
+    // Binary tree from level and inorder
+    public TreeNode BTfromLvlandInorder(int[] levelorder, int[] inorder) {
+        return BTfromLvlandInorder_(levelorder, inorder);
     }
 
-    public TreeNode BTfromLvlandInorder_(int[]lvl,int[]in){
-        if(lvl.length==1) return  new TreeNode(lvl[0]);
-        if(lvl.length==0) return  null;
+    public TreeNode BTfromLvlandInorder_(int[] lvl, int[] in) {
+        if (lvl.length == 1)
+            return new TreeNode(lvl[0]);
+        if (lvl.length == 0)
+            return null;
 
         TreeNode root = new TreeNode(lvl[0]);
-        int ptr =  0;
-        for(int i =0;  i<in.length;i++){
-            if(in[i]==root.val) ptr =i;
+        int ptr = 0;
+        for (int i = 0; i < in.length; i++) {
+            if (in[i] == root.val)
+                ptr = i;
         }
 
-        int[]leftIn = new int[ptr]; int[]rightIn = new int[in.length-ptr];
-        HashSet<Integer>leftMap = new HashSet<>();  
-        HashSet<Integer>rightMap = new HashSet<>();
-        int  li=0,ri= 0;
-        for(int i =0;  i<in.length;i++){
-            if(i<ptr){
-                leftIn[li++]=in[i];
+        int[] leftIn = new int[ptr];
+        int[] rightIn = new int[in.length - ptr];
+        HashSet<Integer> leftMap = new HashSet<>();
+        HashSet<Integer> rightMap = new HashSet<>();
+        int li = 0, ri = 0;
+        for (int i = 0; i < in.length; i++) {
+            if (i < ptr) {
+                leftIn[li++] = in[i];
                 leftMap.add(in[i]);
-            }else if(i>ptr){
-                rightIn[ri++]=in[i];
+            } else if (i > ptr) {
+                rightIn[ri++] = in[i];
                 rightMap.add(in[i]);
             }
         }
-        li=0;ri= 0;
-        int[]leftLevel = new int[leftMap.size()]; int[]righLevel = new int[rightMap.size()];
-        for(int i =1 ;i<lvl.length;i++){
-            if(leftMap.contains(lvl[i])){
-                leftLevel[li++]= lvl[i];
-            }else if(rightMap.contains(lvl[i])){
-                righLevel[ri++]= lvl[i];
+        li = 0;
+        ri = 0;
+        int[] leftLevel = new int[leftMap.size()];
+        int[] righLevel = new int[rightMap.size()];
+        for (int i = 1; i < lvl.length; i++) {
+            if (leftMap.contains(lvl[i])) {
+                leftLevel[li++] = lvl[i];
+            } else if (rightMap.contains(lvl[i])) {
+                righLevel[ri++] = lvl[i];
             }
         }
 
-        root.left= BTfromLvlandInorder_(leftLevel,leftIn);
-        root.right= BTfromLvlandInorder_(righLevel,rightIn);
+        root.left = BTfromLvlandInorder_(leftLevel, leftIn);
+        root.right = BTfromLvlandInorder_(righLevel, rightIn);
 
         return root;
 
     }
 
+    // Pref classes in interview, array is not readable
+    // Leetcode 337. House Robber III
+    public int HouseRobberIII(TreeNode root) {
+        int[] temp = HouseRobberIII_(root); // {house inc,house exc}
+        return Math.max(temp[0], temp[1]);
+    }
+
+    // {house inc,house exc}
+    public int[] HouseRobberIII_(TreeNode root) {
+        if (root == null) {
+            return new int[] { 0, 0 };
+        }
+
+        int[] lans = HouseRobberIII_(root.left);
+        int[] rans = HouseRobberIII_(root.right);
+
+        int inc = root.val + lans[1] + rans[1];
+        int exc = Math.max(lans[0], lans[1]) + Math.max(rans[0], rans[1]);
+
+        return new int[] { inc, exc };
+    }
+
+    // Leetcode 1372. Longest ZigZag Path in a Binary Tree
+    public int longestZigZag(TreeNode root) {
+        if (root == null)
+            return 0;
+
+        int[] temp = longestZigZag_(root);// {left oriented,right oriented,overall max}
+        return temp[2];
+    }
+
+    // {left oriented,right oriented,overall max}
+    public int[] longestZigZag_(TreeNode root) {
+        if (root == null)
+            return new int[] { -1, -1, 0 };
+
+        int[] leftAns = longestZigZag_(root.left);
+        int[] rightAns = longestZigZag_(root.right);
+
+        int leftOrientation = 1 + leftAns[1];
+        int rightOrientation = 1 + rightAns[0];
+
+        int overallMax = Math.max(leftAns[2], rightAns[2]);
+        overallMax = Math.max(overallMax, Math.max(leftOrientation, rightOrientation));
+
+        return new int[] { leftOrientation, rightOrientation, overallMax };
+    }
+
+    // Kth smallest element in BST => TC - O(N) ; SC- O(1) (OR) O(logN)
+    public int kthSmallest_ConstantSpace(TreeNode root, int k) {
+        // TC - O(N) ; SC - O(1) // using morris traversal
+
+        TreeNode curr = root;
+        int val = -1;
+        while (curr != null && k > 0) {
+            TreeNode next = curr.left;
+            if (next == null) {
+                // inorder
+                val = curr.val;
+                k--;
+                curr = curr.right;
+            } else {
+                TreeNode rmost = findRightMostNode(curr, next);
+
+                if (rmost.right == null) {
+                    rmost.right = curr;
+                    curr = curr.left;
+                } else {
+                    // inorder
+                    rmost.right = null;
+                    val = curr.val;
+                    k--;
+                    curr = curr.right;
+                }
+            }
+        }
+
+        return val;
+    }
+
+    public TreeNode findRightMostNode(TreeNode curr, TreeNode next) {
+        while (next.right != null && next.right != curr)
+            next = next.right;
+        return next;
+    }
+
+    public int kthSmallest_LogNSpace(TreeNode root, int k) {
+        // TC - O(N) ; SC - O(1) // using morris traversal
+
+        TreeNode curr = root;
+        int val = -1;
+        Stack<TreeNode> st = new Stack<>();
+        pushAllLeft(curr, st);
+
+        while (k-- > 0) {
+            TreeNode top = st.pop();
+            val = top.val;
+            pushAllLeft(top, st);
+        }
+
+        return val;
+    }
+
+    public int medianOfBST(TreeNode curr) {
+        /*
+         * if n - odd : med => (n+1)/2th element
+         * if n - odd : med => (n/2th + (n/2+1)th)/2
+         */
+
+        int size = sizeOfBST(curr);
+        int a = -1; // n+1/2th
+        int b = -1; // n/2th
+        int c = -1; // n+1/2th
+        int k = 1;
+
+        while (curr != null) {
+            TreeNode next = curr.left;
+            if (next == null) {
+                // inorder
+                if (k == (size + 1) / 2)
+                    a = curr.val;
+                if (k == size / 2)
+                    b = curr.val;
+                if (k == size / 2 + 1)
+                    c = curr.val;
+                curr = curr.right;
+                k++;
+            } else {
+                TreeNode rmost = findRightMostNode(curr, next);
+
+                if (rmost.right == null) {
+                    rmost.right = curr;
+                    curr = curr.left;
+                } else {
+                    // inorder
+                    rmost.right = null;
+                    if (k == (size + 1) / 2)
+                        a = curr.val;
+                    if (k == size / 2)
+                        b = curr.val;
+                    if (k == size / 2 + 1)
+                        c = curr.val;
+                    curr = curr.right;
+                    k++;
+                }
+            }
+        }
+
+        if (size % 2 == 1)
+            return a;
+        return (b + c) / 2;
+
+    }
+
+    private int sizeOfBST(TreeNode curr) {
+        int s = 0;
+        while (curr != null) {
+            TreeNode next = curr.left;
+            if (next == null) {
+                // inorder
+                s++;
+                curr = curr.right;
+            } else {
+                TreeNode rmost = findRightMostNode(curr, next);
+
+                if (rmost.right == null) {
+                    rmost.right = curr;
+                    curr = curr.left;
+                } else {
+                    // inorder
+                    rmost.right = null;
+                    s++;
+                    curr = curr.right;
+                }
+            }
+        }
+        return s;
+    }
+
+    // Leetcode 653. Two Sum IV - Input is a BST
+    // TC - O(N) : SC - O(logN)
+    public boolean TwoSumBST(TreeNode root, int tar) {
+        Stack<TreeNode> lst = new Stack<>();
+        Stack<TreeNode> rst = new Stack<>();
+        pushAllLeft(root, lst);
+        pushAllRight(root, rst);
+
+        while (lst.size() != 0 && rst.size() != 0 && lst.peek().val < rst.peek().val) {
+            TreeNode l = lst.peek();
+            TreeNode r = rst.peek();
+
+            if (l.val + r.val == tar)
+                return true;
+            else if (l.val + r.val > tar) {
+                pushAllRight(rst.pop().left, rst);
+            } else {
+                pushAllLeft(lst.pop().right, lst);
+            }
+        }
+        return false;
+    }
+
+    public void pushAllLeft(TreeNode root, Stack<TreeNode> st) {
+        while (root != null) {
+            st.push(root);
+            root = root.left;
+        }
+
+    }
+
+    public void pushAllRight(TreeNode root, Stack<TreeNode> st) {
+        while (root != null) {
+            st.push(root);
+            root = root.right;
+        }
+
+    }
+
+    // Leetcode 662. Maximum Width of Binary Tree
+    public class WidthPair {
+        int idx;
+        TreeNode node;
+
+        WidthPair(TreeNode node, int idx) {
+            this.node = node;
+            this.idx = idx;
+        }
+    }
+
+    public int widthOfBinaryTree(TreeNode root) {
+        int wdth = 1;
+        if (root == null)
+            return 0;
+        ArrayDeque<WidthPair> q = new ArrayDeque<>();
+        q.add(new WidthPair(root, 0));
+
+        while (q.size() != 0) {
+            int s = q.size();
+            int max = q.getLast().idx;
+            int min = q.getFirst().idx;
+            while (s-- > 0) {
+                WidthPair rp = q.remove();
+
+                if (rp.node.left != null) {
+                    q.add(new WidthPair(rp.node.left, 2 * rp.idx + 1));
+                }
+
+                if (rp.node.right != null) {
+                    q.add(new WidthPair(rp.node.right, 2 * rp.idx + 2));
+                }
+
+            }
+
+            wdth = Math.max(wdth, max - min + 1);
+
+        }
+
+        return wdth;
+    }
 }
