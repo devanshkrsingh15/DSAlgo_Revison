@@ -3,9 +3,8 @@ package Graphs;
 import java.util.*;
 import Graphs.*;
 
-public class Constructions {
-
-    // {u,v,w}
+public class construction {
+     // {u,v,w}
     // bidirectional
     public ArrayList<Edge>[] SparseRepresentations(int n, int[][] edges) {
         ArrayList<Edge> graph[] = new ArrayList[n];
@@ -94,80 +93,5 @@ public class Constructions {
             }
         }
     }
-
-    public boolean hasPath(ArrayList<Edge>[] graph, int src, int dest, boolean[] vis) {
-        if (src == dest)
-            return true;
-        vis[src] = true;
-
-        boolean res = false;
-        for (Edge e : graph[src]) {
-            int nbr = e.v;
-            if (vis[nbr] == false) {
-                res = res || hasPath(graph, nbr, dest, vis);
-            }
-
-        }
-
-        return res;
-    }
-
-    public int printAllPath(ArrayList<Edge>[] graph, int src, int dest, boolean[] vis,ArrayList<ArrayList<Integer>>ans,ArrayList<Integer>temp){
-        vis[src]  =  true;
-        temp.add(src);
-        if(src==dest){
-            ans.add(new ArrayList<>(temp));
-            temp.remove(temp.size()-1);
-            return 1;
-        }
-
-        int res  =  0;
-        for (Edge e : graph[src]) {
-            int nbr = e.v;
-            if (vis[nbr] == false) {
-                res += printAllPath(graph,nbr,dest,vis,ans,temp);
-            }
-
-        }
-
-        vis[src]  =  false;
-        temp.remove(temp.size()-1);
-        return res;
-    }
-
-    public  class HeavyPair{
-        int wt;  String psf;
-        HeavyPair(int wt,  String psf){
-            this.wt = wt;
-            this.psf = psf;
-        }
-    }
-
-    public HeavyPair heaviestPath(ArrayList<Edge>[] graph,int src,int  dest,boolean[] vis){
-        if(src==dest){
-            return  new HeavyPair(0,""+src);
-        }
-
-        vis[src]= true;
-        HeavyPair myans = new HeavyPair(-(int)1e9,"");
-
-        for (Edge e : graph[src]) {
-            int nbr = e.v;int  wt =e.wt;
-            if (vis[nbr] == false) {
-                HeavyPair recans  = heaviestPath(graph,nbr,dest,vis);
-                if(recans.wt!=-(int)1e9 &&  recans.wt+wt>myans.wt){
-                    myans.wt = recans.wt+wt;
-                    myans.psf= src  +" "+recans.psf;
-                }
-            }
-
-        }
-
-
-        vis[src]= false;
-        return myans;
-    }
-
-
-
+    
 }
