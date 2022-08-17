@@ -1,7 +1,7 @@
-package Graphs;
+
 
 import java.util.*;
-import Graphs.*;
+
 
 public class construction {
      // {u,v,w}

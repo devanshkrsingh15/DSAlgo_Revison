@@ -1,7 +1,5 @@
-package Graphs;
 
 import java.util.*;
-import Graphs.*;
 
 public class questions {
     // Leetcode 200. Number of Islands
