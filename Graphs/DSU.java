@@ -124,4 +124,149 @@ public class DSU {
         return sb.toString();
     }
 
+    // Leetcode 839. Similar String Groups
+    public int numSimilarGroups(String[] strs) {
+        int grps = strs.length;
+
+        int n = strs.length;
+        int[] par = new int[n];
+        for (int i = 0; i < n; i++)
+            par[i] = i;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (areSimilar(strs, i, j)) {
+                    int p1 = findParent(par, i);
+                    int p2 = findParent(par, j);
+
+                    if (p1 != p2) {
+                        par[p2] = p1;
+                        grps--;
+                    }
+                }
+            }
+        }
+
+        return grps;
+    }
+
+    public boolean areSimilar(String[] arr, int i, int j) {
+        String a = arr[i];
+        String b = arr[j];
+
+        int cnt = 0;
+        if (a.length() != b.length())
+            return false;
+
+        for (int idx = 0; idx < a.length(); idx++) {
+            if (a.charAt(idx) != b.charAt(idx))
+                cnt++;
+            if (cnt > 2)
+                return false;
+        }
+
+        return true;
+    }
+
+    class Point {
+        int x;
+        int y;
+
+        Point() {
+            x = 0;
+            y = 0;
+        }
+
+        Point(int a, int b) {
+            x = a;
+            y = b;
+        }
+    }
+
+    public List<Integer> numIslands2(int n, int m, Point[] operators) {
+        int[][] mat = new int[n][m];
+        int[] par = new int[n * m];
+        for (int i = 0; i < par.length; i++)
+            par[i] = i;
+
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
+        int cnt = 0;
+        for (Point p : operators) {
+            if (mat[p.x][p.y] == 0) {
+                mat[p.x][p.y] = 1;
+                cnt++;
+                for (int k = 0; k < direcs.length; k++) {
+                    int i = p.x + direcs[k][0];
+                    int j = p.y + direcs[k][1];
+
+                    if (i >= 0 && j >= 0 && i < n && j < m && mat[i][j] == 1) {
+                        int p1 = findParent(par, p.x * m + p.y);
+                        int p2 = findParent(par, i * m + j);
+
+                        if (p1 != p2) {
+                            cnt--;
+                            par[p2] = p1;
+                        }
+                    }
+                }
+            }
+
+            ans.add(cnt);
+        }
+
+        return ans;
+    }
+
+    // Leetcode 1168 - Optimize Water Distribution in a Village
+    /*
+     * There are n houses in a village. We want to supply water for all the houses
+     * by building wells and laying pipes.
+     * 
+     * For each house i, we can either build a well inside it directly with cost
+     * wells[i], or pipe in water from another well to it. The costs to lay pipes
+     * between houses are given by the array pipes, where each pipes[i] = [house1,
+     * house2, cost] represents the cost to connect house1 and house2 together using
+     * a pipe. Connections are bidirectional.
+     * 
+     * Find the minimum total cost to supply water to all houses.
+     */
+
+    public int minCost(int n, int[] wells, int[][] pipes) {
+        int[] par = new int[n + 2];
+        // {u,v,w}
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            return a[2] - b[2];
+        });
+
+        for (int[] p : pipes)
+            pq.add(p);
+
+        for (int i = 0; i < wells.length; i++) {
+            pq.add(new int[] { i, n, wells[i] });
+        }
+
+        int mincost = 0;
+
+        while (pq.size() != 0) {
+            int[] rp = pq.remove();
+            int u = rp[0];
+            int v = rp[1];
+            int wt = rp[2];
+
+            int p1 = findParent(par, u);
+            int p2 = findParent(par, v);
+
+            if(p1!=p2){
+                par[p2]=p1;
+                mincost+=wt;
+            }
+        }
+
+       
+
+        return mincost;
+    }
 }
