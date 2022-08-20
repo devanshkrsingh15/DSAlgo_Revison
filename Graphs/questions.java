@@ -102,54 +102,55 @@ public class questions {
 
     }
 
-    //Leetcode 130. Surrounded Regions
+    // Leetcode 130. Surrounded Regions
     public void SurroundedRegions(char[][] board) {
-        //to capture all regions that are 4-directionally surrounded by 'X'.
+        // to capture all regions that are 4-directionally surrounded by 'X'.
 
         int n = board.length;
         int m = board[0].length;
         int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
-        checkAndModifyBoundaries(board,'O','#',direcs);
+        checkAndModifyBoundaries(board, 'O', '#', direcs);
 
-        for(int i= 1;i<n-1;i++){
-            for(int j =1;j<m-1;j++){
-                if(board[i][j]=='O'){
-                    dfs(board,'O','X',i,j,direcs);
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < m - 1; j++) {
+                if (board[i][j] == 'O') {
+                    dfs(board, 'O', 'X', i, j, direcs);
                 }
             }
         }
 
-        
+        checkAndModifyBoundaries(board, '#', 'O', direcs);
 
-        checkAndModifyBoundaries(board,'#','O',direcs);
-
-        
     }
 
-    private void checkAndModifyBoundaries(char[][] board, char oc, char nc,int[][]direcs) {
+    private void checkAndModifyBoundaries(char[][] board, char oc, char nc, int[][] direcs) {
         int n = board.length;
         int m = board[0].length;
 
-        for(int i =0 ;i<n;i++){
-            if(board[i][0]== oc)dfs(board,oc,nc,i,0,direcs);
-            if(board[i][m-1]==oc)dfs(board,oc,nc,i,m-1,direcs);
+        for (int i = 0; i < n; i++) {
+            if (board[i][0] == oc)
+                dfs(board, oc, nc, i, 0, direcs);
+            if (board[i][m - 1] == oc)
+                dfs(board, oc, nc, i, m - 1, direcs);
         }
 
-        for(int j =0 ;j<m;j++){
-            if(board[0][j]== oc)dfs(board,oc,nc,0,j,direcs);
-            if(board[n-1][j]==oc)dfs(board,oc,nc,n-1,j,direcs);
+        for (int j = 0; j < m; j++) {
+            if (board[0][j] == oc)
+                dfs(board, oc, nc, 0, j, direcs);
+            if (board[n - 1][j] == oc)
+                dfs(board, oc, nc, n - 1, j, direcs);
         }
     }
 
-    private void dfs(char[][] board, char oc,char nc, int i, int j,int[][]direcs) {
+    private void dfs(char[][] board, char oc, char nc, int i, int j, int[][] direcs) {
         board[i][j] = nc;
 
         for (int k = 0; k < direcs.length; k++) {
             int x = i + direcs[k][0];
             int y = j + direcs[k][1];
             if (x >= 0 && y >= 0 && x < board.length && y < board[0].length && board[x][y] == oc) {
-                dfs(board,oc,nc,x,y,direcs);
+                dfs(board, oc, nc, x, y, direcs);
             }
         }
 
@@ -366,6 +367,186 @@ public class questions {
 
         return;
 
+    }
+
+    // Leetcode 815. Bus Routes
+    public int numBusesToDestination(int[][] routes, int source, int target) {
+        int minBuses = 0;
+        HashMap<Integer, HashSet<Integer>> busesPossible = new HashMap<>();
+
+        for (int bi = 0; bi < routes.length; bi++) {
+
+            for (int st : routes[bi]) {
+                busesPossible.putIfAbsent(st, new HashSet<>());
+
+                busesPossible.get(st).add(bi);
+
+            }
+        }
+
+        Queue<Integer> q = new ArrayDeque<>();
+        HashSet<Integer> vis_bus = new HashSet<>();
+        HashSet<Integer> vis = new HashSet<>();
+        vis.add(source);
+        q.add(source);
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                int remStop = q.remove();
+                if (remStop == target)
+                    return minBuses;
+                for (int bi : busesPossible.get(remStop)) {
+                    if (vis_bus.contains(bi))
+                        continue;
+                    vis_bus.add(bi);
+
+                    for (int st : routes[bi]) {
+                        if (!vis.contains(st)) {
+                            q.add(st);
+                            vis.add(st);
+                        }
+                    }
+                }
+
+            }
+            minBuses++;
+
+        }
+
+        return -1;
+    }
+
+    // Mr. President =>
+    // https://www.hackerearth.com/practice/algorithms/graphs/minimum-spanning-tree/practice-problems/algorithm/mr-president/
+    // minimum number of roads which need to be transformed
+    public int minTransformation(int n, int[][] roads, int k, int deletionCost) {
+        /*
+         * 1) Get MST from the given graph
+         * 2) Start sub/del the edges till we have not met the criteria
+         * 3) If cost<=k return number of deletions else -1
+         */
+
+        int[] par = new int[n];
+        for (int i = 0; i < n; i++)
+            par[i] = i;
+        Arrays.sort(roads, (a, b) -> {
+            return a[2] - b[2];
+        });
+
+        int comp = n;
+        // the graph should be connected ie total components = 1
+        int cost = 0;
+        ArrayList<int[]> mst = new ArrayList<>();
+        for (int[] rd : roads) {
+            int u = rd[0];
+            int v = rd[1];
+
+            int p1 = findParent(par, u);
+            int p2 = findParent(par, v);
+
+            if (p1 != p2) {
+                par[p2] = p1;
+                mst.add(rd);
+                cost += rd[2];
+                comp--;
+            }
+
+        }
+        // if graph is disconnected then ans is not possible
+        if (comp > 1)
+            return -1;
+
+        if (cost <= k)
+            return 0;
+
+        int tr = 0;
+
+        // starting from the maximum wt => we need min transformation
+        for (int i = mst.size() - 1; i >= 0; i--) {
+            int[] rd = mst.get(i);
+            cost = cost - rd[2] + deletionCost;
+            tr++;
+
+            if (cost <= k)
+                return tr;
+        }
+
+        return -1;
+    }
+
+    public int findParent(int par[], int u) {
+        if (par[u] == u)
+            return u;
+        else {
+            int temp = findParent(par, par[u]);
+            par[u] = temp; // path compression
+            return temp;
+        }
+    }
+
+    // 959. Regions Cut By Slashes
+    public int regionsBySlashes(String[] grid) {
+        // will find cycle created with boundary
+        int cnt = 1;
+        int n = grid.length + 1;
+        int[] par = new int[n * n];
+        for (int i = 0; i < par.length; i++)
+            par[i] = i;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0 || i == n - 1 || j == n - 1)
+                    par[i * n + j] = 0;
+            }
+        }
+
+        for (int i = 0; i < grid.length; i++) {
+            String str = grid[i];
+            for (int j = 0; j < str.length(); j++) {
+                char ch = str.charAt(j);
+
+                if (ch != ' ') {
+                    int[] ps = findLeaders(ch, i, j, n, par);
+
+                    int p1 = ps[0];
+                    int p2 = ps[1];
+
+                    if (p1 == p2) {
+                        cnt++;
+                    } else {
+                        par[p2] = p1;
+                    }
+                }
+            }
+        }
+
+        return cnt;
+
+    }
+
+    private int[] findLeaders(char ch, int i, int j, int n, int[] par) {
+        int p1 = -1;
+        int p2 = -1;
+        if (ch == '/') {
+            int x1 = i + 1;
+            int y1 = j;
+            int x2 = i;
+            int y2 = j + 1;
+
+            p1 = findParent(par, x1 * n + y1);
+            p2 = findParent(par, x2 * n + y2);
+        } else if (ch == '\\') {
+            int x1 = i;
+            int y1 = j;
+            int x2 = i + 1;
+            int y2 = j + 1;
+
+            p1 = findParent(par, x1 * n + y1);
+            p2 = findParent(par, x2 * n + y2);
+        }
+
+        return new int[] { p1, p2 };
     }
 
 }
