@@ -237,21 +237,23 @@ public class DSU {
     public int minCost(int n, int[] wells, int[][] pipes) {
         int[] par = new int[n + 2];
         // {u,v,w}
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+        ArrayList<int[]> list = new ArrayList<>();
+
+        for (int[] p : pipes)
+            list.add(p);
+
+        for (int i = 0; i < wells.length; i++) {
+            list.add(new int[] { i, n, wells[i] });
+        }
+
+        Collections.sort(list, (a, b) -> {
             return a[2] - b[2];
         });
 
-        for (int[] p : pipes)
-            pq.add(p);
-
-        for (int i = 0; i < wells.length; i++) {
-            pq.add(new int[] { i, n, wells[i] });
-        }
-
         int mincost = 0;
 
-        while (pq.size() != 0) {
-            int[] rp = pq.remove();
+        for (int[] rp : list) {
+
             int u = rp[0];
             int v = rp[1];
             int wt = rp[2];
@@ -259,14 +261,155 @@ public class DSU {
             int p1 = findParent(par, u);
             int p2 = findParent(par, v);
 
-            if(p1!=p2){
-                par[p2]=p1;
-                mincost+=wt;
+            if (p1 != p2) {
+                par[p2] = p1;
+                mincost += wt;
             }
         }
 
-       
-
         return mincost;
     }
+}
+
+class LeetcodeQs {
+    int[][] direcs = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
+
+    public boolean isValid(int i, int j, int n, int m) {
+        return i >= 0 && j >= 0 && i < n && j < m;
+    }
+
+    public int findParent(int par[], int u) {
+        if (par[u] == u)
+            return u;
+        else {
+            int temp = findParent(par, par[u]);
+            par[u] = temp; // path compression
+            return temp;
+        }
+    }
+
+    // 200. Number of Islands
+    public int numIslands(char[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int cnt = 0;
+        int[] par = new int[n * m];
+        for (int i = 0; i < par.length; i++) {
+            par[i] = i;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '1') {
+                    cnt++;
+
+                    for (int k = 0; k < 4; k++) {
+                        int x = i + direcs[k][0];
+                        int y = j + direcs[k][1];
+
+                        if (isValid(x, y, n, m) && grid[x][y] == '1') {
+                            int u = i * m + j;
+                            int v = x * m + y;
+
+                            int p1 = findParent(par, u);
+                            int p2 = findParent(par, v);
+
+                            if (p1 != p2) {
+                                par[p2] = p1;
+                                cnt--;
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return cnt;
+    }
+
+    // 695. Max Area of Island
+    public int maxAreaOfIsland(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        int[] par = new int[n * m];
+        for (int i = 0; i < par.length; i++) {
+            par[i] = i;
+        }
+        int[] size = new int[n * m];
+        Arrays.fill(size, 1);
+
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    max = Math.max(1, max);
+                    for (int k = 0; k < 4; k++) {
+                        int x = i + direcs[k][0];
+                        int y = j + direcs[k][1];
+
+                        if (isValid(x, y, n, m) && grid[x][y] == 1) {
+                            int u = i * m + j;
+                            int v = x * m + y;
+
+                            int p1 = findParent(par, u);
+                            int p2 = findParent(par, v);
+
+                            if (p1 != p2) {
+                                par[p2] = p1;
+                                size[p1] += size[p2];
+                                max = Math.max(size[p1], max);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return max;
+    }
+
+    // HackerRank Journey to the Moon
+    // https://www.hackerrank.com/challenges/journey-to-the-moon/problem
+    public int journeyToMoon(int n, List<List<Integer>> astronaut) {
+        int[] par = new int[n];
+        int[] size = new int[n];
+        Arrays.fill(size,1);
+        for(int i  =0;i<n;i++)par[i] = i;
+
+        for(List<Integer>tmp  : astronaut){
+            int u = tmp.get(0);
+            int v = tmp.get(1);
+
+            int p1 = findParent(par, u);
+            int p2 = findParent(par, v);
+
+            if (p1 != p2) {
+                par[p2]= p1;
+                size[p1]+=size[p2];
+            } 
+        }
+
+        int ans = 0;
+        for(int i =0;i<n;i++){
+            if(par[i]!=i) size[i ]= 0;
+        }
+
+        int sum = 0;
+        for(int i =0 ;i<n;i++){
+            sum+=size[i];
+        }
+
+        for(int i =0 ;i<n;i++){
+            sum-=size[i];
+            ans+=(sum*size[i]);
+        }
+
+        return ans;
+
+    }
+
 }
