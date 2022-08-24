@@ -271,7 +271,71 @@ public class DSU {
     }
 }
 
+// 924. Minimize Malware Spread
+class Solution {
+    int[] par;
+    int[] size;
+
+    public int findPar(int u) {
+        if (par[u] == u)
+            return u;
+        else {
+            int t = findPar(par[u]);
+            par[u] = t;
+            return t;
+        }
+    }
+
+    public int minMalwareSpread(int[][] graph, int[] initial) {
+        // always remove that node , where only one node is infected and then its size is max
+        int n = graph.length;
+        par = new int[n];
+        size = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            par[i] = i;
+            size[i] = 1;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (graph[i][j] == 1) {
+                    int p1 = findPar(i);
+                    int p2 = findPar(j);
+
+                    if (p1 != p2) {
+                        size[p1] += size[p2];
+                        par[p2] = par[p1];
+                    }
+                }
+            }
+        }
+
+        Arrays.sort(initial);
+        int[] infectedInEachCity = new int[n];
+        for (int i = 0; i < initial.length; i++) {
+            int p = findPar(initial[i]);
+            infectedInEachCity[p]++;
+        }
+
+        int ans = initial[0];
+        int max = 0;
+        for (int i = 0; i < initial.length; i++) {
+            int p = findPar(initial[i]);
+            int s = size[p];
+            if (infectedInEachCity[p] == 1 && s > max) {
+                ans = initial[i];
+                max = s;
+            }
+        }
+
+        return ans;
+
+    }
+}
+
 class LeetcodeQs {
+
     int[][] direcs = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
 
     public boolean isValid(int i, int j, int n, int m) {
@@ -377,10 +441,11 @@ class LeetcodeQs {
     public int journeyToMoon(int n, List<List<Integer>> astronaut) {
         int[] par = new int[n];
         int[] size = new int[n];
-        Arrays.fill(size,1);
-        for(int i  =0;i<n;i++)par[i] = i;
+        Arrays.fill(size, 1);
+        for (int i = 0; i < n; i++)
+            par[i] = i;
 
-        for(List<Integer>tmp  : astronaut){
+        for (List<Integer> tmp : astronaut) {
             int u = tmp.get(0);
             int v = tmp.get(1);
 
@@ -388,24 +453,25 @@ class LeetcodeQs {
             int p2 = findParent(par, v);
 
             if (p1 != p2) {
-                par[p2]= p1;
-                size[p1]+=size[p2];
-            } 
+                par[p2] = p1;
+                size[p1] += size[p2];
+            }
         }
 
         int ans = 0;
-        for(int i =0;i<n;i++){
-            if(par[i]!=i) size[i ]= 0;
+        for (int i = 0; i < n; i++) {
+            if (par[i] != i)
+                size[i] = 0;
         }
 
         int sum = 0;
-        for(int i =0 ;i<n;i++){
-            sum+=size[i];
+        for (int i = 0; i < n; i++) {
+            sum += size[i];
         }
 
-        for(int i =0 ;i<n;i++){
-            sum-=size[i];
-            ans+=(sum*size[i]);
+        for (int i = 0; i < n; i++) {
+            sum -= size[i];
+            ans += (sum * size[i]);
         }
 
         return ans;
