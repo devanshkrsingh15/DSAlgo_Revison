@@ -549,4 +549,109 @@ public class questions {
         return new int[] { p1, p2 };
     }
 
+    // Leetcode 787. Cheapest Flights Within K Stops
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        // K stops => K+1 Flights
+
+        int[] costs = new int[n];
+        Arrays.fill(costs, (int) 1e9);
+        costs[src] = 0;
+
+        for (int f = 0; f <= k; f++) {
+            int ncosts[] = new int[n];
+            for (int i = 0; i < n; i++) {
+                ncosts[i] = costs[i];
+            }
+
+            for (int[] fl : flights) {
+                int u = fl[0];
+                int v = fl[1];
+                int w = fl[2];
+                ncosts[v] = Math.min(ncosts[v], costs[u] + w);
+
+            }
+
+            costs = ncosts;
+        }
+
+        return costs[dst] == (int) 1e9 ? -1 : costs[dst];
+
+    }
+
+    public class DPair {
+        int wsf;
+        int par;
+        int src;
+
+        DPair(int par, int src, int wsf) {
+            this.wsf = wsf;
+            this.src = src;
+            this.par = par;
+
+        }
+    }
+
+    // Leetcode 743. Network Delay Time
+    public int networkDelayTime(int[][] times, int n, int k) {
+        ArrayList<int[]> graph[] = new ArrayList[n + 1];
+        for (int i = 0; i < graph.length; i++)
+            graph[i] = new ArrayList<>();
+
+        for (int[] e : times) {
+            int u = e[0];
+            int v = e[1];
+            int w = e[2];
+            graph[u].add(new int[] { v, w });
+        }
+
+        PriorityQueue<DPair> pq = new PriorityQueue<>((a, b) -> {
+            return a.wsf - b.wsf;
+        });
+
+        int src = k;
+        int minWt = -1;
+        boolean[] vis = new boolean[n + 1];
+        int[] dis = new int[n + 1];
+        Arrays.fill(dis, (int) 1e9);
+        int[] par = new int[n + 1]; // optional
+        Arrays.fill(par, -1);
+
+        pq.add(new DPair(-1, src, 0));
+        dis[src] = 0;
+        int numberEdges = 0;
+        while (pq.size() != 0) {
+
+            DPair rp = pq.remove();
+            if (vis[rp.src])
+                continue;
+
+            vis[rp.src] = true;
+
+            if (rp.par != 1) {
+                // only if graph is connected we can use numberEdges
+                numberEdges++;
+            }
+
+            minWt = rp.wsf;
+
+            for (int[] e : graph[rp.src]) {
+                // better edge possible to reach e.v (with less weight)
+                if (!vis[e[0]] && e[1] + rp.wsf < dis[e[0]]) {
+                    pq.add(new DPair(rp.src, e[0], e[1] + rp.wsf));
+                    dis[e[0]] = e[1] + rp.wsf;
+                    par[e[0]] = rp.src;
+                }
+            }
+
+        }
+
+        // check if any vtx is not visited
+        for (int i = 1; i <= n; i++) {
+            if (vis[i] == false)
+                return -1;
+        }
+
+        return minWt;
+
+    }
 }
