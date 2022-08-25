@@ -478,4 +478,124 @@ class LeetcodeQs {
 
     }
 
+    public String findPar(String e,HashMap<String,String>email_name,HashSet<String>names){
+        if(names.contains(email_name.get(e))) return email_name.get(e);
+        else{
+            String n = findPar(email_name.get(e),email_name,names);
+            email_name.put(e,n);
+            return n;
+        }
+    }
+
+
+
+    //721. Accounts Merge
+
+    public String find(HashMap<String,String>map,String s){
+        if( map.get(s).equals(s) ) return s;
+        else{
+            String ns =find(map,map.get(s));
+            map.put(s,ns);
+            return ns;
+        }
+    }
+    
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        HashMap<String,String>par = new HashMap<>();
+        HashMap<String,TreeSet<String>>similar = new HashMap<>();
+        
+        HashMap<String,String>email_name = new HashMap<>();
+        
+        for(List<String>tmp :accounts){
+            String name = tmp.get(0);
+            for(int i = 1 ;i<tmp.size() ;i++){
+                par.put(tmp.get(i),tmp.get(i));
+                email_name.put(tmp.get(i),name);
+            }
+        }
+        
+        
+        for(List<String>tmp :accounts){         
+            for(int i = 2 ;i<tmp.size() ;i++ ){
+                String p1  = find(par,tmp.get(1));
+                String p2  = find(par,tmp.get(i));
+                par.put(p2,p1);
+            }
+        }
+
+        List<List<String>>ans = new ArrayList<>();
+
+        for(List<String>tmp :accounts){
+            String fname = find(par,tmp.get(1)); 
+            similar.putIfAbsent(fname,new TreeSet<>()); 
+            similar.get(fname).add(tmp.get(1));
+            for(int i = 2 ;i<tmp.size() ;i++ ){
+                String mp = find(par,tmp.get(i));
+                similar.get(mp).add(tmp.get(i));
+            }
+        }
+
+        for(String ks: similar.keySet() ){
+            ArrayList<String>list = new ArrayList<>();
+            for(String  s:similar.get(ks))  list.add(s);
+            Collections.sort(list); 
+            list.add(0, email_name.get(ks));
+
+            ans.add(list);
+        }
+
+
+        return ans;
+    }
+  
+
+    //685. Redundant Connection II
+    public int[] findRedundantDirectedConnection(int[][] edges) {
+        /*
+         * Case 1 -> 2 Parents  => return last edge
+         * Case 2 -> 2 Parents + Cycle => return common edge
+         * Case 3 -> Cycle => return last edge
+         * If cycle is present && 2 parents are there => there is an edge common in them
+         */
+
+         int n  = edges.length;
+         int[]p = new int[n+1];
+         int[]par = new int[n+1];
+         for(int i = 0;i<=n;i++)par[i]=i;
+         Arrays.fill(p,-1);
+
+         int[]ans1 = null; // 2 Parents + cycle 
+         int[]ans2  = null ;//Last 2 Parents edge 
+         for(int[]e:edges){
+            int u = e[0];
+            int v = e[1];
+
+            if(p[v]!=-1){
+                ans1  = new int[]{p[v],v};
+                ans2  = e;
+            }
+
+            p[v] = u;
+         }
+
+         for(int[]e:edges){
+            int u = e[0];
+            int v = e[1];
+
+            if(e==ans2)  continue; 
+
+            int p1 = findParent(par, u);
+            int p2 = findParent(par, v);
+            if(p1!=p2){
+                par[p2]=  p1;
+            }else{
+                if(ans1==null) return e;
+                else return ans1;
+            }
+         }
+
+         return ans2;
+    }
+
+
 }
