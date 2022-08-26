@@ -474,4 +474,349 @@ public class TwoPointer {
 
         return dp[i][j] = ans;
     }
+
+    // 91. Decode Ways
+    public int numDecodings(String s) {
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+        int memo_ans = numDecodings_memo(s, 0, n, dp);
+        int tab_ans = numDecodings_tab(s, 0, n);
+
+        int optimal_ans = numDecodings_optimal(s);
+
+        return memo_ans;
+    }
+
+    private int numDecodings_optimal(String s) {
+        int n = s.length();
+        int a = 1;
+        int b = 0;
+
+        for (int i = n - 1; i >= 0; i--) {
+            char ch1 = s.charAt(i);
+            int sum = 0;
+            if (ch1 == '0') {
+
+            } else {
+                sum += a;
+
+                if (i + 1 < n) {
+                    char ch2 = s.charAt(i + 1);
+                    int val = Integer.parseInt(ch1 + "" + ch2);
+                    if (val >= 10 && val <= 26) {
+                        sum += b;
+                    }
+                }
+            }
+
+            b = a;
+            a = sum;
+        }
+
+        return a;
+
+    }
+
+    private int numDecodings_tab(String s, int src, int n) {
+        int[] dp = new int[n + 1];
+
+        for (int i = n; i >= src; i--) {
+            if (i == n) {
+                dp[i] = 1;
+            } else {
+                char ch1 = s.charAt(i);
+                if (ch1 == '0')
+                    dp[i] = 0;
+                else {
+                    int ans = 0;
+                    ans += dp[i + 1];
+                    if (i + 1 < n) {
+                        char ch2 = s.charAt(i + 1);
+
+                        int val = Integer.parseInt(ch1 + "" + ch2);
+                        if (val >= 10 && val <= 26) {
+                            ans += dp[i + 2];
+                        }
+                    }
+
+                    dp[i] = ans;
+                }
+            }
+        }
+
+        return dp[src];
+    }
+
+    private int numDecodings_memo(String s, int i, int n, int[] dp) {
+        if (i == n)
+            return dp[n] = 1;
+        if (dp[i] != -1)
+            return dp[i];
+
+        char ch1 = s.charAt(i);
+        if (ch1 == '0')
+            return dp[i] = 0;
+
+        int ans = 0;
+        // single
+        ans += numDecodings_memo(s, i + 1, n, dp);
+
+        if (i + 1 < n) {
+            char ch2 = s.charAt(i + 1);
+
+            int val = Integer.parseInt(ch1 + "" + ch2);
+            if (val >= 10 && val <= 26) {
+                ans += numDecodings_memo(s, i + 2, n, dp);
+            }
+        }
+
+        return dp[i] = ans;
+
+    }
+
+    // 639. Decode Ways II
+    public int numDecodings2(String s) {
+        int n = s.length();
+        long[] dp = new long[n + 1];
+        Arrays.fill(dp, -1l);
+        long memo_ans = numDecodings2_memo(s, 0, n, dp);
+        long tab_ans = numDecodings2_tab(s, 0, n);
+
+        long optimal_ans = numDecodings2_optimal(s);
+
+        return (int) memo_ans;
+    }
+
+    private long numDecodings2_optimal(String s) {
+        int n = s.length();
+        long a = 1l;
+        long b = 0;
+        long mod = (long) 1e9 + 7;
+
+        for (int i = n - 1; i >= 0; i--) {
+            char ch1 = s.charAt(i);
+            long sum = 0;
+
+            if (ch1 == '0') {
+
+            } else {
+
+                if (ch1 == '*') {
+                    sum = (sum % mod + (9 * a) % mod) % mod;
+                    if (i + 1 < n) {
+                        char ch2 = s.charAt(i + 1);
+                        if (ch2 == '*') {
+                            sum = (sum % mod + (15 * b) % mod) % mod;
+                        } else {
+
+                            if (ch2 >= '0' && ch2 <= '6') {
+                                sum = (sum % mod + (2 * b) % mod) % mod;
+                            } else if (ch2 > '6') {
+                                sum = (sum % mod + (b) % mod) % mod;
+                            }
+                        }
+                    }
+
+                } else {
+                    sum = (sum % mod + (a) % mod) % mod;
+                    if (i + 1 < n) {
+                        char ch2 = s.charAt(i + 1);
+
+                        if (ch2 == '*') {
+                            if (ch1 == '1') {
+                                sum = (sum % mod + (9 * b) % mod) % mod;
+                            } else if (ch1 == '2') {
+                                sum = (sum % mod + (6 * b) % mod) % mod;
+                            }
+                        } else {
+
+                            int val = Integer.parseInt(ch1 + "" + ch2);
+                            if (val <= 26) {
+                                sum = (sum % mod + (b) % mod) % mod;
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+
+            b = a;
+            a = sum;
+        }
+
+        return a;
+
+    }
+
+    private long numDecodings2_tab(String s, int src, int n) {
+        long[] dp = new long[n + 1];
+
+        for (int i = n; i >= src; i--) {
+            if (i == n) {
+                dp[i] = 1l;
+            } else {
+                long ans = 0;
+                char ch1 = s.charAt(i);
+                if (ch1 == '0') {
+                    ans = 0;
+                } else if (ch1 == '*') {
+                    ans = (ans % mod + (9 * dp[i + 1]) % mod) % mod;
+                    if (i + 1 < n) {
+                        char ch2 = s.charAt(i + 1);
+                        if (ch2 == '*') {
+                            ans = (ans % mod + (15 * dp[i + 2]) % mod) % mod;
+                        } else if (ch2 >= '0' && ch2 <= '6') {
+                            ans = (ans % mod + (2 * dp[i + 2]) % mod) % mod;
+                        } else if (ch2 > '6') {
+                            ans = (ans % mod + (dp[i + 2]) % mod) % mod;
+                        }
+                    }
+                } else {
+                    ans = (ans % mod + (dp[i + 1]) % mod) % mod;
+                    if (i + 1 < n) {
+                        char ch2 = s.charAt(i + 1);
+
+                        if (ch2 == '*') {
+                            if (ch1 == '1') {
+                                ans = (ans % mod + (9 * dp[i + 2]) % mod) % mod;
+                            } else if (ch1 == '2') {
+                                ans = (ans % mod + (6 * dp[i + 2]) % mod) % mod;
+                            }
+
+                        } else {
+                            int val = Integer.parseInt(ch1 + "" + ch2);
+                            if (val <= 26) {
+                                ans = (ans % mod + (dp[i + 2]) % mod) % mod;
+                            }
+                        }
+                    }
+                }
+
+                dp[i] = ans % mod;
+            }
+        }
+        return dp[src];
+    }
+
+    private long numDecodings2_memo(String s, int i, int n, long[] dp) {
+        if (i == n)
+            return dp[i] = 1l;
+
+        if (dp[i] != -1l)
+            return dp[i];
+
+        long ans = 0;
+
+        char ch1 = s.charAt(i);
+        if (ch1 == '0')
+            return 0;
+
+        if (ch1 == '*') {
+            ans = (ans % mod + (9 * numDecodings2_memo(s, i + 1, n, dp)) % mod) % mod;
+            if (i + 1 < n) {
+                char ch2 = s.charAt(i + 1);
+                if (ch2 == '*') {
+                    ans = (ans % mod + (15 * numDecodings2_memo(s, i + 2, n, dp)) % mod) % mod;
+                } else {
+                    if (ch2 >= '0' && ch2 <= '6') {
+                        ans = (ans % mod + (2 * numDecodings2_memo(s, i + 2, n, dp)) % mod) % mod;
+                    } else if (ch2 >= '7') {
+                        ans = (ans % mod + (numDecodings2_memo(s, i + 2, n, dp) % mod) % mod) % mod;
+                    }
+                }
+            }
+
+        } else {
+            ans = (ans % mod + numDecodings2_memo(s, i + 1, n, dp) % mod) % mod;
+
+            if (i + 1 < n) {
+                char ch2 = s.charAt(i + 1);
+                if (ch2 == '*') {
+                    if (ch1 == '1') {
+                        ans = (ans % mod + (9 * numDecodings2_memo(s, i + 2, n, dp)) % mod) % mod;
+                    } else if (ch1 == '2') {
+                        ans = (ans % mod + (6 * numDecodings2_memo(s, i + 2, n, dp)) % mod) % mod;
+                    }
+
+                } else {
+                    int val = Integer.parseInt("" + ch1 + ch2);
+                    if (val >= 10 && val <= 26) {
+                        ans = (ans % mod + numDecodings2_memo(s, i + 2, n, dp) % mod) % mod;
+                    }
+                }
+
+            }
+
+        }
+
+        return dp[i] = ans % mod;
+    }
+
+    // Count number of ways to partition a set into k subsets (GFG)
+    public int partitionWays(int n, int k) {
+        int[][] dp = new int[n + 1][k + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
+
+        int memo_ans = partitionWays_memo(n, k, dp);
+
+        return memo_ans;
+    }
+
+    public int partitionWays_memo(int n, int k, int[][] dp) {
+        if (n == 0 || k == 0) {
+            return dp[n][k] = (n == 0 && k == 0) ? 1 : 0;
+        }
+
+        if (n == k)
+            return dp[n][k] = 1;
+
+        if (k > n)
+            return dp[n][k] = 0;
+
+        if (dp[n][k] != -1)
+            return dp[n][k];
+
+        int single = partitionWays_memo(n - 1, k - 1, dp);
+        int pairUp = k * partitionWays_memo(n - 1, k, dp);
+
+        return dp[n][k] = single + pairUp;
+
+    }
+
+    public int partitionWays_tab(int N, int K) {
+        int[][] dp = new int[N + 1][K + 1];
+
+        for (int n = 0; n <= N; n++) {
+            for (int k = 0; k <= K; k++) {
+                if (n == 0 || k == 0) {
+                    dp[n][k] = (n == 0 && k == 0) ? 1 : 0;
+                    continue;
+                }
+                if (n == k || k == 1) {
+                    dp[n][k] = 1;
+                    continue;
+                }
+
+                if (k > n) {
+                    dp[n][k] = 0;
+                    continue;
+                }
+
+                dp[n][k]=   dp[n-1][k-1] +k*dp[n-1][k];
+            }
+        }
+
+        return  dp[N][K];
+    }
+
+    //nCr= n-1Cr + n-1Cr-1
+
+    
+
+
+
 }
