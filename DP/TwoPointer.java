@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class general {
+public class TwoPointer {
     public int fib01(int n, int[] dp) {
         if (n <= 1)
             return dp[n] = n;
