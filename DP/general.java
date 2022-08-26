@@ -1,6 +1,7 @@
 package DP;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class general {
@@ -342,5 +343,135 @@ public class general {
 
         return dp[n] = (single % mod + pairUp % mod) % mod;
 
+    }
+
+    public class FPair {
+        int cnt;
+        String str;
+
+        FPair(int cnt, String str) {
+            this.cnt = cnt;
+            this.str = str;
+        }
+    }
+
+    // Friends pairing problem printing all pairs/ways
+    public FPair friendsPairing(String friends, HashMap<String, FPair> dp, boolean[] vis) {
+        int n = friends.length();
+        if (n <= 1) {
+            if (n == 0) {
+                return new FPair(1, "");
+            } else {
+                return new FPair(1, friends + "");
+            }
+        }
+
+        if (dp.containsKey(friends))
+            return dp.get(friends);
+
+        int ans = 0;
+        String str = "";
+
+        for (int i = 0; i < friends.length(); i++) {
+            if (vis[i] == false) {
+                // SINGLE
+                str += "(" + friends.charAt(i) + ") ";
+                vis[i] = true;
+                FPair single = friendsPairing(friends, dp, vis);
+                ans += single.cnt;
+                str += single.str;
+
+                // PAIR-UP
+                for (int j = i + 1; j < friends.length(); j++) {
+                    if (vis[j] == false) {
+                        vis[j] = true;
+                        str += "(" + friends.charAt(i) + "," + friends.charAt(j) + ") ";
+
+                        FPair pairUp = friendsPairing(friends, dp, vis);
+                        ans += pairUp.cnt;
+                        str += pairUp.str;
+                        vis[j] = false;
+                    }
+                }
+                vis[i] = false;
+            }
+
+        }
+
+        FPair mypair = new FPair(ans, str);
+        dp.put(friends, mypair);
+
+        return mypair;
+
+    }
+
+    // Gold Mine Problem (GFG)
+    public int maxGold(int n, int m, int M[][]) {
+        int[][] dp = new int[n][m];
+        int[][] direcs = { { 1, 1 }, { 0, 1 }, { -1, 1 } };
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
+        int maxAns = 0;
+        for (int i = 0; i < n; i++) {
+            int ans_memo = maxGold_memo(i, 0, n, m, M, dp, direcs);
+            maxAns = Math.max(maxAns, ans_memo);
+        }
+
+        int ans_tab = maxGold_tab(M);
+        return maxAns;
+
+    }
+
+    public int maxGold_tab(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int[][] dp = new int[n][m];
+        int[][] direcs = { { 1, 1 }, { 0, 1 }, { -1, 1 } };
+
+        for (int j = m - 1; j >= 0; j--) {
+            for (int i = n - 1; i >= 0; i--) {
+                if (j == m - 1) {
+                    dp[i][j] = grid[i][j];
+                } else {
+                    for (int k = 0; k < direcs.length; k++) {
+                        int x = i + direcs[k][0];
+                        int y = j + direcs[k][1];
+
+                        if (x >= 0 && y >= 0 && x < n && y < m) {
+                            dp[i][j] = Math.max(dp[i][j], grid[i][j] + dp[x][y]);
+                        }
+                    }
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, dp[i][0]);
+        }
+
+        return ans;
+    }
+
+    private int maxGold_memo(int i, int j, int n, int m, int[][] grid, int[][] dp, int[][] direcs) {
+        if (j == m - 1) {
+            return dp[i][j] = grid[i][j];
+        }
+
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        int ans = 0;
+
+        for (int k = 0; k < direcs.length; k++) {
+            int x = i + direcs[k][0];
+            int y = j + direcs[k][1];
+
+            if (x >= 0 && y >= 0 && x < n && y < m) {
+                ans = Math.max(ans, grid[i][j] + maxGold_memo(x, y, n, m, grid, dp, direcs));
+            }
+        }
+
+        return dp[i][j] = ans;
     }
 }
