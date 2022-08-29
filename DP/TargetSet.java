@@ -268,4 +268,112 @@ public class TargetSet {
 
         return dp[idx][tar] = ans;
     }
+
+    public int findTargetSumWays_tab(int[] nums, int target) {
+        int sum = 0;
+        for (int ele : nums)
+            sum += ele;
+        if (sum < target || -sum > target)
+            return 0;
+
+        int n = nums.length;
+        int[][] dp = new int[n + 1][2 * sum + 1];
+
+        int ntar = target + sum;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= 2 * sum; j++) {
+                if (i == 0) {
+                    dp[i][j] = (j == ntar) ? 1 : 0;
+                } else {
+                    if (j - nums[i - 1] >= 0)
+                        dp[i][j] += dp[i - 1][j - nums[i - 1]];
+                    if (j + nums[i - 1] <= 2 * sum)
+                        dp[i][j] += dp[i - 1][j + nums[i - 1]];
+                }
+            }
+        }
+
+        return dp[n][sum];
+    }
+
+    // 698. Partition to K Equal Sum Subsets
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int n = nums.length;
+        int max = 0;
+        int sum = 0;
+        for (int ele : nums) {
+            sum += ele;
+            max = Math.max(max, ele);
+        }
+        if (sum % k != 0)
+            return false;
+        int tar = sum / k;
+        if (max > tar)
+            return false;
+
+        return canPartitionKSubsets_(nums, 0, k, 0, 0, tar);
+
+    }
+
+    public boolean canPartitionKSubsets_(int[] nums, int sof, int k, int idx, int vis, int tar) {
+        if (k == 0)
+            return true;
+        if (sof > tar)
+            return false;
+        if (sof == tar)
+            return canPartitionKSubsets_(nums, 0, k - 1, 0, vis, tar);
+
+        boolean res = false;
+        for (int i = idx; i < nums.length; i++) {
+            if ((vis & (1 << i)) == 0) {
+                vis ^= (1 << i);
+                res = res || canPartitionKSubsets_(nums, sof + nums[i], k, i, vis, tar);
+                vis ^= (1 << i);
+            }
+        }
+
+        return res;
+    }
+
+    // 0-1 Knapsack Problem (GFG)
+    public int knapSack(int W, int wt[], int val[], int n) {
+        int[][] dp = new int[n + 1][W + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= W; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 0; // cost cant be generated
+                } else {
+
+                    int w = wt[i - 1];
+                    int max = 0;
+
+                    if (j - w >= 0)
+                        max = Math.max(max, dp[i - 1][j - w] + val[i - 1]); // inc
+                    max = Math.max(max, dp[i - 1][j]); // exc
+
+                    dp[i][j] = max;
+                }
+
+            }
+        }
+        return dp[n][W];
+    }
+
+    // Unbounded Knapsack
+    // similar to permutations and combinations
+    // can use any method, arrangements are diff put total are same
+    public int UnboundedKnapSack(int N, int W, int val[], int wt[]) {
+        int[] dp = new int[W + 1];
+        for (int j = 0; j < N; j++) {
+            int ele = wt[j];
+            for (int i = ele; i <= W; i++) {
+                dp[i] = Math.max(dp[i], dp[i - ele] + val[j]);
+            }
+        }
+
+        return dp[W];
+
+    }
+
 }
