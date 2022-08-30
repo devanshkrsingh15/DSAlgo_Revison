@@ -515,7 +515,7 @@ class CountDifferentPalindromicSubsequences {
                         if (l == r) {
                             dp[st][en] = (2 * a % mod + 1 % mod) % mod;
                         } else if (l < r) {
-                            long mid = dp[l + 1][ r - 1];
+                            long mid = dp[l + 1][r - 1];
                             dp[st][en] = (2 * a % mod - mid % mod + mod) % mod;
                         } else {
                             dp[st][en] = (2 * a % mod + 2 % mod) % mod;
@@ -527,7 +527,7 @@ class CountDifferentPalindromicSubsequences {
             }
         }
 
-        return (int)(dp[0][n-1]%mod);
+        return (int) (dp[0][n - 1] % mod);
     }
 
     public long countPalindromicSubsequences_memo(String s, long[][] dp, int st, int en) {
@@ -563,5 +563,93 @@ class CountDifferentPalindromicSubsequences {
             }
 
         }
+    }
+
+    // 10. Regular Expression Matching
+    public boolean isMatch(String s, String p) {
+        int n = s.length();
+        int m = p.length();
+        int[][] dp = new int[n + 1][m + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
+
+        int res = isMatch_memo(s, p, n, m, dp);
+
+        return res == 1;
+    }
+
+    private int isMatch_memo(String s, String p, int n, int m, int[][] dp) {
+        if (n == 0 || m == 0) {
+            if (n == 0 && m == 0)
+                return dp[n][m] = 1;
+            else if (m == 0)
+                return dp[n][m] = 0;
+            else if (n == 0) {
+                if (p.charAt(m - 1) == '*')
+                    return dp[n][m] = (isMatch_memo(s, p, n, m - 2, dp) == 1) ? 1 : 0;
+                else
+                    return dp[n][m] = 0;
+            }
+        }
+
+        if (dp[n][m] != -1)
+            return dp[n][m];
+
+        char cp = s.charAt(n - 1);
+        char sp = p.charAt(m - 1);
+
+        boolean res = false;
+        if (cp == sp || sp == '.') {
+            res = res || (isMatch_memo(s, p, n - 1, m - 1, dp) == 1);
+        } else if (sp == '*') {
+            res = res || (isMatch_memo(s, p, n, m - 2, dp) == 1); // making combination of preceding and current element
+                                                                  // = EMPTY
+            if (m - 2 >= 0) {
+                char s_sp = p.charAt(m - 2);
+                if (s_sp == '.' || s_sp == cp) {
+                    res = res || (isMatch_memo(s, p, n - 1, m, dp) == 1);
+                }
+            }
+        }
+
+        return dp[n][m] = (res) ? 1 : 0;
+    }
+
+    public boolean RegularExpressionMatching(String s, String p) {
+        int n = s.length();
+        int m = p.length();
+
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+
+                if (i == 0 || j == 0) {
+                    if (i == 0 && j == 0)
+                        dp[i][j] = true;
+                    else if (j == 0)
+                        dp[i][j] = false;
+                    else if (i == 0) {
+                        dp[i][j] = (p.charAt(j - 1) == '*') ? dp[i][j - 2] : false;
+                    }
+                } else {
+                    char sp = s.charAt(i - 1);
+                    char cp = p.charAt(j - 1);
+
+                    if (sp == cp || cp == '.') {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else if (cp == '*') {
+                        dp[i][j] = dp[i][j - 2];
+                        if (j - 2 >= 0 && p.charAt(j - 2) == '.' || p.charAt(j - 2) == sp) {
+                            dp[i][j] = dp[i][j] || dp[i - 1][j];
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+        return dp[n][m];
     }
 }
