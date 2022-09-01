@@ -1,6 +1,9 @@
 package DP;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class cutSet {
 
@@ -311,6 +314,106 @@ public class cutSet {
 
     }
 
+    /*
+     * Catalan number
+     * 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, ....
+     * (2n)!/((n+1)!*(n)!)
+     */
+
+    // 96. Unique Binary Search Trees
+    public int catalanNum(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            int lo = 0;
+            int hi = i - 1;
+            int num = 0;
+            while (lo < i) {
+                num += dp[lo] * dp[hi];
+                lo++;
+                hi--;
+            }
+            dp[i] = num;
+        }
+
+        return dp[n];
+    }
+
+    // 1278. Palindrome Partitioning III
+    public int palindromePartitionIII(String s, int k) {
+        int n = s.length();
+        int[][] minCuts = getMinCuts(s);
+        int[][] dp = new int[n + 1][k + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
+
+        return palindromePartitionIII_memo(s, 0, k, dp, minCuts);
+
+    }
+
+    private int palindromePartitionIII_memo(String s, int st, int k, int[][] dp, int[][] minCuts) {
+        if (st == s.length() || k == 0) {
+            if (k == 0 && st == s.length())
+                return dp[st][k] = 0;
+            else
+                return dp[st][k] = (int) 1e9;
+        }
+
+        if (dp[st][k] != -1)
+            return dp[st][k];
+
+        int min = (int) 1e9;
+        for (int cut = st; cut < s.length(); cut++) {
+            int mycuts = minCuts[st][cut];
+            int futureCuts = palindromePartitionIII_memo(s, cut + 1, k - 1, dp, minCuts);
+            min = Math.min(min, mycuts + futureCuts);
+        }
+        return dp[st][k] = min;
+    }
+
+    private int[][] getMinCuts(String s) {
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        for (int gap = 0; gap < n; gap++) {
+            for (int st = 0, en = st + gap; en < n; st++, en++) {
+                if (gap == 0) {
+                    dp[st][en] = 0;
+                } else if (gap == 1) {
+                    dp[st][en] = (s.charAt(st) == s.charAt(en)) ? 0 : 1;
+                } else {
+                    int inc = (s.charAt(st) == s.charAt(en)) ? 0 : 1;
+                    dp[st][en] = dp[st + 1][en - 1] + inc;
+                }
+            }
+        }
+
+        return dp;
+    }
+
+    // 22. Generate Parentheses
+    // if number of ways were asked then return catalan number
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList<>();
+
+        generateParenthesis_(n, "", ans, 0, 0);
+        return ans;
+    }
+
+    public void generateParenthesis_(int n, String s, List<String> ans, int oc, int cc) {
+        if (oc == n && cc == n) {
+            ans.add(s);
+            return;
+        }
+
+        if (oc < n) {
+            generateParenthesis_(n, s + "(", ans, oc + 1, cc);
+        }
+
+        if (cc < oc) {
+            generateParenthesis_(n, s + ")", ans, oc, cc + 1);
+        }
+    }
 }
 
 // 132. Palindrome Partitioning II
@@ -421,4 +524,79 @@ class PalindromePartitioningII {
         return dp[0];
     }
 
+}
+
+// 95. Unique Binary Search Trees II
+class UniqueBST {
+    public class TreeNode {
+        public int val;
+        public TreeNode left;
+        public TreeNode right;
+
+        public TreeNode() {
+
+        }
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+
+        public TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+    }
+
+    HashMap<Integer, List<TreeNode>> dp = new HashMap<>();
+    // WE HAVE USED ENCODING KEY ie st(n) + en for using memoisation
+    // string key was slow
+    // if num of solutions were asked return catalan number
+
+    int n;
+
+    public List<TreeNode> generateTrees(int N) {
+        n = N;
+        List<TreeNode> ans = generateTrees_(1, N);
+
+        return ans;
+    }
+
+    public List<TreeNode> generateTrees_(int st, int en) {
+        int key = st * n + en;
+
+        if (st > en) {
+            ArrayList<TreeNode> base = new ArrayList<>();
+            base.add(null);
+            dp.put(key, base);
+            return base;
+        }
+
+        if (dp.containsKey(key))
+            return dp.get(key);
+
+        ArrayList<TreeNode> myans = new ArrayList<>();
+
+        for (int cut = st; cut <= en; cut++) {
+            List<TreeNode> lans = generateTrees_(st, cut - 1);
+            List<TreeNode> rans = generateTrees_(cut + 1, en);
+
+            for (TreeNode l : lans) {
+                for (TreeNode r : rans) {
+                    TreeNode root = new TreeNode(cut);
+                    root.left = l;
+                    root.right = r;
+                    myans.add(root);
+
+                }
+            }
+        }
+
+        dp.put(key, myans);
+
+        return myans;
+    }
 }

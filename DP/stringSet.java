@@ -652,4 +652,32 @@ class CountDifferentPalindromicSubsequences {
 
         return dp[n][m];
     }
+
+    //940. Distinct Subsequences II
+    public int distinctSubseqII(String s) {
+        long mod = (int)1e9 +7;
+        int n = s.length();
+        long[]dp  = new long[n+1];
+        int[]lastOcc = new int[26];
+        Arrays.fill(lastOcc,-1);
+        dp[0] = 1l; // empty
+
+        for(int i  = 1;i<=n;i++){
+            char ch = s.charAt(i-1);
+            dp[i] = (2%mod*dp[i-1]%mod)%mod;  // inc and exc
+
+            if(lastOcc[ch-'a']!=-1){
+                // remove duplicates
+                int li  =lastOcc[ch-'a'];
+                dp[i]  = (dp[i]%mod-  dp[li-1]%mod + mod)%mod;
+             }
+
+             lastOcc[ch-'a'] = i;
+
+
+        }
+
+
+        return (int)(dp[n]%mod) - 1;  // -1 for non empty subsequences
+     }
 }
