@@ -120,4 +120,39 @@ public class BuyAndSellStocks {
         return ti20;
     }
 
+    //188. Best Time to Buy and Sell Stock K  transactions allowed
+    public int BuyAndSellStock_KTransactions(int K, int[] prices) {
+        int n = prices.length;
+        int[][]dp0 = new int[n+1][K+1];
+        int[][]dp1 = new int[n+1][K+1];
+        
+        for(int i = 0;i<=n;i++){
+            for(int k = 0;k<=K;k++){
+                
+                if(k==0 || i==0){
+                    if(k==0 && i==0){
+                        dp0[i][k]  = 0;
+                        dp1[i][k]  = 0;
+                    }else if(k==0){
+                        dp0[i][k]  = 0;
+                        dp1[i][k]  = -(int)1e9;
+                    }else if(i==0){
+                        dp0[i][k]  = 0;
+                        dp1[i][k]  = -(int)1e9;
+                    }
+                }else{
+                    
+                    int pr = prices[i-1];
+                    
+                    dp0[i][k]=Math.max(dp0[i-1][k], dp1[i-1][k]  + pr);
+                    dp1[i][k]=Math.max(dp1[i-1][k], dp0[i-1][k-1]  - pr);
+                }
+                
+            }
+        }
+        
+        return dp0[n][K];
+        
+    }
+
 }
