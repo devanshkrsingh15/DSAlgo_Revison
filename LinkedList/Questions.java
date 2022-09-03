@@ -221,6 +221,8 @@ public class Questions {
             curr = curr.next;
         }
         optr.next = null;
+        eptr.next = null;
+
         eptr.next = odummy.next;
 
         return edummy.next;
@@ -282,4 +284,287 @@ public class Questions {
         }
     }
 
+    ListNode t_head = null;
+    ListNode t_tail = null;
+
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if (head == null || head.next == null)
+            return head;
+
+        ListNode oh = null;
+        ListNode ot = null;
+
+        ListNode curr = head;
+        int idx = 1;
+        while (curr != null) {
+            ListNode frw = curr.next;
+            if (idx >= left && idx <= right) {
+                addFirst(curr);
+            }
+
+            if (idx < left || idx > right) {
+                if (oh == null && ot == null) {
+                    oh = ot = curr;
+                } else {
+                    ot.next = curr;
+                    ot = curr;
+                }
+            }
+
+            if (idx == right) {
+                if (oh == null && ot == null) {
+                    oh = t_head;
+                    ot = t_tail;
+                } else {
+                    ot.next = t_head;
+                    ot = t_tail;
+                }
+            }
+
+            curr = frw;
+            idx++;
+        }
+
+        ot.next = null;
+        return oh;
+    }
+
+    // Given a linked list of 0s, 1s and 2s, sort it.
+    public ListNode Segregate012(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+
+        ListNode zero_dummy = new ListNode(-1);
+        ListNode one_dummy = new ListNode(-1);
+        ListNode two_dummy = new ListNode(-1);
+
+        ListNode zero_ptr = zero_dummy;
+        ListNode one_ptr = one_dummy;
+        ListNode two_ptr = two_dummy;
+
+        boolean hasZero = false;
+        boolean hasOne = false;
+        boolean hasTwo = false;
+
+        ListNode curr = head;
+
+        while (curr != null) {
+            if (curr.val == 0) {
+                hasZero = true;
+                zero_ptr.next = curr;
+                zero_ptr = zero_ptr.next;
+            } else if (curr.val == 1) {
+                hasOne = true;
+                one_ptr.next = curr;
+                one_ptr = one_ptr.next;
+
+            } else if (curr.val == 2) {
+                hasTwo = true;
+                two_ptr.next = curr;
+                two_ptr = two_ptr.next;
+
+            }
+
+            curr = curr.next;
+
+        }
+        zero_ptr.next = null;
+        one_ptr.next = null;
+        two_ptr.next = null;
+
+        ListNode zero_head = zero_dummy.next;
+        ListNode one_head = one_dummy.next;
+        ListNode two_head = two_dummy.next;
+
+        zero_ptr.next = one_head != null ? one_head : two_head;
+        one_ptr.next = two_head;
+
+        if (zero_head != null)
+            return zero_head;
+        if (one_head != null)
+            return one_head;
+
+        return two_head;
+
+    }
+
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        if (l1 == null || l2 == null) {
+            return l1 != null ? l1 : l2;
+        }
+
+        ListNode rl1 = reverseList(l1);
+        ListNode rl2 = reverseList(l2);
+
+        ListNode dummy = new ListNode(-1);
+        ListNode ptr = dummy;
+
+        ListNode c1 = rl1;
+        ListNode c2 = rl2;
+        int carry = 0;
+
+        while (c1 != null && c2 != null) {
+            int d1 = c1.val;
+            int d2 = c2.val;
+            int sum = d1 + d2 + carry;
+
+            c1.val = sum % 10;
+            ptr.next = c1;
+
+            carry = sum / 10;
+            c1 = c1.next;
+            c2 = c2.next;
+            ptr = ptr.next;
+        }
+
+        while (c1 != null) {
+            int d1 = c1.val;
+            int sum = d1 + carry;
+
+            c1.val = sum % 10;
+            ptr.next = c1;
+            ptr = ptr.next;
+            carry = sum / 10;
+
+            c1 = c1.next;
+
+        }
+
+        while (c2 != null) {
+            int d2 = c2.val;
+            int sum = d2 + carry;
+            c2.val = sum % 10;
+            ptr.next = c2;
+            ptr = ptr.next;
+            carry = sum / 10;
+
+            c2 = c2.next;
+
+        }
+
+        if (carry == 1)
+            ptr.next = new ListNode(1);
+
+        return reverseList(dummy.next);
+    }
+
+    public int getVal(ListNode l1) {
+        int val = 0;
+        while (l1 != null) {
+            val = val * 10 + l1.val;
+            l1 = l1.next;
+        }
+
+        return val;
+    }
+
+    public ListNode subtractTwoNumbers(ListNode l1, ListNode l2) {
+        while (l1 != null && l1.val == 0)
+            l1 = l1.next;
+
+        while (l2 != null && l2.val == 0)
+            l2 = l2.next;
+
+        if (l1 == null || l2 == null) {
+            return l1 != null ? l1 : l2;
+        }
+
+        ListNode dummy = new ListNode(-1);
+        ListNode ptr = dummy;
+
+        ListNode rl1 = reverseList(l1);
+        ListNode rl2 = reverseList(l2);
+
+        int n = getVal(l1);
+        int m = getVal(l2);
+
+        ListNode c1 = null;
+        ListNode c2 = null;
+        // System.out.println(n + " " + m);
+        if (n >= m) {
+            c1 = rl1;
+            c2 = rl2;
+        } else {
+            c1 = rl2;
+            c2 = rl1;
+        }
+
+        int borrow = 0;
+
+        while (c2 != null) {
+            int d1 = c1.val;
+            int d2 = c2.val;
+            // System.out.println(d1 + " " + d2);
+            int diff = d1 - d2 - borrow;
+
+            if (diff < 0) {
+                diff += 10;
+                borrow = 1;
+            } else {
+                borrow = 0;
+            }
+            // System.out.println(diff);
+
+            c1.val = diff;
+            ptr.next = c1;
+
+            c1 = c1.next;
+            c2 = c2.next;
+            ptr = ptr.next;
+        }
+
+        while (c1 != null) {
+            int d1 = c1.val;
+            int diff = d1 - borrow;
+
+            if (diff < 0) {
+                diff += 10;
+                borrow = 1;
+            } else {
+                borrow = 0;
+            }
+            c1.val = diff;
+            ptr.next = c1;
+            ptr = ptr.next;
+
+            c1 = c1.next;
+
+        }
+
+        ListNode ans = reverseList(dummy.next);
+
+        ListNode temp = ans;
+
+        // remove leading zeros
+        while (temp != null && temp.val == 0)
+            temp = temp.next;
+
+        if (temp == null)
+            return new ListNode(0);
+
+        return temp;
+    }
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null || (head.next == null && n == 1))
+            return null;
+
+        ListNode f = head;
+        while (n-- > 0)
+            f = f.next;
+        if (f == null)
+            return head.next;
+        ListNode s = head;
+        while (f.next != null) {
+            f = f.next;
+            s = s.next;
+        }
+
+        s.next = s.next.next;
+
+        return head;
+
+    }
+
 }
+
