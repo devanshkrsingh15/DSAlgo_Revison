@@ -1,14 +1,14 @@
-public class Stack {
+public class Stacks {
 
     private int[] arr;
     private int size;
     private int topPtr;
 
-    public Stack() {
+    public Stacks() {
         initialize(15);
     }
 
-    public Stack(int defSize) {
+    public Stacks(int defSize) {
         initialize(defSize);
     }
 
