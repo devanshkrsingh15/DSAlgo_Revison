@@ -300,19 +300,63 @@ public class questions {
         Stack<Integer> st = new Stack<>();
         st.push(-1);
 
-        for(int i   = 0;i<n;i++){
+        for (int i = 0; i < n; i++) {
             char ch = s.charAt(i);
-            if(ch=='(') st.push(i);
-            else{
-                if(st.peek()!=-1 && s.charAt(st.peek())=='('){
+            if (ch == '(')
+                st.push(i);
+            else {
+                if (st.peek() != -1 && s.charAt(st.peek()) == '(') {
                     st.pop();
-                    max = Math.max(max,i-st.peek());
-                }else{
+                    max = Math.max(max, i - st.peek());
+                } else {
                     st.push(i);
                 }
             }
         }
 
         return max;
+    }
+
+    // 316. Remove Duplicate Letters
+    public String removeDuplicateLetters(String s) {
+        int[] freq = generateFreqArray(s);
+
+        int n = s.length();
+        if (n == 0)
+            return "";
+
+        Stack<Character> st = new Stack<>();
+        boolean[] vis = new boolean[26];
+        for (int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+            freq[ch - 'a']--;
+            if (vis[ch - 'a'])
+                continue;
+            while (st.size() != 0 && freq[st.peek()-'a'] > 0 && ch < st.peek()) {
+                char sch = st.pop();
+                vis[sch - 'a'] = false;
+            }
+
+            st.push(ch);
+            vis[ch - 'a'] = true;
+            
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while (st.size() != 0)
+            sb.append(st.pop());
+
+        sb.reverse();
+        return sb.toString();
+    }
+
+    private int[] generateFreqArray(String s) {
+        int[] arr = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+            arr[ch - 'a']++;
+        }
+        return arr;
     }
 }
