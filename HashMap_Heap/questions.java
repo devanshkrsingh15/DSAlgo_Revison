@@ -239,4 +239,163 @@ public class questions {
 
         return ans;
     }
+
+    // Trapping Rainwater II
+    public int trapRainWater(int[][] heightMap) {
+        int n = heightMap.length;
+        int m = heightMap[0].length;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return heightMap[a / m][a % m] - heightMap[b / m][b % m];
+        });
+
+        int ans = 0;
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+        boolean[][] vis = new boolean[n][m];
+        int maxSupport = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == 0 || j == 0 || i == n - 1 || j == m - 1) {
+                    pq.add(i * m + j);
+                    vis[i][j] = true;
+                }
+            }
+        }
+
+        while (pq.size() != 0) {
+            int idx = pq.remove();
+            int r = idx / m;
+            int c = idx % m;
+
+            maxSupport = Math.max(maxSupport, heightMap[r][c]);
+            ans += Math.max(0, maxSupport - heightMap[r][c]);
+
+            for (int k = 0; k < direcs.length; k++) {
+                int x = r + direcs[k][0];
+                int y = c + direcs[k][1];
+
+                if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y]) {
+                    pq.add(x * m + y);
+                    vis[x][y] = true;
+                }
+            }
+
+        }
+
+        return ans;
+
+    }
+
+    // 778. Swim in Rising Water
+    public int swimInWater(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return grid[a / m][a % m] - grid[b / m][b % m];
+        });
+
+        int ans = 0;
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+        boolean[][] vis = new boolean[n][m];
+        int max = 0;
+
+        pq.add(0);
+        vis[0][0] = true;
+
+        while (pq.size() != 0) {
+            int idx = pq.remove();
+            int r = idx / m;
+            int c = idx % m;
+
+            ans += Math.max(0, grid[r][c] - max);
+            max = Math.max(max, grid[r][c]);
+
+            if (r == n - 1 && c == n - 1)
+                return ans;
+
+            for (int k = 0; k < direcs.length; k++) {
+                int x = r + direcs[k][0];
+                int y = c + direcs[k][1];
+
+                if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y]) {
+                    pq.add(x * m + y);
+                    vis[x][y] = true;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    // 502. IPO
+    public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+
+        int n = profits.length;
+        PriorityQueue<Integer> capitalPQ = new PriorityQueue<>((a, b) -> {
+            return capital[a] - capital[b];
+        });
+        for (int i = 0; i < n; i++)
+            capitalPQ.add(i);
+
+        PriorityQueue<Integer> profitPQ = new PriorityQueue<>((a, b) -> {
+            return profits[b] - profits[a];
+        });
+
+        int cap = w;
+        while (k-- > 0) {
+            while (capitalPQ.size() != 0 && cap >= capital[capitalPQ.peek()]) {
+                int idx = capitalPQ.remove();
+                profitPQ.add(idx);
+            }
+
+            if (profitPQ.size() == 0)
+                return cap;
+
+            int pidx = profitPQ.remove();
+            cap += profits[pidx];
+
+        }
+
+        return cap;
+
+    }
+
+    //632. Smallest Range Covering Elements from K Lists
+    public int[] smallestRange(List<List<Integer>> nums) {
+        PriorityQueue<int[]>pq  = new PriorityQueue<>((a,b)->{
+            return nums.get(a[0]).get(a[1]) -  nums.get(b[0]).get(b[1]);
+        });
+
+        int max  = -(int)1e9;
+        for(int i  = 0;i<nums.size();i++){
+            pq.add(new int[]{i,0});
+            max = Math.max(max,nums.get(i).get(0));
+        }
+
+        int sp = -1;
+        int en = -1;
+        int range=  (int)1e9;
+
+        while(pq.size()==nums.size()){
+            int[]rarr = pq.remove();
+            int r = rarr[0];
+            int c = rarr[1];
+
+            int myrange = max - nums.get(r).get(c);
+
+            if(range>myrange){
+                range = myrange;
+                sp = nums.get(r).get(c);
+                en = max;
+            }
+
+            c++;
+            if(c<nums.get(r).size()){
+                pq.add(new int[]{r,c});
+                max = Math.max(max,nums.get(r).get(c));
+            }
+        }
+
+        return new int[]{sp,en};
+    }
+
 }

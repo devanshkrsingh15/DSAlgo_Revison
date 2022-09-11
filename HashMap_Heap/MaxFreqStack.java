@@ -1,3 +1,5 @@
+package HashMap_Heap;
+
 import java.util.*;
 
 public class MaxFreqStack {
@@ -27,8 +29,9 @@ public class MaxFreqStack {
             max--;
         }
 
-        fmap.put(rv,fmap.get(rv)-1);
-        if(fmap.get(rv)==0) fmap.remove(rv);
+        fmap.put(rv, fmap.get(rv) - 1);
+        if (fmap.get(rv) == 0)
+            fmap.remove(rv);
         return rv;
     }
 }
