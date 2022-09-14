@@ -179,7 +179,7 @@ public class questions {
     }
 
     public boolean isBipartite_(int[][] graph, int src, int[] vis) {
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         q.add(src);
 
         int level = 0;
@@ -215,7 +215,7 @@ public class questions {
         int n = grid.length;
         int m = grid[0].length;
         int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         boolean vis[][] = new boolean[n][m];
 
         int fresh = 0;
@@ -270,7 +270,7 @@ public class questions {
         if (grid[0][0] == 1 || grid[n - 1][m - 1] == 1)
             return -1;
 
-        Queue<Integer> q = new ArrayDeque<>();
+            ArrayDeque<Integer> q = new ArrayDeque<>();
         int len = 1;
         q.add(0);
         boolean vis[] = new boolean[n * m];
@@ -315,7 +315,7 @@ public class questions {
         int n = rooms.length;
         int m = rooms[0].length;
         int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         boolean vis[][] = new boolean[n][m];
 
         int emptyRooms = 0;
@@ -384,7 +384,7 @@ public class questions {
             }
         }
 
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         HashSet<Integer> vis_bus = new HashSet<>();
         HashSet<Integer> vis = new HashSet<>();
         vis.add(source);

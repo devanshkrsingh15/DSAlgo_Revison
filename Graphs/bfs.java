@@ -11,7 +11,7 @@ public class bfs {
 
     public void bfs_specific_cycle(ArrayList<Edge> graph[], int src, int dest) {
         int n = graph.length;
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         boolean[] vis = new boolean[n];
         q.add(src);
         boolean isCycle = false;
@@ -48,7 +48,7 @@ public class bfs {
         // max size of q => number of vtx
 
         int n = graph.length;
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         boolean[] vis = new boolean[n];
         q.add(src);
         vis[src] = true;
@@ -83,7 +83,7 @@ public class bfs {
     public void bfs_SHORTEST_PATH(ArrayList<Edge> graph[], int src, int dest) {
 
         int n = graph.length;
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         boolean[] vis = new boolean[n];
         q.add(src);
         vis[src] = true;

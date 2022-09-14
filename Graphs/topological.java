@@ -41,7 +41,7 @@ public class topological {
                 indegree[e.v]++;
             }
         }
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
 
         // first putting the least dependent vtx
         // A --> B, A needs B
@@ -90,7 +90,7 @@ public class topological {
             indegree[pre[1]]++;
         }
 
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         ArrayList<Integer> list = new ArrayList<>();
 
         for (int i = 0; i < numCourses; i++) {
@@ -134,7 +134,7 @@ public class topological {
             indegree[pre[1]]++;
         }
 
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         ArrayList<Integer> list = new ArrayList<>();
 
         for (int i = 0; i < numCourses; i++) {
@@ -280,7 +280,7 @@ public class topological {
                 indegree[j]++;
         }
 
-        Queue<Integer> q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < n * m; i++) {
             if (indegree[i] == 0)
                 q.add(i);
