@@ -1,5 +1,7 @@
 package Arrays_Strings;
 
+import java.util.HashMap;
+
 public class questions {
     // Rotate Array
     public void RotateByK(int[] arr, int k) {
@@ -210,7 +212,7 @@ public class questions {
         return max;
     }
 
-    // 159. Longest Substring with At Most KTwo Distinct Characters
+    // 340: Longest Substring with At Most KTwo Distinct Characters
     public int lengthOfLongestSubstringAtMostK(String s, int k) {
         int n = s.length();
         int[] arr = new int[256];
@@ -237,4 +239,461 @@ public class questions {
         }
         return max;
     }
+
+    // 1456. Maximum Number of Vowels in a Substring of Given Length
+
+    public int maxVowels(String s, int k) {
+        int n = s.length();
+        int si = 0;
+        int ei = 0;
+        int cnt = 0;
+        int max = 0;
+
+        while (ei < n) {
+            char ch = s.charAt(ei);
+            ei++;
+            if (isVowel(ch))
+                cnt++;
+
+            while (ei - si > k) {
+                char sch = s.charAt(si);
+                si++;
+                if (isVowel(sch))
+                    cnt--;
+            }
+
+            if (ei - si == k)
+                max = Math.max(max, cnt);
+
+        }
+
+        return max;
+
+    }
+
+    private boolean isVowel(char ch) {
+        return (ch == 'a') || (ch == 'e') || (ch == 'i') || (ch == 'o') || (ch == 'u');
+    }
+
+    // Smallest distinct window (GFG)
+    public int findSubString(String str) {
+        // Your code goes here
+        int n = str.length();
+        int uc = 0;
+        int[] arr = new int[256];
+        for (int i = 0; i < n; i++) {
+            char ch = str.charAt(i);
+            if (arr[ch] == 0)
+                uc++;
+            arr[ch]++;
+        }
+        int[] sarr = new int[256];
+        int min = (int) 1e9;
+        int si = 0;
+        int ei = 0;
+
+        while (ei < n) {
+            char ch = str.charAt(ei);
+            ei++;
+            if (sarr[ch] == 0 && arr[ch] != 0)
+                uc--;
+            sarr[ch]++;
+
+            while (uc == 0) {
+                min = Math.min(min, ei - si);
+                char sch = str.charAt(si);
+                if (sarr[sch] == 1)
+                    uc++;
+                sarr[sch]--;
+                si++;
+            }
+        }
+
+        return min == (int) 1e9 ? 0 : min;
+
+    }
+
+    // 1248. Count Number of Nice Subarrays
+    public int numberOfSubarrays(int[] nums, int k) {
+        return numberOfSubarrays_AtMost(nums, k) - numberOfSubarrays_AtMost(nums, k - 1);
+    }
+
+    public int numberOfSubarrays_AtMost(int[] nums, int k) {
+        int ans = 0;
+        int ei = 0;
+        int si = 0;
+        int oc = 0;
+        int n = nums.length;
+
+        while (ei < n) {
+            if (nums[ei++] % 2 == 1)
+                oc++;
+
+            while (oc > k) {
+                if (nums[si++] % 2 == 1)
+                    oc--;
+            }
+
+            ans += (ei - si);
+        }
+
+        return ans;
+    }
+
+    // 992. Subarrays with K Different Integers
+
+    public int subarraysWithKDistinct(int[] nums, int k) {
+        return subarraysWithKDistinct_AtMost(nums, k) - subarraysWithKDistinct_AtMost(nums, k - 1);
+    }
+
+    private int subarraysWithKDistinct_AtMost(int[] nums, int k) {
+        if (k <= 0)
+            return 0;
+        int n = nums.length;
+        int ei = 0;
+        int si = 0;
+        int cnt = 0;
+        int ans = 0;
+        int[] freq = new int[(int) 1e5];
+
+        while (ei < n) {
+            if (freq[nums[ei++]]++ == 0)
+                cnt++;
+
+            while (cnt > k) {
+                if (freq[nums[si++]]-- == 1)
+                    cnt--;
+            }
+            ans += ei - si;
+        }
+
+        return ans;
+
+    }
+
+    // 395. Longest Substring with At Least K Repeating Characters
+    public int longestSubstring_DnC(String s, int k) {
+        int n = s.length();
+        if (k > n)
+            return 0;
+        if (k <= 1)
+            return n;
+
+        int[] farr = createFreqArray(s);
+
+        int inValidPos = 0;
+        while (inValidPos < n && farr[s.charAt(inValidPos) - 'a'] >= k)
+            inValidPos++;
+
+        if (inValidPos >= n - 1)
+            return inValidPos;
+
+        int left = longestSubstring_DnC(s.substring(0, inValidPos), k);
+
+        while (inValidPos < n && farr[s.charAt(inValidPos) - 'a'] < k)
+            inValidPos++;
+        int right = (inValidPos >= n) ? 0 : longestSubstring_DnC(s.substring(inValidPos), k);
+
+        return Math.max(left, right);
+    }
+
+    private int[] createFreqArray(String s) {
+        int n = s.length();
+        int[] arr = new int[26];
+        for (int i = 0; i < n; i++) {
+            arr[s.charAt(i) - 'a']++;
+        }
+        return arr;
+    }
+
+    public int longestSubstring_ITR(String s, int k) {
+        int n = s.length();
+        if (k > n)
+            return 0;
+        if (k <= 1)
+            return n;
+
+        int[] farr = createFreqArray(s);
+
+        int max = 0;
+        int i = 0;
+        while (i < n) {
+            char ch = s.charAt(i);
+            int currLen = 0;
+            int[] myarr = new int[26];
+            if (farr[s.charAt(i) - 'a'] >= k) {
+                int st = i;
+                while (i < n && farr[s.charAt(i) - 'a'] >= k) {
+                    currLen++;
+                    myarr[s.charAt(i) - 'a']++;
+                    i++;
+                    if (isValid(myarr, k))
+                        max = Math.max(max, currLen);
+                }
+                i = st + 1;
+            } else {
+                currLen = 0;
+                myarr = new int[26];
+                i++;
+            }
+        }
+
+        return max;
+    }
+
+    public boolean isValid(int[] arr, int k) {
+        for (int i = 0; i < 26; i++) {
+            if (arr[i] > 0 && arr[i] < k)
+                return false;
+        }
+
+        return true;
+    }
+
+    // Most Optimized => Using max unique count
+    public int longestSubstring(String s, int k) {
+        int n = s.length();
+        if (k > n)
+            return 0;
+        if (k <= 1)
+            return n;
+
+        int maxUC = maxUniqueCount(s);
+        int max = 0;
+        // System.out.println(maxUC);
+        for (int i = 1; i <= maxUC; i++) {
+            int currrMax = longestSubstring_(s, k, i);
+            max = Math.max(max, currrMax);
+        }
+
+        return max;
+    }
+
+    public int longestSubstring_(String s, int k, int maxAllowed) {
+        int uc = 0;
+        int ei = 0;
+        int si = 0;
+        int n = s.length();
+        int[] farr = new int[26];
+        int atLeastK = 0;
+        int max = 0;
+
+        while (ei < n) {
+            char ch = s.charAt(ei++);
+            if (farr[ch - 'a'] == 0)
+                uc++;
+            farr[ch - 'a']++;
+
+            if (farr[ch - 'a'] == k)
+                atLeastK++;
+
+            while (uc > maxAllowed) {
+                char sch = s.charAt(si);
+                if (farr[sch - 'a'] == k)
+                    atLeastK--;
+                if (farr[sch - 'a'] == 1) {
+                    uc--;
+                }
+                farr[sch - 'a']--;
+                si++;
+            }
+
+            if (uc == maxAllowed && atLeastK == uc)
+                max = Math.max(max, ei - si);
+        }
+
+        return max;
+
+    }
+
+    private int maxUniqueCount(String s) {
+        int n = s.length();
+        int[] arr = new int[26];
+        int uc = 0;
+        for (int i = 0; i < n; i++) {
+            if (arr[s.charAt(i) - 'a'] == 0)
+                uc++;
+            arr[s.charAt(i) - 'a']++;
+        }
+
+        return uc;
+    }
+
+    // 904. Fruit Into Baskets => similar to max subarray with at most two
+    public int totalFruit(int[] fruits) {
+        int[] farr = new int[(int) 1e5 + 7];
+        int cnt = 0;
+        int ei = 0;
+        int si = 0;
+        int n = fruits.length;
+        int max = 0;
+        while (ei < n) {
+            if (farr[fruits[ei++]]++ == 0)
+                cnt++;
+            while (cnt > 2) {
+                if (farr[fruits[si++]]-- == 1)
+                    cnt--;
+            }
+
+            max = Math.max(max, ei - si);
+        }
+
+        return max;
+    }
+
+    // 930. Binary Subarrays With Sum => generic method
+    // can also be solved using at most method
+    public int numSubarraysWithSum(int[] nums, int goal) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int sum = 0;
+        int ei = 0;
+        int n = nums.length;
+        int ans = 0;
+        for (int ele : nums) {
+            sum += ele;
+            ans += map.getOrDefault(sum - goal, 0);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+
+        return ans;
+    }
+
+    // 485. Max Consecutive Ones
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int n = nums.length;
+        int ei = 0;
+        int si = 0;
+        boolean flag = false;
+        int max = 0;
+        while (ei < n) {
+            if (nums[ei++] == 0)
+                flag = true;
+
+            while (flag) {
+                if (nums[si++] == 0)
+                    flag = false;
+            }
+
+            max = Math.max(max, ei - si);
+        }
+
+        return max;
+    }
+
+    // 1004. Max Consecutive Ones III
+    public int longestOnes(int[] nums, int k) {
+        int n = nums.length;
+        int ei = 0;
+        int si = 0;
+        int cnt = 0;
+        int max = 0;
+        while (ei < n) {
+            if (nums[ei++] == 0)
+                cnt++;
+
+            while (cnt > k) {
+                if (nums[si++] == 0)
+                    cnt--;
+            }
+
+            max = Math.max(max, ei - si);
+        }
+
+        return max;
+    }
+
+    // 974. Subarray Sums Divisible by K
+    public int subarraysDivByK(int[] nums, int k) {
+        int ans = 0;
+        int[] arr = new int[k];
+        arr[0] = 1;
+        int sof = 0;
+        for (int ele : nums) {
+            sof += ele;
+            int rem = (sof) % k;
+            if (rem < 0)
+                rem += k;
+            ans += arr[rem];
+            arr[rem]++;
+        }
+
+        return ans;
+    }
+
+    // Subarrays with equal 1s and 0s (GFG)
+    // Same as sub-array sum, with tar sum==0, treating 1 as 1 and 0 as -1
+    public int countSubarrWithEqualZeroAndOne(int nums[], int n) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int sum = 0;
+        int ei = 0;
+        int ans = 0;
+        for (int ele : nums) {
+            sum = sum + ((ele == 1) ? 1 : -1);
+            ans += map.getOrDefault(sum - 0, 0);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+
+        return ans;
+    }
+
+    // General Method using count 0s and 1s
+    public int countSubarrWithEqualZeroAndOne_generalMethod(int arr[], int n) {
+        // add your code here
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        int count0s = 0;
+        int count1s = 0;
+        int ans = 0;
+
+        for (int ele : arr) {
+            if (ele == 0)
+                count0s++;
+            if (ele == 1)
+                count1s++;
+
+            int diff = count0s - count1s;
+            ans += map.getOrDefault(diff, 0);
+            map.put(diff, map.getOrDefault(diff, 0) + 1);
+
+        }
+
+        return ans;
+    }
+
+    // Subarrays with equal 1s, 0s, 2s (GFG)
+    public long getSubstringWithEqual012(String str) {
+        // code here
+        int n = str.length();
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("0+0", 1);
+        long count0s = 0;
+        long count1s = 0;
+        long count2s = 0;
+
+        long ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            int ele = str.charAt(i) - '0';
+            if (ele == 0)
+                count0s++;
+            if (ele == 1)
+                count1s++;
+            if (ele == 2)
+                count2s++;
+
+            long diff0n1 = count0s - count1s;
+            long diff0n2 = count0s - count2s;
+
+            String key = diff0n1 + "+" + diff0n2;
+            ans += map.getOrDefault(key, 0);
+            map.put(key, map.getOrDefault(key, 0) + 1);
+
+        }
+
+        return ans;
+
+    }
+
 }
