@@ -1,6 +1,10 @@
 package Arrays_Strings;
 
+import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class questions {
     // Rotate Array
@@ -694,6 +698,145 @@ public class questions {
 
         return ans;
 
+    }
+
+    // Longest Sub-Array with Sum K (GFG)
+    public int lenOfLongSubarr(int arr[], int n, int tar) {
+        int max = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int ei = 0;
+        int sof = 0;
+        while (ei < n) {
+            int ele = arr[ei];
+            sof += ele;
+            int diff = sof - tar;
+            map.putIfAbsent(sof, ei);
+            max = Math.max(max, ei - map.getOrDefault(diff, ei));
+            ;
+            ei++;
+        }
+
+        return max;
+    }
+
+    // 525. Contiguous Array
+    public int findMaxLength(int[] nums) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ei = 0;
+        int sof = 0;
+        int max = 0;
+        int n = nums.length;
+        map.put(0, -1);
+        while (ei < n) {
+            int ele = (nums[ei] == 1) ? 1 : -1;
+
+            sof += ele;
+            map.putIfAbsent(sof, ei);
+            max = Math.max(max, map.getOrDefault(sof, ei));
+            ei++;
+        }
+
+        return max;
+    }
+
+    // 424. Longest Repeating Character Replacement
+    // min number of letters to change (to make of character same) = length of
+    // string - most freq character
+    public int characterReplacement(String s, int k) {
+        int n = s.length();
+        int ei = 0;
+        int si = 0;
+        int[] farr = new int[256];
+        int maxFreq = 0;
+        int ans = 0;
+        while (ei < n) {
+            char ch = s.charAt(ei++);
+            farr[ch]++;
+            maxFreq = Math.max(maxFreq, farr[ch]);
+            int cnt = (ei - si) - maxFreq;
+
+            while (cnt > k) {
+                char sch = s.charAt(si++);
+                cnt--;
+                farr[sch]--;
+            }
+
+            ans = Math.max(ans, ei - si);
+        }
+
+        return ans;
+    }
+
+    // 239. Sliding Window Maximum
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        return maxSlidingWindow_PQ(nums, k);
+    }
+
+    // TC - NlogN : SC- O(N)
+    private int[] maxSlidingWindow_PQ(int[] nums, int k) {
+        int n = nums.length;
+
+        int[] ans = new int[n - k + 1];
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return nums[b] - nums[a];
+        });
+
+        int i = 0;
+        int aptr = 0;
+        while (i < n) {
+            if (i < k) {
+                pq.add(i);
+            } else {
+                while (pq.size() != 0 && pq.peek() <= i - k)
+                    pq.remove();
+                pq.add(i);
+                ans[aptr++] = nums[pq.peek()];
+            }
+            i++;
+        }
+
+        return ans;
+    }
+    // TC- O(NLogK) : SC- O(N)
+    public int[] maxSlidingWindow_TreeMap(int[] nums, int k) {
+        TreeMap<Integer,Integer>map = new TreeMap<>((a,b)->{
+            if(nums[a]==nums[b]) return b-a;
+            return nums[a]-nums[b];
+        });
+        int n = nums.length;
+        int[]ans = new int[n-k+1];
+        int j = 0 ;
+        
+        for(int i = 0;i<n;i++){
+            if(map.size()>=k) map.remove(i-k);
+            map.put(i,nums[i]);
+            if(i>=k-1) ans[j++]= nums[map.lastKey()];
+        }
+        
+        return ans;
+    }
+
+    // TC- O(N) : SC- O(N)
+    // q always has max element at first pos
+    private int[] maxSlidingWindow_Deque(int[] nums, int k) {
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        int j = 0;
+
+        for (int i = 0; i < n; i++) {
+            while (q.size() != 0 && q.getFirst() <= i - k)
+                q.removeFirst();
+            while (q.size() != 0 && nums[q.getLast()] <= nums[i])
+                q.removeLast();
+
+            q.add(i);
+            if (i >= k - 1)
+                ans[j++] = nums[q.getFirst()];
+        }
+
+        return ans;
     }
 
 }
