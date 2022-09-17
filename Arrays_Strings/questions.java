@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class questions {
     // Rotate Array
@@ -798,22 +799,26 @@ public class questions {
 
         return ans;
     }
+
     // TC- O(NLogK) : SC- O(N)
     public int[] maxSlidingWindow_TreeMap(int[] nums, int k) {
-        TreeMap<Integer,Integer>map = new TreeMap<>((a,b)->{
-            if(nums[a]==nums[b]) return b-a;
-            return nums[a]-nums[b];
+        TreeMap<Integer, Integer> map = new TreeMap<>((a, b) -> {
+            if (nums[a] == nums[b])
+                return b - a;
+            return nums[a] - nums[b];
         });
         int n = nums.length;
-        int[]ans = new int[n-k+1];
-        int j = 0 ;
-        
-        for(int i = 0;i<n;i++){
-            if(map.size()>=k) map.remove(i-k);
-            map.put(i,nums[i]);
-            if(i>=k-1) ans[j++]= nums[map.lastKey()];
+        int[] ans = new int[n - k + 1];
+        int j = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (map.size() >= k)
+                map.remove(i - k);
+            map.put(i, nums[i]);
+            if (i >= k - 1)
+                ans[j++] = nums[map.lastKey()];
         }
-        
+
         return ans;
     }
 
@@ -837,6 +842,62 @@ public class questions {
         }
 
         return ans;
+    }
+
+    // 781. Rabbits in Forest
+    public int numRabbits(int[] answers) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        for (int ele : answers) {
+            if (!map.containsKey(ele)) {
+                map.put(ele, ele + 1);
+                ans += ele + 1;
+            } else {
+                map.put(ele, map.get(ele) - 1);
+            }
+            if (map.get(ele) == 1)
+                map.remove(ele);
+        }
+
+        return ans;
+    }
+
+    // 363. Max Sum of Rectangle No Larger Than K
+    public int maxSumSubmatrixNoLargerThanK(int[][] matrix, int k) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int max = -(int) 1e9 ;
+
+        for (int fixed = 0; fixed < n; fixed++) {
+            int[]arr  = new int[m];
+            for (int i = fixed; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    arr[j]+=matrix[i][j];
+                }
+
+                int maxIn1D= maxSumSubarrayNoLargerThanK(arr,k);
+                max = Math.max(max,maxIn1D);
+            }
+        }
+
+        return max;
+    }
+
+    private int maxSumSubarrayNoLargerThanK(int[] arr, int k) {
+        int max = -(int) 1e9 ;
+        TreeSet<Integer>set = new TreeSet<>();
+        set.add(0);
+        int sof= 0;
+        for(int ele:arr){
+            sof+=ele;
+            if(set.ceiling(sof-k)!=null){
+                int temp = sof - set.ceiling(sof-k);
+                max = Math.max(max,temp);
+            }
+            set.add(sof);
+        }
+
+        return max;
     }
 
 }
