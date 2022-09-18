@@ -1,5 +1,6 @@
 package DP;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class stringSet {
@@ -73,6 +74,35 @@ public class stringSet {
 
         return dp[0][n - 1];
 
+        
+    }
+
+    //LIS in NlogN
+    public int lengthOfLIS(int[] nums) {
+        ArrayList<Integer>tm = new ArrayList<>();
+        for(int ele:nums){
+            int ipos = findInsertPos(tm,ele);
+            if(ipos==tm.size())tm.add(ele);
+            else tm.set(ipos,ele);
+        }
+
+
+        return tm.size();
+        
+    }
+
+    private int findInsertPos(ArrayList<Integer> tm, int ele) {
+        int lo = 0;
+        int hi = tm.size()-1;
+
+        while(lo<=hi){
+            int mid = lo  +(hi-lo)/2;
+
+            if(tm.get(mid)<=ele) lo =mid+1;
+            else hi = mid-1;
+        }
+
+        return (lo-1>=0 && tm.get(lo-1)==ele) ? lo-1: lo;
     }
 
     private int longestPalindromeSubseq_memo(String s, int st, int en, int[][] dp) {

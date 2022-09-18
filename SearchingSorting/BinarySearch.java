@@ -87,10 +87,11 @@ public class BinarySearch {
         return lo;
     }
 
+    // last position
     public int insertPos_Better(int[] arr, int ele) {
         int lo = 0;
         int hi = arr.length - 1;
-    
+
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
 
@@ -102,6 +103,30 @@ public class BinarySearch {
         }
 
         return (lo - 1 >= 0 && arr[lo - 1] == ele) ? lo - 1 : lo;
+    }
+
+    public int findNearestElement(int[] arr, int ele) {
+        int n = arr.length;
+
+        if (ele <= arr[0] || ele >= arr[n - 1]) {
+            return ele <= arr[0] ? arr[0] : arr[n - 1];
+        }
+
+        // arr[hi] <= ele < arr[lo];
+        int lo = 0;
+        int hi = n - 1;
+
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (arr[mid] <= ele) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+
+        return ele - arr[hi] <= arr[lo] - ele ? hi : lo;
     }
 
 }

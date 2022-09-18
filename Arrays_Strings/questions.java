@@ -866,17 +866,17 @@ public class questions {
     public int maxSumSubmatrixNoLargerThanK(int[][] matrix, int k) {
         int n = matrix.length;
         int m = matrix[0].length;
-        int max = -(int) 1e9 ;
+        int max = -(int) 1e9;
 
         for (int fixed = 0; fixed < n; fixed++) {
-            int[]arr  = new int[m];
+            int[] arr = new int[m];
             for (int i = fixed; i < n; i++) {
                 for (int j = 0; j < m; j++) {
-                    arr[j]+=matrix[i][j];
+                    arr[j] += matrix[i][j];
                 }
 
-                int maxIn1D= maxSumSubarrayNoLargerThanK(arr,k);
-                max = Math.max(max,maxIn1D);
+                int maxIn1D = maxSumSubarrayNoLargerThanK(arr, k);
+                max = Math.max(max, maxIn1D);
             }
         }
 
@@ -884,17 +884,41 @@ public class questions {
     }
 
     private int maxSumSubarrayNoLargerThanK(int[] arr, int k) {
-        int max = -(int) 1e9 ;
-        TreeSet<Integer>set = new TreeSet<>();
+        int max = -(int) 1e9;
+        TreeSet<Integer> set = new TreeSet<>();
         set.add(0);
-        int sof= 0;
-        for(int ele:arr){
-            sof+=ele;
-            if(set.ceiling(sof-k)!=null){
-                int temp = sof - set.ceiling(sof-k);
-                max = Math.max(max,temp);
+        int sof = 0;
+        for (int ele : arr) {
+            sof += ele;
+            if (set.ceiling(sof - k) != null) {
+                int temp = sof - set.ceiling(sof - k);
+                max = Math.max(max, temp);
             }
             set.add(sof);
+        }
+
+        return max;
+    }
+
+    // 152. Maximum Product Subarray
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        int max = -(int) 1e9;
+
+        int p = 1;
+        for (int i = 0; i < n; i++) {
+            p = p * nums[i];
+            max = Math.max(max, p);
+            if (p == 0)
+                p = 1;
+        }
+
+        p = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            p = p * nums[i];
+            max = Math.max(max, p);
+            if (p == 0)
+                p = 1;
         }
 
         return max;
