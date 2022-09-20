@@ -1,5 +1,7 @@
 package SearchingSorting;
 
+import java.util.*;
+
 public class questions {
     // 74. Search a 2D Matrix
     public boolean searchMatrix(int[][] matrix, int target) {
@@ -170,39 +172,313 @@ public class questions {
         return false;
     }
 
-
-    //153. Find Minimum in Rotated Sorted Array
+    // 153. Find Minimum in Rotated Sorted Array
     public int findMin(int[] nums) {
         int n = nums.length;
-        
+
         int lo = 0;
-        int hi = n-1;
-        
-        while(lo<hi){
-            int mid = lo + (hi-lo)/2;
-            
-            if(nums[mid]<nums[hi]) hi = mid;
-            else lo = mid+1;
+        int hi = n - 1;
+
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] < nums[hi])
+                hi = mid;
+            else
+                lo = mid + 1;
         }
-        
+
         return nums[lo];
     }
 
-    //154. Find Minimum in Rotated Sorted Array II
+    // 154. Find Minimum in Rotated Sorted Array II
     public int findMinII(int[] nums) {
         int n = nums.length;
-        
+
         int lo = 0;
-        int hi = n-1;
-        
-        while(lo<hi){
-            int mid = lo + (hi-lo)/2;
-            if(nums[mid]==nums[hi]) hi--;
-            else if(nums[mid]<nums[hi]) hi = mid;
-            else lo = mid+1;
+        int hi = n - 1;
+
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] == nums[hi])
+                hi--;
+            else if (nums[mid] < nums[hi])
+                hi = mid;
+            else
+                lo = mid + 1;
         }
-        
+
         return nums[lo];
     }
 
+    // 167. Two Sum II - Input Array Is Sorted
+    public int[] twoSum(int[] arr, int target) {
+        int lo = 0;
+        int hi = arr.length - 1;
+
+        while (lo <= hi) {
+            if (arr[lo] + arr[hi] == target)
+                return new int[] { lo + 1, hi + 1 };
+            else if (arr[lo] + arr[hi] > target)
+                hi--;
+            else
+                lo++;
+        }
+
+        return null;
+    }
+
+    // Printing all unique ans
+    public void twoSumAllUnique(int[] arr, int tar, int lo, int hi) {
+
+        while (lo < hi) {
+            if (arr[lo] + arr[hi] == tar) {
+                System.out.println(lo + "," + hi);
+                lo++;
+                while (lo < hi && arr[lo - 1] == arr[lo])
+                    lo++;
+                hi--;
+                while (lo < hi && arr[hi + 1] == arr[hi])
+                    hi--;
+            } else if (arr[lo] + arr[hi] > tar) {
+                hi--;
+                while (lo < hi && arr[hi + 1] == arr[hi])
+                    hi--;
+            } else {
+                lo++;
+                while (lo < hi && arr[lo - 1] == arr[lo])
+                    lo++;
+            }
+        }
+
+    }
+
+
+    //454. 4Sum II
+     public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        HashMap<Integer,Integer>map = new HashMap<>();
+        for(int a :nums1){
+            for(int b:nums2){
+                map.put(a+b,map.getOrDefault(a+b,0)+1);
+            }
+        }
+        
+        int ans = 0;
+        for(int a:nums3){
+            for(int b:nums4){
+                int t = - (a+b);
+                if(map.containsKey(t)) ans+=map.get(t);
+            }
+        }
+        
+        return ans;
+    }
+
+    //array is sorted
+    public ArrayList<ArrayList<Integer>>  genericKSum(int[]arr,int tar,int lo,int hi,int k){
+        if(k==2) return twoSum_(arr,tar,lo,hi,k);
+        
+        ArrayList<ArrayList<Integer>>myans = new ArrayList<>();
+        int i =  lo;
+        while(i<=hi){
+            int ele= arr[i];
+            int ntar = tar-ele;
+            i++;
+            ArrayList<ArrayList<Integer>>fans = genericKSum(arr,ntar,i,hi,k-1);
+            buildAns(myans,fans,ele);
+            while(i<=hi  && arr[i-1]==arr[i]) i++;
+
+        }
+
+        return myans;
+    }
+
+    private void buildAns(ArrayList<ArrayList<Integer>> myans, ArrayList<ArrayList<Integer>> fans, int ele) {
+        for (ArrayList<Integer> l : fans) {
+            ArrayList<Integer> tmp = new ArrayList<>();
+            tmp.add(ele);
+            for (int e : l) {
+                tmp.add(e);
+            }
+
+            myans.add(tmp);
+
+        }
+    }
+
+    private ArrayList<ArrayList<Integer>> twoSum_(int[] arr, int tar, int lo, int hi, int k) {
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        while (lo < hi) {
+            if (arr[lo] + arr[hi] == tar) {
+                ArrayList<Integer>tmp = new ArrayList<>();
+                tmp.add(arr[lo]);tmp.add(arr[hi]);
+                ans.add(tmp);
+                lo++;
+                while (lo < hi && arr[lo - 1] == arr[lo])
+                    lo++;
+
+                hi--;
+                while (lo < hi && arr[hi + 1] == arr[hi])
+                    hi--;
+            } else if (arr[lo] + arr[hi] > tar) {
+                hi--;
+            } else {
+                lo++;
+            }
+        }
+
+        return ans;
+    }
+
+}
+
+class fourSum{
+    public List<List<Integer>> threeSum(int[] nums, int tar,int lo,int hi) {
+        List<List<Integer>> list = new ArrayList<>();
+        int i =lo;
+        while (i <= hi) {
+            int ele = nums[i];
+            int ntar = tar - ele;
+            i++;
+            List<List<Integer>> twoSumAns = twoSum(nums, ntar, i, hi);
+            builAns(list, twoSumAns, nums, ele);
+            while (i <= hi && nums[i] == nums[i - 1])
+                i++;
+        }
+
+        return list;
+
+    }
+
+    private void builAns(List<List<Integer>> list, List<List<Integer>> twoSumAns, int[] nums,
+            int ele) {
+        for (List<Integer> l : twoSumAns) {
+            ArrayList<Integer> tmp = new ArrayList<>();
+            tmp.add(ele);
+            for (int e : l) {
+                tmp.add(e);
+            }
+
+            list.add(tmp);
+
+        }
+
+    }
+
+    private List<List<Integer>> twoSum(int[] arr, int tar, int lo, int hi) {
+        List<List<Integer>> ans = new ArrayList<>();
+        while (lo < hi) {
+            if (arr[lo] + arr[hi] == tar) {
+                addEle(ans, arr[lo], arr[hi]);
+                lo++;
+                while (lo < hi && arr[lo - 1] == arr[lo])
+                    lo++;
+
+                hi--;
+                while (lo < hi && arr[hi + 1] == arr[hi])
+                    hi--;
+            } else if (arr[lo] + arr[hi] > tar) {
+                hi--;
+            } else {
+                lo++;
+            }
+        }
+
+        return ans;
+
+    }
+
+    private void addEle(List<List<Integer>> ans, int... arr) {
+        List<Integer> tmp = new ArrayList<>();
+        for (int ele : arr) {
+            tmp.add(ele);
+        }
+        ans.add(tmp);
+    }
+   
+    public List<List<Integer>> fourSum(int[] nums, int tar) {
+        Arrays.sort(nums);
+        List<List<Integer>> list = new ArrayList<>();
+        int n = nums.length;
+        int i = 0;
+        while (i < n) {
+            int ele = nums[i];
+            int ntar = tar - ele;
+            i++;
+            List<List<Integer>> threeSumAns = threeSum(nums, ntar, i, n-1);
+            builAns(list, threeSumAns, nums, ele);
+            while (i < n && nums[i] == nums[i - 1])
+                i++;
+        }
+
+        return list;
+        
+    }
+}
+
+class threeSum {
+    //nums should be sorted
+    public List<List<Integer>> threeSum(int[] nums, int tar) {
+        List<List<Integer>> list = new ArrayList<>();
+        int n = nums.length;
+        int i = 0;
+        while (i < n) {
+            int ele = nums[i];
+            int ntar = tar - ele;
+            i++;
+            ArrayList<ArrayList<Integer>> twoSumAns = twoSum(nums, ntar, i, n - 1);
+            builAns(list, twoSumAns, nums, ele);
+            while (i < n && nums[i] == nums[i - 1])
+                i++;
+        }
+
+        return list;
+
+    }
+
+    private void builAns(List<List<Integer>> list, ArrayList<ArrayList<Integer>> twoSumAns, int[] nums,
+            int ele) {
+        for (ArrayList<Integer> l : twoSumAns) {
+            ArrayList<Integer> tmp = new ArrayList<>();
+            tmp.add(ele);
+            for (int e : l) {
+                tmp.add(e);
+            }
+
+            list.add(tmp);
+
+        }
+
+    }
+
+    private ArrayList<ArrayList<Integer>> twoSum(int[] arr, int tar, int lo, int hi) {
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        while (lo < hi) {
+            if (arr[lo] + arr[hi] == tar) {
+                addEle(ans, arr[lo], arr[hi]);
+                lo++;
+                while (lo < hi && arr[lo - 1] == arr[lo])
+                    lo++;
+
+                hi--;
+                while (lo < hi && arr[hi + 1] == arr[hi])
+                    hi--;
+            } else if (arr[lo] + arr[hi] > tar) {
+                hi--;
+            } else {
+                lo++;
+            }
+        }
+
+        return ans;
+
+    }
+
+    private void addEle(ArrayList<ArrayList<Integer>> ans, int... arr) {
+        ArrayList<Integer> tmp = new ArrayList<>();
+        for (int ele : arr) {
+            tmp.add(ele);
+        }
+        ans.add(tmp);
+    }
 }
