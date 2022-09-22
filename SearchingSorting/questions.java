@@ -330,6 +330,48 @@ public class questions {
         return ans;
     }
 
+    //658. Find K Closest Elements
+    //O(K)
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        int n =  arr.length;
+        if(x<=arr[0]) return extract(arr,k,0);
+        if(x>=arr[n-1]) return extract(arr,k,n-k);
+
+        int lo = 0 ;
+        int hi = n-1;
+
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(arr[mid]<=x){
+                lo =  mid+1;
+            }else{
+                hi = mid-1;
+            }
+        }
+
+        int ipos = (lo-1>=0 && arr[lo-1]==x) ? lo-1: lo;
+        int l = Math.max(0,ipos - k);
+        int r = Math.max(n-1,ipos + k);
+
+        while(r-l+1>k){
+            if(x-arr[l] > arr[r] - x) l++;
+            else r--;
+        }
+        
+       
+        return extract(arr,k,l);
+    }
+
+    public List<Integer> extract(int[]arr,int k,int st){
+        List<Integer>ans = new ArrayList<>();
+        for(int i = 0; i<k;i++){
+            ans.add(arr[i+st]);
+        }
+        return ans;
+    }
+
+
 }
 
 class fourSum{
