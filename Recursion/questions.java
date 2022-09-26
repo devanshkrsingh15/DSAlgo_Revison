@@ -103,4 +103,62 @@ public class questions {
 
     }
 
+    //46. Permutations
+    List<List<Integer>> pans = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        permute_(nums, new ArrayList<>(), 0);
+        return pans;
+    }
+
+    public void permute_(int[] nums, ArrayList<Integer> tmp, int vis) {
+        if (tmp.size() == nums.length) {
+            List<Integer> base = new ArrayList<>((tmp));
+            pans.add(base);
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            if ((vis & (1 << i)) == 0) {
+                vis ^= (1 << i);
+                tmp.add(nums[i]);
+                permute_(nums, tmp, vis);
+                tmp.remove(tmp.size() - 1);
+                vis ^= (1 << i);
+            }
+        }
+    }
+
+
+
+    //47. Permutations II
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>>ans = new ArrayList<>();
+        permuteUnique_helper(ans,nums,new ArrayList<>(),0);
+        return ans;
+    }
+
+    private void permuteUnique_helper(List<List<Integer>>ans,int[] nums, List<Integer>tmp,int vis) {
+        if(tmp.size()==nums.length){
+            List<Integer> base = new ArrayList<>((tmp));
+            ans.add(base);
+            return;
+        }
+
+        HashSet<Integer>set = new HashSet<>();
+        for(int i = 0; i <nums.length;i++){
+            if ((vis & (1 << i)) == 0   && !set.contains(nums[i]))  {
+                vis ^= (1 << i);
+                set.add(nums[i]);
+                tmp.add(nums[i]);
+                permuteUnique_helper(ans,nums, tmp, vis);
+                tmp.remove(tmp.size() - 1);
+                vis ^= (1 << i);
+            }
+        }
+
+
+    }
+
+   
+
 }
