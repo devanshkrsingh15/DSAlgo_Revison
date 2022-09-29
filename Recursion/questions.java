@@ -1,6 +1,7 @@
 package Recursion;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class questions {
 
@@ -159,6 +160,36 @@ public class questions {
 
     }
 
-   
+}
+//39. Combination Sum
+class CombinationSum {
 
+    public List<List<Integer>> combinationSum(int[] candidates, int tar) {
+        List<List<Integer>>ans = new ArrayList<>();
+        combinationSum_(candidates,tar, new ArrayList<>(),ans,0);
+        return ans;
+    }
+
+    private int combinationSum_(int[] candidates, int tar, ArrayList<Integer>tmp, List<List<Integer>> ans, int i) {
+        if(i==candidates.length || tar==0){
+            if(tar==0) {
+                ArrayList<Integer>base = new ArrayList<>(tmp);
+                ans.add(base);
+                return 1;
+            }
+            return 0;
+        }
+
+        int cnt = 0;
+        if(tar -candidates[i]>=0 ){
+            tmp.add(candidates[i]);
+            cnt += combinationSum_(candidates,tar -candidates[i],tmp,ans,i);
+            //if only once cnt += combinationSum_(candidates,tar -candidates[i],tmp,ans,i+1);
+            tmp.remove(tmp.size()-1);
+        }
+
+        cnt+=combinationSum_(candidates,tar,tmp,ans,i+1);
+
+        return cnt;
+    }
 }
