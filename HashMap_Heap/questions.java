@@ -359,43 +359,86 @@ public class questions {
 
     }
 
-    //632. Smallest Range Covering Elements from K Lists
+    // 632. Smallest Range Covering Elements from K Lists
     public int[] smallestRange(List<List<Integer>> nums) {
-        PriorityQueue<int[]>pq  = new PriorityQueue<>((a,b)->{
-            return nums.get(a[0]).get(a[1]) -  nums.get(b[0]).get(b[1]);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            return nums.get(a[0]).get(a[1]) - nums.get(b[0]).get(b[1]);
         });
 
-        int max  = -(int)1e9;
-        for(int i  = 0;i<nums.size();i++){
-            pq.add(new int[]{i,0});
-            max = Math.max(max,nums.get(i).get(0));
+        int max = -(int) 1e9;
+        for (int i = 0; i < nums.size(); i++) {
+            pq.add(new int[] { i, 0 });
+            max = Math.max(max, nums.get(i).get(0));
         }
 
         int sp = -1;
         int en = -1;
-        int range=  (int)1e9;
+        int range = (int) 1e9;
 
-        while(pq.size()==nums.size()){
-            int[]rarr = pq.remove();
+        while (pq.size() == nums.size()) {
+            int[] rarr = pq.remove();
             int r = rarr[0];
             int c = rarr[1];
 
             int myrange = max - nums.get(r).get(c);
 
-            if(range>myrange){
+            if (range > myrange) {
                 range = myrange;
                 sp = nums.get(r).get(c);
                 en = max;
             }
 
             c++;
-            if(c<nums.get(r).size()){
-                pq.add(new int[]{r,c});
-                max = Math.max(max,nums.get(r).get(c));
+            if (c < nums.get(r).size()) {
+                pq.add(new int[] { r, c });
+                max = Math.max(max, nums.get(r).get(c));
             }
         }
 
-        return new int[]{sp,en};
+        return new int[] { sp, en };
+    }
+
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        List<List<Integer>> ans = new ArrayList<>();
+   // {x,h}
+        ArrayList<int[]> list = new ArrayList<>();
+        for (int[] b : buildings) {
+            list.add(new int[] { b[0], b[2] });
+            list.add(new int[] { b[1], -b[2] });
+        }
+        Collections.sort(list, (a, b) -> {
+            if (a[0] == b[0])
+                return b[1] - a[1];
+            return a[0] - b[0];
+        });
+
+        //for hts
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return b - a;
+        });
+
+        pq.add(0);
+        int max = 0;
+        for (int[] b : list) {
+            int x = b[0];
+            int y = b[1];
+
+            if(y>0) pq.add(y);
+            else pq.remove(Math.abs(y));
+
+            if(max!=pq.peek()){
+                List<Integer>tmp = new ArrayList<>();
+                tmp.add(x);
+                tmp.add(pq.peek());
+                max = pq.peek();
+                ans.add(tmp);
+            }
+
+
+        }
+
+        return ans;
+
     }
 
 }
