@@ -1,8 +1,8 @@
-package LC_Contests;
+
 
 import java.util.*;
 
-public class WeekylyContest304 {
+public class WeeklyContest304 {
     // 2357. Make Array Zero by Subtracting Equal Amounts
     int ans = 0;
 
@@ -208,3 +208,4 @@ public class WeekylyContest304 {
     }
 
 }
+

@@ -1,4 +1,4 @@
-package LC_Contests;
+
 
 import java.util.*;
 
