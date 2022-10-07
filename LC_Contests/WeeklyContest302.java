@@ -82,4 +82,28 @@ public class WeeklyContest302 {
     }
 
     //2344. Minimum Deletions to Make Array Divisible
+
+    public int minOperations(int[] nums, int[] numsDivide) {
+        Arrays.sort(nums);
+        
+        int currGCD = numsDivide[0];
+        for(int i =1;i<numsDivide.length;i++){
+            currGCD = getGCD(numsDivide[i],currGCD);
+        }
+        
+        int ans  = 0;
+        for(int ele:nums ){
+            if(ele<currGCD && currGCD%ele!=0){
+                ans++;
+            }
+            else if(ele<=currGCD && currGCD%ele==0) return ans;
+        }
+        
+        return -1;
+    }
+    
+    public int getGCD(int a,int b){
+        if(b==0) return a;
+        return getGCD(b,a%b);
+    }
 }
