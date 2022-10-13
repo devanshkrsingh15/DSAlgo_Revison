@@ -83,43 +83,40 @@ public class WeeklyContest313 {
         return ans;
     }
 
-
-    //2429. Minimize XOR
+    // 2429. Minimize XOR
     public int minimizeXor(int num1, int num2) {
         int bit = countSetBits(num2);
-        
+
         int ans = 0;
-        for(int i = 31 ;i>=0 && bit>0 ;i--){
-            int mask = (1<<i);
-            if((num1&mask)!=0){
-                ans|=mask;
+        for (int i = 31; i >= 0 && bit > 0; i--) {
+            int mask = (1 << i);
+            if ((num1 & mask) != 0) {
+                ans |= mask;
                 bit--;
             }
         }
-        
-        for(int i = 0 ;i<32 && bit>0 ;i++){
-            int mask = (1<<i);
-            if((ans&mask)==0){
-                ans|=mask;
-                 bit--;
+
+        for (int i = 0; i < 32 && bit > 0; i++) {
+            int mask = (1 << i);
+            if ((ans & mask) == 0) {
+                ans |= mask;
+                bit--;
             }
         }
-        
-        
-        return ans;
-       
-    }
-    
 
-    
-    public int countSetBits(int a){
+        return ans;
+
+    }
+
+    public int countSetBits(int a) {
         int cnt = 0;
-        
-        while(a>0){
-            a= a&(a-1);
+
+        while (a > 0) {
+            a = a & (a - 1);
             cnt++;
         }
-        
+
         return cnt;
     }
+
 }
