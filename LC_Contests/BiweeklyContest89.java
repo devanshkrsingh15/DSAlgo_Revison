@@ -53,22 +53,56 @@ public class BiweeklyContest89 {
             n = n & (n - 1);
         }
 
-        long mod = (long)1e9   + 7;
+        long mod = (long) 1e9 + 7;
         int idx = 0;
         int[] ans = new int[queries.length];
         for (int[] q : queries) {
             int st = q[0];
             int en = q[1];
 
-            long t  = 1l;
-            for(int  i = st;i<=en;i++){
-                t=( t%mod + list.get(i)%mod)%mod;
+            long t = 1l;
+            for (int i = st; i <= en; i++) {
+                t = (t % mod + list.get(i) % mod) % mod;
             }
 
-            ans[idx++]= (int)t;
+            ans[idx++] = (int) t;
 
         }
 
         return ans;
+    }
+
+    // 2439. Minimize Maximum of Array
+    public int minimizeArrayValue(int[] nums) {
+        long min = 0;
+        long max = (long) 1e9;
+        long ans = -1l;
+
+        while (min <= max) {
+            long mid = min + (max - min) / 2;
+
+            if (isPossible(nums, mid)) {
+                ans = mid;
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+
+        }
+
+        return (int) ans;
+    }
+
+    public boolean isPossible(int[] nums, long max) {
+        long cnt = 1;
+        long sof = 0;
+        for (int ele : nums) {
+            sof += (long) ele;
+            if (sof > max * cnt)
+                return false;
+            cnt++;
+        }
+
+        return true;
     }
 }
