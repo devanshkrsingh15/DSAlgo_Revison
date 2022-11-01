@@ -105,4 +105,52 @@ public class BiweeklyContest89 {
 
         return true;
     }
+
+    // 2440. Create Components With Same Value
+    public int componentValue(int[] nums, int[][] edges) {
+        int n = nums.length;
+        ArrayList<Integer> graph[] = new ArrayList[n];
+        createGraph(graph, edges);
+
+        int sof = 0;
+        for (int ele : nums)
+            sof += ele;
+        
+        int max = 0;
+
+        for(int parts = 2 ;parts<=n ;parts++){
+            if(sof%parts==0){
+                int tar=  sof/parts;
+                int tmp = dfs(graph,0,-1,nums,tar);
+                if(tmp==0) max = Math.max(max,parts-1);
+            }
+        }
+
+        return max;
+    }
+
+    private int dfs(ArrayList<Integer>[] graph, int src, int par,int[]arr,int tar) {
+        int sum = arr[src];
+
+        for(int nbr :graph[src]){
+            if(nbr!=src){
+                sum+= dfs(graph,nbr,src,arr,tar);
+            }
+        }
+
+        if(sum==tar) return 0;
+        return sum;
+    }
+
+    private void createGraph(ArrayList<Integer> graph[], int[][] edges) {
+        for (int i = 0; i < graph.length; i++)
+            graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            int u = e[0];
+            int v = e[1];
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+    }
 }
