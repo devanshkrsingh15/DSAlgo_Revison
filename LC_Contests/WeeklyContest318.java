@@ -115,29 +115,79 @@ public class WeeklyContest318 {
         int j = n - candidates - 1;
 
         while (k-- > 0) {
-            if(lpq.size()!=0 && rpq.size()!=0){
+            if (lpq.size() != 0 && rpq.size() != 0) {
 
                 if (costs[lpq.peek()] <= costs[rpq.peek()]) {
                     ans += (long) costs[lpq.remove()];
-                    if(i<=j){
+                    if (i <= j) {
                         lpq.add(i++);
                     }
                 } else {
                     ans += (long) costs[rpq.remove()];
-                    if(i<=j){rpq.add(j--);}
-                }
-    
-            }else if(lpq.size()!=0){
-                ans += (long) costs[lpq.remove()];
-                    if(i<=j){
-                        lpq.add(i++);
+                    if (i <= j) {
+                        rpq.add(j--);
                     }
-            }else{
+                }
+
+            } else if (lpq.size() != 0) {
+                ans += (long) costs[lpq.remove()];
+                if (i <= j) {
+                    lpq.add(i++);
+                }
+            } else {
                 ans += (long) costs[rpq.remove()];
-                    if(i<=j){rpq.add(j--);}
+                if (i <= j) {
+                    rpq.add(j--);
+                }
             }
         }
 
         return ans;
     }
+
+    // 2463. Minimum Total Distance Traveled
+
+    public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
+        ArrayList<Long> listOfFactories = new ArrayList<>();
+        Collections.sort(robot);
+        Arrays.sort(factory, (a, b) -> {
+            return a[0] - b[0];
+        });
+
+        for (int[] f : factory) {
+            int pos = f[0];
+            int k = f[1];
+            // System.out.println(pos);
+            while (k-- > 0)
+                listOfFactories.add((long) pos);
+        }
+
+        long[][] dp = new long[robot.size() + 1][listOfFactories.size() + 1];
+        for (long[] d : dp)
+            Arrays.fill(d, -1l);
+        return minimumTotalDistance_(0, 0, listOfFactories, robot, dp);
+
+    }
+
+    private long minimumTotalDistance_(int i, int j, ArrayList<Long> listOfFactories, List<Integer> robot,
+            long[][] dp) {
+        if (i == robot.size())
+            return 0;
+        if (j == listOfFactories.size())
+            return (long) 1e16;
+
+        if (dp[i][j] != -1l)
+            return dp[i][j];
+
+        long rpos = (long) robot.get(i);
+        long fpos = listOfFactories.get(j);
+
+        long dis = Math.abs(fpos - rpos);
+        long inc = minimumTotalDistance_(i + 1, j + 1, listOfFactories, robot, dp) + dis; // taking jth pos
+        long exc = minimumTotalDistance_(i, j + 1, listOfFactories, robot, dp); // ignoring jth pos
+
+        return dp[i][j] = Math.min(inc, exc);
+
+    }
+
 }
