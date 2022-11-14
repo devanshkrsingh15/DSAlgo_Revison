@@ -49,6 +49,105 @@ public class BiweeklyContest91 {
         return dp[currLen] = ans;
     }
 
-    //2467. Most Profitable Path in a Tree
-    
+    // 2467. Most Profitable Path in a Tree
+    public int mostProfitablePath(int[][] edges, int bob, int[] amount) {
+        ArrayList<Integer> graph[] = buildGraph(edges);
+        HashMap<Integer, Integer> bobPath = findBobPath(graph, bob); // mapping of node traveled by bob and time at
+                                                                     // which was stepped on
+        int aliceTime = 0;
+        int max = -(int) 1e9;
+
+        ArrayDeque<int[]> q = new ArrayDeque<>();
+        HashSet<Integer> vis = new HashSet<>();
+        q.add(new int[] { 0, 0 }); // idx,csum
+
+        while (q.size() != 0) {
+            int s = q.size();
+            while (s-- > 0) {
+                int[] arr = q.remove();
+                int ridx = arr[0];
+                int csum = arr[1];
+
+                if (vis.contains(ridx))
+                    continue;
+
+                vis.add(ridx);
+
+                if (!bobPath.containsKey(ridx)) {
+                    csum += amount[ridx];
+                } else {
+                    int bobTime = bobPath.get(ridx);
+
+                    if (bobTime == aliceTime) {
+                        csum += (amount[ridx] / 2);
+                    } else if (bobTime > aliceTime) {
+                        csum += amount[ridx];
+                    }
+                }
+
+                if (ridx != 0 && graph[ridx].size() == 1) {
+                    // leaf node
+                    max = Math.max(max, csum);
+                }
+
+                for (int nbr : graph[ridx]) {
+                    if (!vis.contains(nbr)) {
+                        q.add(new int[] { nbr, csum });
+                    }
+                }
+
+            }
+            aliceTime++;
+        }
+
+        return max;
+
+    }
+
+    private HashMap<Integer, Integer> findBobPath(ArrayList<Integer>[] graph, int bob) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        HashSet<Integer> vis = new HashSet<>();
+        dfs(graph, map, bob, 0, vis);
+        return map;
+    }
+
+    private boolean dfs(ArrayList<Integer>[] graph, HashMap<Integer, Integer> map, int src, int time,
+            HashSet<Integer> vis) {
+        map.putIfAbsent(src, time);
+        vis.add(src);
+
+        if (src == 0)
+            return true;
+
+        boolean res = false;
+
+        for (int nbr : graph[src]) {
+            if (vis.contains(nbr) == false) {
+                res = res || dfs(graph, map, nbr, time + 1, vis);
+            }
+        }
+
+        if (res == false)
+            map.remove(src);
+
+        return res;
+
+    }
+
+    private ArrayList<Integer>[] buildGraph(int[][] edges) {
+        int n = edges.length + 1;
+        ArrayList<Integer> graph[] = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] ed : edges) {
+            int u = ed[0];
+            int v = ed[1];
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        return graph;
+    }
 }
