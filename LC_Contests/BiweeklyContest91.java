@@ -150,4 +150,58 @@ public class BiweeklyContest91 {
 
         return graph;
     }
+
+    public String[] generateAns(String message, int lim, int num) {
+        int len = message.length();
+        String[] ans = new String[num];
+
+        int k = 0;
+        int pos = 0;
+        while (k < num) {
+            int pidx = k + 1;
+            String suffix = "<" + pidx + "/" + num + ">";
+            StringBuilder sb = new StringBuilder();
+            int currLen = lim - suffix.length();
+
+            while (pos < len && sb.length() < currLen) {
+                sb.append(message.charAt(pos));
+                pos++;
+            }
+            sb.append(suffix);
+            ans[k] = sb.toString();
+            k++;
+        }
+
+        return ans;
+    }
+
+    // at max total parts can total number of character
+    public String[] splitMessage(String message, int lim) {
+        int n = message.length();
+        int cumLen = 0;
+        int brLen = 3; // "</>"
+        for (int i = 1; i <= n; i++) {
+            cumLen += countDig(i); // each suffix has 1,2,3.......n
+            int suffixLen = brLen + countDig(i);
+            long actualTotalLen = (long) suffixLen * i + (long) cumLen + n;
+            long expectedTotalLen = (long) lim * i;
+            if (actualTotalLen <= expectedTotalLen) {
+                return generateAns(message, lim, i);
+            }
+
+        }
+
+        return new String[0];
+    }
+
+    public int countDig(int n) {
+        int cnt = 0;
+
+        while (n != 0) {
+            n = n / 10;
+            cnt++;
+        }
+
+        return cnt;
+    }
 }
