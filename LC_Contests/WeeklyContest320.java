@@ -111,80 +111,140 @@ public class WeeklyContest320 {
     }
 
 }
-//2478. Number of Beautiful Partitions
-class Solution {
+
+// 2478. Number of Beautiful Partitions
+class LC2478 {
     int isPrime = 0;
-    public void fillPrime(){
-        isPrime|=(1<<2);isPrime|=(1<<3);isPrime|=(1<<5);isPrime|=(1<<7);
+
+    public void fillPrime() {
+        isPrime |= (1 << 2);
+        isPrime |= (1 << 3);
+        isPrime |= (1 << 5);
+        isPrime |= (1 << 7);
     }
-    
-    public void fillMap(String s,int minLength,HashMap<Integer,ArrayList<Integer>>map){
+
+    public void fillMap(String s, int minLength, HashMap<Integer, ArrayList<Integer>> map) {
         int n = s.length();
-        for(int i = 0;i<n;i++) map.putIfAbsent(i,new ArrayList<>());
-        
-        for(int i = 0;i<n;i++){
-            for(int j = i+minLength -1;j<n;j++){
-                int en=s.charAt(j) -'0';
-                int st= (j+1<n)  ? s.charAt(j+1) -'0'  : 2;
-                
-                boolean nonPrimeCond = ((isPrime&(1<<en))==0);
-                boolean primeCond = ((isPrime&(1<<st))!=0);
-                
-                if(nonPrimeCond&& primeCond){
+        for (int i = 0; i < n; i++)
+            map.putIfAbsent(i, new ArrayList<>());
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + minLength - 1; j < n; j++) {
+                int en = s.charAt(j) - '0';
+                int st = (j + 1 < n) ? s.charAt(j + 1) - '0' : 2;
+
+                boolean nonPrimeCond = ((isPrime & (1 << en)) == 0);
+                boolean primeCond = ((isPrime & (1 << st)) != 0);
+
+                if (nonPrimeCond && primeCond) {
                     map.get(i).add(j);
                 }
-                
+
             }
         }
-        
+
         // for(int idx: map.keySet()){
-        //     System.out.print(idx + " - ");
-        //     for(int nidx :map.get(idx)) System.out.print(nidx + " ");
-        //     System.out.println();
+        // System.out.print(idx + " - ");
+        // for(int nidx :map.get(idx)) System.out.print(nidx + " ");
+        // System.out.println();
         // }
 
     }
+
     int minL;
-    long mod = (long)1e9 + 7;
+    long mod = (long) 1e9 + 7;
+
     public int beautifulPartitions(String s, int k, int minLength) {
         fillPrime();
         minL = minLength;
         int n = s.length();
-        if(k*minLength>n) return 0;
-                
-        int st = s.charAt(0) - '0';
-        int en = s.charAt(n-1) - '0';
-        if((isPrime&(1<<st))==0 || (isPrime&(1<<en))!=0 ) return 0;
-        
-        if(k==1) return 1;
- 
-        long[][]dp = new long[n+1][k+1];
-        for(long[]d:dp) Arrays.fill(d,-1l);
-        
-        HashMap<Integer,ArrayList<Integer>>map = new HashMap<>();  //valid end pos from current idx
-        fillMap(s,minLength,map);
+        if (k * minLength > n)
+            return 0;
 
-        
-        int ans = (int)beautifulPartitions_(s,0,k,dp,map);
+        int st = s.charAt(0) - '0';
+        int en = s.charAt(n - 1) - '0';
+        if ((isPrime & (1 << st)) == 0 || (isPrime & (1 << en)) != 0)
+            return 0;
+
+        if (k == 1)
+            return 1;
+
+        long[][] dp = new long[n + 1][k + 1];
+        for (long[] d : dp)
+            Arrays.fill(d, -1l);
+
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>(); // valid end pos from current idx
+        fillMap(s, minLength, map);
+
+        int ans = (int) beautifulPartitions_(s, 0, k, dp, map);
         return ans;
-        
+
     }
-    
-    public long  beautifulPartitions_(String s,int idx,int k,long[][]dp,HashMap<Integer,ArrayList<Integer>>map){
-        if(idx==s.length() || k==0){
-            return idx==s.length() && k==0 ? 1l : 0;
+
+    public long beautifulPartitions_(String s, int idx, int k, long[][] dp, HashMap<Integer, ArrayList<Integer>> map) {
+        if (idx == s.length() || k == 0) {
+            return idx == s.length() && k == 0 ? 1l : 0;
         }
-        
-        if(dp[idx][k]!=-1) return dp[idx][k];
-        
+
+        if (dp[idx][k] != -1)
+            return dp[idx][k];
+
         long ans = 0;
-        
-        for(int en: map.get(idx)){
-            if( en + (k-1)*minL > s.length() ) continue;
-            long fans= beautifulPartitions_(s,en+1,k-1,dp,map);
-            ans = (ans%mod + fans%mod)%mod;
+
+        for (int en : map.get(idx)) {
+            if (en + (k - 1) * minL > s.length())
+                continue;
+            long fans = beautifulPartitions_(s, en + 1, k - 1, dp, map);
+            ans = (ans % mod + fans % mod) % mod;
         }
-        
+
         return dp[idx][k] = ans;
+    }
+}
+
+// 2472. Maximum Number of Non-overlapping Palindrome Substrings
+class LC2472 {
+    boolean[][] isPal;
+    int minL;
+
+    public int maxPalindromes(String s, int k) {
+        int n = s.length();
+        minL = k;
+        isPal = new boolean[n][n];
+        // if(k==1) return s.length();
+
+        for (int gap = 0; gap < n; gap++) {
+            for (int i = 0, j = i + gap; j < n; i++, j++) {
+                if (gap == 0)
+                    isPal[i][j] = true;
+                else if (gap == 1)
+                    isPal[i][j] = s.charAt(i) == s.charAt(j);
+                else {
+                    isPal[i][j] = isPal[i + 1][j - 1] && s.charAt(i) == s.charAt(j);
+                }
+            }
+        }
+
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+
+        return maxPalindromes_(s, 0, dp);
+    }
+
+    public int maxPalindromes_(String s, int idx, int[] dp) {
+        if (idx == s.length())
+            return 0;
+        if (dp[idx] != -1)
+            return dp[idx];
+
+        int exc = maxPalindromes_(s, idx + 1, dp);
+        int inc = 0;
+
+        for (int en = idx + minL - 1; en < s.length(); en++) {
+            if (isPal[idx][en])
+                inc = Math.max(inc, 1 + maxPalindromes_(s, en + 1, dp));
+        }
+
+        return dp[idx] = Math.max(exc, inc);
     }
 }
