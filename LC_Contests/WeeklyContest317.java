@@ -44,14 +44,14 @@ public class WeeklyContest317 {
             Collections.sort(list, (a, b) -> {
                 if (a.v == b.v)
                     return a.i.compareTo(b.i);
-                return (int)b.v - (int)a.v;
+                return (int) b.v - (int) a.v;
             });
             String highest = list.get(0).i;
             for (Pair rp : list) {
                 mySum += rp.v;
             }
 
-            omax=Math.max(omax, mySum);
+            omax = Math.max(omax, mySum);
             ArrayList<String> tmp = new ArrayList<>();
             tmp.add(c);
             tmp.add(highest);
@@ -60,10 +60,10 @@ public class WeeklyContest317 {
 
         }
         List<List<String>> fans = new ArrayList<>();
-        for(List<String>t :ans){
+        for (List<String> t : ans) {
             long sum = Long.parseLong(t.get(2));
-            if(sum==omax){
-                t.remove(t.size()-1);
+            if (sum == omax) {
+                t.remove(t.size() - 1);
                 fans.add(t);
             }
         }
@@ -72,26 +72,34 @@ public class WeeklyContest317 {
 
     }
 
-    //2457. Minimum Addition to Make Integer Beautiful
-    
-    public long[] countSumOfDig(long n){
-        long cnt = 0;
-        long sum =0;
+    // 2457. Minimum Addition to Make Integer Beautiful
 
-        while(n!=0){
-            cnt++;
-            sum = n%10;
-            n = n/10;
+    public long countSumOfDig(long n) {
+        long sum = 0;
+        while (n != 0) {
+            sum = n % 10;
+            n = n / 10;
         }
-
-        return new long[]{cnt,sum};
+        return sum;
     }
 
     public long makeIntegerBeautiful(long n, int target) {
-        long[]arr = countSumOfDig(n);
-        if(arr[1]<=target) return 0l;
+        long dsum = countSumOfDig(n);
+        if (dsum <= target)
+            return 0l;
 
-        
+        int p = 1;
+        long beautyN = n;
+        long copyN = n;
+        while (dsum > target) {
+            n /= 10;
+            beautyN = (long) (n + 1) * (long) Math.pow(10, p);
+            p++;
+            dsum = countSumOfDig(beautyN);
+        }
+
+        return beautyN - copyN;
+
     }
-}
 
+}
