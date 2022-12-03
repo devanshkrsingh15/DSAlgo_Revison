@@ -84,6 +84,8 @@ public class WeeklyContest317 {
     }
 
     public long makeIntegerBeautiful(long n, int target) {
+        // if a tot of all digits is greater than tar , we will not get a valid ans
+        // until we reach a nearest multiple of 10, 100,1000....
         long dsum = countSumOfDig(n);
         if (dsum <= target)
             return 0l;
@@ -102,4 +104,97 @@ public class WeeklyContest317 {
 
     }
 
+    // 2458. Height of Binary Tree After Subtree Removal Queries
+    class TreeNode {
+        public int val;
+        public TreeNode left;
+        public TreeNode right;
+
+        public TreeNode() {
+
+        }
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+
+        public TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+
+    }
+
+    HashMap<Integer, int[]> levelMap;
+    int[] levels;
+    int[] hts;
+
+    // 2458. Height of Binary Tree After Subtree Removal Queries
+    public int[] treeQueries(TreeNode root, int[] queries) {
+        levels = new int[(int) 1e5 + 10];
+        hts = new int[(int) 1e5 + 10];
+        levelMap = new HashMap<>();
+
+        int ht = dfs(root, 0);
+
+        // for(int level : levelMap.keySet()){
+        // System.out.print(level + " ");
+        // System.out.println(levelMap.get(level)[0] + " " +levelMap.get(level)[1]);
+        // }
+
+        int[] ans = new int[queries.length];
+
+        for (int i = 0; i < queries.length; i++) {
+            int q = queries[i];
+            if (q == root.val)
+                ans[i] = 0;
+            else {
+                int l = levels[q];
+                int[] arr = levelMap.get(l);
+                // new ht after removing -> parent level + (max ht at that level after removing
+                // current node)
+
+                if (q != arr[0] && q != arr[1]) {
+                    ans[i] = ht;
+                } else {
+                    int cand = (q == arr[0]) ? arr[1] : arr[0];
+                    if (cand == -1)
+                        ans[i] = l - 1;
+                    else {
+                        ans[i] = l + hts[cand];
+                    }
+                }
+
+            }
+        }
+
+        return ans;
+
+    }
+
+    public int dfs(TreeNode root, int level) {
+        if (root == null)
+            return -1;
+
+        int lh = dfs(root.left, level + 1);
+        int rh = dfs(root.right, level + 1);
+
+        levelMap.putIfAbsent(level, new int[] { -1, -1 }); // max,smax
+
+        int myHt = Math.max(lh, rh) + 1;
+        levels[root.val] = level;
+        hts[root.val] = myHt;
+
+        if (levelMap.get(level)[0] == -1 || myHt > hts[levelMap.get(level)[0]]) {
+            levelMap.get(level)[1] = levelMap.get(level)[0];
+            levelMap.get(level)[0] = root.val;
+        } else if (levelMap.get(level)[1] == -1 || myHt > hts[levelMap.get(level)[1]]) {
+            levelMap.get(level)[1] = root.val;
+        }
+
+        return myHt;
+    }
 }
