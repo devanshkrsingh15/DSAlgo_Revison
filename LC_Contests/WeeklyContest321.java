@@ -110,6 +110,8 @@ public class WeeklyContest321 {
     public int countSubarrays(int[] nums, int k) {
         int n = nums.length;
         int pos = -1;
+        HashMap<Integer,Integer>map= new HashMap<>();
+
         for (int i = 0; i < n; i++) {
             if (nums[i] == k) {
                 nums[i] = 0;
@@ -120,19 +122,34 @@ public class WeeklyContest321 {
                 nums[i] = 1;
             }
         }
+        int sum = 0;
 
-        int[] lsum = getPsum(nums, true);
-
-        int right = pos + 1;
-        int left = pos - 1;
-        int ans = 1;
-        while (left >= 0 && right < n) {
-            ans += calSum(lsum, left, pos);
-            ans += calSum(lsum, pos, right);
-            ans += calSum(lsum, left, right);
-            left--;
-            right++;
+        for(int i = pos;i>=0;i--){
+            sum+=nums[i];
+            map.put(sum,map.getOrDefault(sum,0)+1);
         }
+
+        int ans = 0;
+        ans += map.getOrDefault(0,0) +map.getOrDefault(1,0);
+
+        sum = 0;
+        for(int i = pos+1;i<n;i++){
+            sum+=nums[i];
+
+            /*
+            for odd  => left + right = 0;   
+            right = sum;
+            left = -sum
+
+            for even =>  left + right = 1;   
+            right = sum;
+            left = 1 - sum
+            */ 
+
+            ans += map.getOrDefault(-sum,0) + map.getOrDefault(1-sum,0);
+        }
+
+        
         return ans;
 
     }
