@@ -110,14 +110,117 @@ public class WeeklyContest322 {
             map.putIfAbsent(v, w);
 
             if (w < map.get(u))
-                map.put(u, w);
+            map.put(u, w);
             if (w < map.get(v))
-                map.put(v, w);
+            map.put(v, w);
 
             graph[u].add(new Edge(v, w));
             graph[v].add(new Edge(u, w));
         }
 
         return graph;
+    }
+
+    // 2493. Divide Nodes Into the Maximum Number of Groups
+    class Solution {
+        public ArrayList<HashSet<Integer>> getConnectedComp(ArrayList<Integer>[] graph){
+            int n = graph.length;
+            boolean[]vis = new boolean[n];
+            ArrayList<HashSet<Integer>>ans =new ArrayList<>();
+    
+            for(int i = 1;i<n;i++){
+                if(!vis[i]){
+                    HashSet<Integer>list = new HashSet<>();
+                    dfs(i,vis,list,graph);
+                    ans.add(list);
+                }
+            }
+    
+            return ans;
+        }
+    
+        public void dfs(int src,boolean[]vis,HashSet<Integer>list,ArrayList<Integer>[] graph){
+            vis[src]= true;
+            list.add(src);
+            for(int nbr :graph[src]){
+                if(!vis[nbr]){
+                    dfs(nbr,vis,list,graph);
+                }
+            }
+        }
+      
+        public ArrayList<Integer>[] buildGraph(int n, int[][] roads) {
+            ArrayList<Integer>[] graph = new ArrayList[n + 1];
+            for (int i = 0; i <= n; i++)
+                graph[i] = new ArrayList<>();
+    
+            for (int[] r : roads) {
+                int u = r[0];
+                int v = r[1];
+    
+                graph[u].add(v);
+                graph[v].add(u);
+            }
+    
+            return graph;
+        }
+    
+        private int magnificentSets_(int src, ArrayList<Integer>[] graph) {
+            int n = graph.length;
+            boolean[] vis = new boolean[n];
+            int bidx = 0;
+            
+            int[]bvis= new int[n];
+            Arrays.fill(bvis,-1);
+          
+            ArrayDeque<Integer> q = new ArrayDeque<>();
+            q.add(src);
+            int level = 0;
+            while (q.size() != 0) {
+                int s = q.size();
+                while (s-- > 0) {
+                    int ridx = q.remove();
+                    
+                    if(bvis[ridx]!=-1){
+                        if(bvis[ridx]!=bidx) return -1;
+                    }
+                    bvis[ridx]= bidx;
+                    
+                    if (vis[ridx])
+                        continue;
+                    vis[ridx] = true;
+                    
+                    for (int e : graph[ridx]) {
+                        if (!vis[e]) {
+                            q.add(e);
+                        }
+                    }
+                }
+                level++;
+                bidx = (bidx+1)%2;
+            }
+    
+            return level;
+        }
+    
+       
+    
+        public int magnificentSets(int n, int[][] edges) {
+            ArrayList<Integer>[] graph = buildGraph(n, edges);
+            ArrayList<HashSet<Integer>>comp= getConnectedComp(graph);
+    
+            int ans = 0;
+            for (HashSet<Integer>list : comp) {
+                int tmp = 0;
+                for(int ele:list ){
+                    int cnt = magnificentSets_(ele, graph);
+                    if(cnt==-1) return -1;
+                    tmp = Math.max(tmp, cnt);
+                }
+                ans+=tmp;
+               
+            }
+            return ans;
+        }
     }
 }
