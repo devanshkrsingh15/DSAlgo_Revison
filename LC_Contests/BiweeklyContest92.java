@@ -87,4 +87,54 @@ public class BiweeklyContest92 {
 
         return ansIdx;
     }
+
+    // 2484. Count Palindromic Subsequences
+    public int countPalindromes(String s) {
+        int n = s.length();
+        int[][][] preffixDigFreq = getFreq(s, true);
+        int[][][] suffixDigFreq = getFreq(s, false);
+
+        long ans = 0;
+        long mod = (long) 1e9 + 7;
+        for (int i = 2; i <= n - 3; i++) {
+            // j-k-c-k-j
+            // char c = s.charAt(i)-'0';
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+
+                    ans = ans % mod
+                            + ((long) preffixDigFreq[i - 1][j][k] % mod * (long) suffixDigFreq[i + 1][j][k] % mod)
+                                    % mod;
+
+                }
+            }
+        }
+
+        return (int) ans;
+    }
+
+    public int[][][] getFreq(String s, boolean flag) {
+        int n = s.length();
+        int[][][] ans = new int[n][10][10];
+        int[] cnt = new int[10];
+
+        for (int idx = 0; idx < n; idx++) {
+            int i = (flag) ? idx : n - idx - 1;
+            int cd = s.charAt(i) - '0';
+
+            if ((flag) ? i - 1 >= 0 : i + 1 < n) {
+                for (int j = 0; j < 10; j++) {
+                    for (int k = 0; k < 10; k++) {
+                        ans[i][j][k] = ans[(flag) ? i - 1 : i + 1][j][k];
+                        if (k == cd)
+                            ans[i][j][k] += cnt[j];
+                    }
+                }
+            }
+
+            cnt[cd]++;
+        }
+
+        return ans;
+    }
 }
