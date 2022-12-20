@@ -121,7 +121,9 @@ public class WeeklyContest324 {
             return true;
 
         if (list.size() == 2) {
-
+            // if there are two
+            // either connect them both => if possible
+            // or connect both with other even degree node => if possible
             int u = list.get(0);
             int v = list.get(1);
 
@@ -173,4 +175,62 @@ public class WeeklyContest324 {
         // as we are allowed for atmost 2 only
         return false;
     }
+
+    // 2509. Cycle Length Queries in a Tree
+    public int[] cycleLengthQueries(int N, int[][] queries) {
+        int n = queries.length;
+        int[] ans = new int[n];
+        int idx = 0;
+
+        for (int[] q : queries) {
+            int u = q[0];
+            int v = q[1];
+
+            int d1 = getDist(u);
+            int d2 = getDist(v);
+
+            int lca = findLCA(u, v);
+            int dl = getDist(lca);
+
+            //distance between u and v =>  du + dv - 2 * (dlca)
+
+            ans[idx++] = d1 + d2 - 2 * (dl) + 1;
+        }
+
+        return ans;
+    }
+
+    public int findLCA(int u, int v) {
+        int d1 = getDist(u);
+        int d2 = getDist(v);
+
+        if (d1 > d2) {
+            while (d1 != d2) {
+                d1--;
+                u = u / 2;
+            }
+
+        } else if (d2 > d1) {
+            while (d1 != d2) {
+                d2--;
+                v = v / 2;
+            }
+        }
+
+        while (u != v) {
+            u = u / 2;
+            v = v / 2;
+        }
+        return u;
+    }
+
+    public int getDist(int a) {
+        if (a == 1)
+            return 0;
+        if (a % 2 == 1)
+            a--;
+
+        return (int) (Math.log(a) / Math.log(2));
+    }
+
 }
