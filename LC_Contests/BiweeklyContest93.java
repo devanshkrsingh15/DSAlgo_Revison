@@ -157,4 +157,30 @@ public class BiweeklyContest93 {
         return true;
     }
 
+    //790. Domino and Tromino Tiling
+    long mod = (long)1e9 + 7;
+    public int numTilings(int n) {
+
+        long[]dp = new long[n+1];
+        Arrays.fill(dp,-1l);
+
+       return (int)numTilings_(n,dp);
+    }
+
+    public long numTilings_(int n,long[]dp){
+        if(n==0) return dp[n] = 1l;
+        if(n==1) return dp[n]=1l;
+        if(n==2) return dp[n] = 2l;
+
+        if(dp[n]!=-1l) return dp[n];
+
+        long a = (n-1<0) ? 0 : 2*numTilings_(n-1,dp)%mod;
+        long b = (n-3<0) ? 0 : numTilings_(n-3,dp)%mod;
+
+        long myAns = (a%mod + b%mod)%mod;
+
+
+        return dp[n] = myAns;
+    }
+
 }
