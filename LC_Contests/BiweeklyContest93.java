@@ -157,30 +157,76 @@ public class BiweeklyContest93 {
         return true;
     }
 
-    //790. Domino and Tromino Tiling
-    long mod = (long)1e9 + 7;
+    // 790. Domino and Tromino Tiling
+    long mod = (long) 1e9 + 7;
+
     public int numTilings(int n) {
 
-        long[]dp = new long[n+1];
-        Arrays.fill(dp,-1l);
+        long[] dp = new long[n + 1];
+        Arrays.fill(dp, -1l);
 
-       return (int)numTilings_(n,dp);
+        return (int) numTilings_(n, dp);
     }
 
-    public long numTilings_(int n,long[]dp){
-        if(n==0) return dp[n] = 1l;
-        if(n==1) return dp[n]=1l;
-        if(n==2) return dp[n] = 2l;
+    public long numTilings_(int n, long[] dp) {
+        if (n == 0)
+            return dp[n] = 1l;
+        if (n == 1)
+            return dp[n] = 1l;
+        if (n == 2)
+            return dp[n] = 2l;
 
-        if(dp[n]!=-1l) return dp[n];
+        if (dp[n] != -1l)
+            return dp[n];
 
-        long a = (n-1<0) ? 0 : 2*numTilings_(n-1,dp)%mod;
-        long b = (n-3<0) ? 0 : numTilings_(n-3,dp)%mod;
+        long a = (n - 1 < 0) ? 0 : 2 * numTilings_(n - 1, dp) % mod;
+        long b = (n - 3 < 0) ? 0 : numTilings_(n - 3, dp) % mod;
 
-        long myAns = (a%mod + b%mod)%mod;
-
+        long myAns = (a % mod + b % mod) % mod;
 
         return dp[n] = myAns;
+    }
+
+    // 2499. Minimum Total Cost to Make Arrays Unequal
+    // most freq invalid places (number) <= total valid places/2
+    // greddy approach
+    public long minimumTotalCost(int[] nums1, int[] nums2) {
+        long ans = 0;
+        int[] freq = new int[(int) 1e5 + 10];
+        int n = nums1.length;
+        int totalValidPos = 0;
+        int mostInvalidPos = 0;
+        int mostInvalidNum = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (nums1[i] == nums2[i]) {
+                ans += (long) i;
+                freq[nums1[i]]++;
+                totalValidPos++;
+
+                if (freq[nums1[i]] > mostInvalidPos) {
+                    mostInvalidPos = freq[nums1[i]];
+                    mostInvalidNum = nums1[i];
+                }
+
+            }
+        }
+
+        if (mostInvalidPos <= totalValidPos / 2)
+            return ans;
+
+        // now find pos from idx which were already valid
+        for (int i = 0; i < n; i++) {
+            if (nums1[i] != nums2[i] && nums1[i] != mostInvalidNum && nums2[i] != mostInvalidNum) {
+                ans += (long) i;
+                totalValidPos++;
+            }
+
+            if (mostInvalidPos <= totalValidPos / 2)
+                return ans;
+        }
+
+        return -1;
     }
 
 }
