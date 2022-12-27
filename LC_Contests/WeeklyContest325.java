@@ -124,4 +124,54 @@ public class WeeklyContest325 {
         return dp;
     }
 
+
+
+    //2517. Maximum Tastiness of Candy Basket
+    public int maximumTastiness(int[] price, int k) {
+        long min = 0 ;
+        long max = (long)1e9;
+        long ans = -1;
+        
+        int n = price.length;
+        long[]nprices = new long[n];
+        for(int i = 0 ;i<n;i++){
+            nprices[i] = (long)price[i];
+        }
+        Arrays.sort(nprices);
+
+        while(min<=max){
+            long mid = min + (max - min)/2; //diff should be at least mid;
+
+            if(isPossile(nprices,k,mid)){
+                ans  = mid;
+                min = mid+1;
+            }else{
+                max= mid-1;
+            }
+        }
+
+        return (int)ans;
+    }
+
+
+    public boolean isPossile(long[]prices,int k,long diff){
+        int n = prices.length;
+        int curr =1 ;
+        int st = 0;
+        int i= 1;
+
+        while(i<n && curr<k){
+            if(prices[i] - prices[st] >= diff){
+                st = i;
+                curr++;
+            }
+            i++;
+            if(curr>=k) return true;
+        }
+
+
+        return false;
+        
+    }
+    
 }
