@@ -173,5 +173,44 @@ public class WeeklyContest325 {
         return false;
         
     }
+
+      //valid partitions = total partitions -  invalid partitions
+    public int countPartitions(int[] nums, int k) {
+        long sof = 0;
+        long ans = 1;
+        long mod = (long)1e9 + 7;
+        int n = nums.length;
+
+        for(int ele : nums){
+            sof  =sof + (long)ele;
+            ans = ans*2%mod; 
+        }
+
+        if(sof<2*k) return 0;
+        long invalid = 0;
+
+        long[][]dp = new long[n+1][k];
+
+        for(int i = 0 ;i<=n;i++){
+            for(int j = 0;j<k;j++){
+                if(i==0 || j==0){
+                    dp[i][j] = (j==0) ? 1l  :0l;
+                }else{
+                    long myans = dp[i-1][j];
+                    if(j-nums[i-1]>=0) myans= (myans%mod + dp[i-1][j-nums[i-1]]%mod)%mod;
+                    dp[i][j] = myans;
+                }
+
+
+                if(i==n)  invalid =( invalid%mod + 2*dp[i][j]%mod)%mod;
+            }
+           
+        }
+
+        ans  = (ans%mod - invalid%mod + mod)%mod;
+
+
+        return (int)(ans%mod);
+    }
     
 }
