@@ -114,18 +114,48 @@ public class BiweeklyContest94 {
         return hs;
     }
 
+    // 2513. Minimize the Maximum of Two Arrays
 
-    //2513. Minimize the Maximum of Two Arrays
     public int minimizeSet(int divisor1, int divisor2, int uniqueCnt1, int uniqueCnt2) {
-        long a = smallestCandidate(divisor1);
-        
-        long b = smallestCandidate(divisor2);
+        long lo = 1;
+        long hi = (long) 1e18;
+        long ans = -1;
 
-        return (int)Math.max(a,b);
+        while (lo <= hi) {
+            long mid = lo + (hi - lo) / 2;
+
+            if (isValid(divisor1, divisor2, uniqueCnt1, uniqueCnt2, mid)) {
+                ans = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+
+        }
+
+        return (int) ans;
     }
 
-    private long smallestCandidate(int div) {
-        long ans = 0;
-        for()
+    public long getLCM(long a, long b) {
+        long gcd = getGCD(a, b);
+
+        return (a * b) / gcd;
     }
+
+    public long getGCD(long a, long b) {
+        if (b == 0)
+            return a;
+        return getGCD(b, a % b);
+    }
+
+    public boolean isValid(long d1, long d2, long c1, long c2, long myMax) {
+        long valid1 = myMax - myMax / d1;
+        long valid2 = myMax - myMax / d2;
+        long lcm = getLCM(d1, d2);
+        long validBoth = myMax - myMax / lcm;
+
+        return (valid1 >= c1) && (valid2 >= c2) && (validBoth >= (c1 + c2));
+
+    }
+
 }
