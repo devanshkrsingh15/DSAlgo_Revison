@@ -158,4 +158,81 @@ public class BiweeklyContest94 {
 
     }
 
+
+    //2514. Count Anagrams
+    long mod = (long)1e9 + 7;
+    public int countAnagrams(String s) {
+        HashMap<String,int[]>map=new HashMap<>();
+        String[]sarr = s.trim().split(" ");
+
+        for(int i = 0;i<sarr.length;i++){
+            String str = sarr[i];
+            int[]enc = getEnc(str);
+            map.put(str,enc);
+        }
+
+        long[]fac = new long[(int)1e5 + 10];
+        fac[0] = fac[1] = 1l;
+
+        for(int i =2;i<fac.length;i++){
+            fac[i] =(fac[i-1]%mod*(long)i%mod)%mod; 
+        }
+        int n =sarr.length;
+        long[]dp = new long[n+1];
+        dp[0] = 1;
+
+        for(int i = 1;i<=n;i++){
+            String str = sarr[i-1];
+            long per = getPer(map,str,fac);
+            dp[i] = (dp[i-1]%mod*per%mod)%mod;
+        }
+
+        return (int)dp[n];
+    }
+
+
+    public long getPer(HashMap<String,int[]>map,String s,long[]fac){
+        int[]arr= map.get(s);
+        int unique = 0;
+        long den = 1;
+        long ans= 1l;
+        for(int i = 0 ; i<26;i++){
+            if(arr[i]!=0){
+                den= (den%mod*fac[arr[i]]%mod)%mod;
+            }
+        }
+
+        long num = fac[s.length()];
+        return num*pow(den, mod - 2) % mod;
+    } 
+    
+    public long pow(long a,long n) {
+        int mod = 1000000000 + 7;
+        long res = 1;
+        while(n > 0) {
+            if(n % 2 == 1) {
+                res = (res * a) % mod;
+                n--;
+            }
+            else {
+                a = (a * a) % mod;
+                n = n / 2;
+            }
+        }
+        
+        return res;
+    }
+
+  
+
+    public int[] getEnc(String s){
+        int[]arr = new int[26];
+        for(int i = 0 ; i<s.length();i++){
+            int idx = s.charAt(i)-'a';
+            arr[idx]++;
+        }
+
+        return arr;
+    }
+
 }
