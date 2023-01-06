@@ -113,4 +113,41 @@ public class WeeklyContest326 {
 
         return ans;
     }
+
+    // 2523. Closest Prime Numbers in Range
+    public int[] closestPrimes(int left, int right) {
+        if (left == right)
+            return new int[] { -1, -1 };
+        boolean[] isPrime = new boolean[right + 1];
+        getPrimeFactors(isPrime.length, isPrime);
+        isPrime[0] = true;
+        isPrime[1] = true;
+
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = left; i <= right; i++) {
+            if (isPrime[i] == false)
+                list.add(i);
+        }
+
+        if (list.size() <= 1)
+            return new int[] { -1, -1 };
+        if (list.size() == 2)
+            return new int[] { list.get(0), list.get(1) };
+
+        int minDiff = (int) 1e9;
+        int n1 = -1;
+        int n2 = -1;
+        for (int i = 0; i < list.size() - 1; i++) {
+            int a = list.get(i);
+            int b = list.get(i + 1);
+
+            if (b - a < minDiff) {
+                n1 = a;
+                n2 = b;
+                minDiff = b - a;
+            }
+        }
+
+        return new int[] { n1, n2 };
+    }
 }
