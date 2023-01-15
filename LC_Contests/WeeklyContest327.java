@@ -127,3 +127,68 @@ public class WeeklyContest327 {
     }
 
 }
+
+//2421. Number of Good Paths
+class Solution {
+    public int findPar(int u,int[]par){
+        if(par[u]==u) return u;
+        else{
+            int t= findPar(par[u],par);
+            par[u] = t;
+            return t;
+
+        }
+    }
+    public int numberOfGoodPaths(int[] vals, int[][] edges) {
+        int n = vals.length;
+        int[]par =new int[n];
+        int[]size = new int[n];
+
+        for(int i = 0 ; i<n;i++){
+            par[i] = i;
+            size[i] = 1;
+        }
+
+        ArrayList<int[]>list = new ArrayList<>();
+        for(int[]ed: edges) list.add(new int[]{ed[0],ed[1]});
+
+        Collections.sort(list,(a,b)->{
+            int v1 = Math.max(vals[a[0]],vals[a[1]]);
+            int v2 = Math.max(vals[b[0]],vals[b[1]]);
+
+            if(v1<v2){
+                return -1;
+            }else if(v1>v2){
+                return 1;
+            }else{
+                return 0;
+            }
+
+        });
+
+        int ans = 0 ;
+
+        for(int[]ed :list){
+            int u = ed[0];
+            int v = ed[1];
+
+            int p1 = findPar(u,par);
+            int p2 = findPar(v,par);
+
+            if(p1!=p2){
+                if(vals[p1]==vals[p2]){
+                    ans += size[p1]*size[p2];
+                    size[p1] +=  size[p2];
+                    par[p2] = p1;
+                }else if(vals[p1]>vals[p2]){ 
+                    par[p2] = p1;
+                }else{ 
+                    par[p1] = p2;
+
+                }
+            }
+        }
+
+        return ans + n;
+    }
+}
