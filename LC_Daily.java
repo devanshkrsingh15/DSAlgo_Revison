@@ -57,25 +57,89 @@ public class LC_Daily {
         }
     }
 
-
     class LC997 {
-    public int findJudge(int n, int[][] trust) {
-        int[]indegree = new int[n+1];
-        int[]outdegree = new int[n+1];
+        public int findJudge(int n, int[][] trust) {
+            int[] indegree = new int[n + 1];
+            int[] outdegree = new int[n + 1];
 
-        for(int[]t :trust ){
-            int u = t[0];
-            int v = t[1];
+            for (int[] t : trust) {
+                int u = t[0];
+                int v = t[1];
 
-            indegree[v]++;
-            outdegree[u]++;
+                indegree[v]++;
+                outdegree[u]++;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                if (outdegree[i] == 0 && indegree[i] == n - 1)
+                    return i;
+            }
+
+            return -1;
         }
-
-        for(int i =1;i<=n;i++){
-            if(outdegree[i]==0 &&indegree[i]==n-1) return i;
-        }
-
-        return -1;
     }
-}
+
+    class LCC909 {
+        public int snakesAndLadders(int[][] board) {
+            int n = board.length;
+            int m = board[0].length;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            int val = 0;
+            int idx = 1;
+            for (int i = n - 1; i >= 0; i--) {
+                if (val % 2 == 0) {
+                    for (int j = 0; j < m; j++) {
+                        map.put(idx, i * m + j);
+                        idx++;
+                    }
+                } else {
+                    for (int j = m - 1; j >= 0; j--) {
+                        map.put(idx, i * m + j);
+                        idx++;
+                    }
+                }
+                val++;
+            }
+
+            ArrayDeque<Integer> q = new ArrayDeque<>();
+            val = board[n - 1][0] == -1 ? 1 : board[n - 1][0];
+            q.add(val);
+            boolean[] vis = new boolean[(int) 1e5 + 10];
+            int level = 0;
+
+            while (q.size() != 0) {
+                int s = q.size();
+                while (s-- > 0) {
+                    int nval = q.remove();
+
+                    if (vis[nval])
+                        continue;
+                    vis[nval] = true;
+
+                    if (nval == n * n)
+                        return level;
+
+                    for (int k = 1; k <= 6; k++) {
+                        if (k + nval > n * n)
+                            break;
+                        int ridx = map.get(k + nval);
+
+                        int r = ridx / n;
+                        int c = ridx % n;
+
+                        if (board[r][c] != -1) {
+                            q.add(board[r][c]);
+                        } else {
+                            q.add(k + nval);
+                        }
+                    }
+                }
+
+                level++;
+            }
+
+            return -1;
+        }
+
+    }
 }

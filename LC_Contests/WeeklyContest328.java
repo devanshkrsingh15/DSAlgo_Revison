@@ -55,4 +55,43 @@ public class WeeklyContest328 {
 
         return ans;
     }
+
+    //2537. Count the Number of Good Subarrays
+    public long countGood(int[] nums, int k) {
+        long ans  = 0;
+        int n  = nums.length;
+        ArrayList<Long>list = new ArrayList<>();
+        HashMap<Integer,Long>map = new HashMap<>();
+        long sof = 0;
+
+        int idx = 0;
+        while(idx<n){
+            int ele = nums[idx];
+            sof += map.getOrDefault(ele, 0l);
+            map.put(ele, map.getOrDefault(ele, 0l)+1l);
+            ans += findFloor(list,sof-k) + 1;
+            idx++;
+        }
+        return ans;
+       
+    }
+
+    private long findFloor(ArrayList<Long> list, long tar) {
+        int lo = 0;
+        long ans = -1;
+        int hi = list.size()-1;
+
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(list.get(mid)>tar){
+                hi  = mid-1;
+            }else{
+                ans = lo;
+                lo = mid+1;
+            }
+        }
+
+        return ans;
+    }
 }
