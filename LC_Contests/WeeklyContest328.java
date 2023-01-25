@@ -45,53 +45,43 @@ public class WeeklyContest328 {
             }
         }
 
-        for(int i  = 0 ; i<n;i++){
-            int sof  = 0;
-            for(int j = 0; j<n;j++){
-                sof+=ans[i][j];
-                ans[i][j]=sof;
+        for (int i = 0; i < n; i++) {
+            int sof = 0;
+            for (int j = 0; j < n; j++) {
+                sof += ans[i][j];
+                ans[i][j] = sof;
             }
         }
 
         return ans;
     }
 
-    //2537. Count the Number of Good Subarrays
+    // 2537. Count the Number of Good Subarrays
     public long countGood(int[] nums, int k) {
-        long ans  = 0;
-        int n  = nums.length;
-        ArrayList<Long>list = new ArrayList<>();
-        HashMap<Integer,Long>map = new HashMap<>();
-        long sof = 0;
+        HashMap<Integer, Long> map = new HashMap<>();
+        long cnt = 0;
+        int en = 0;
+        int st = 0;
+        long ans = 0l;
+        int n = nums.length;
+        while (en < n) {
+            int ele = nums[en];
+            cnt += map.getOrDefault(ele, 0l);
+            map.put(ele, map.getOrDefault(ele, 0l) + 1l);
 
-        int idx = 0;
-        while(idx<n){
-            int ele = nums[idx];
-            sof += map.getOrDefault(ele, 0l);
-            map.put(ele, map.getOrDefault(ele, 0l)+1l);
-            ans += findFloor(list,sof-k) + 1;
-            idx++;
-        }
-        return ans;
-       
-    }
-
-    private long findFloor(ArrayList<Long> list, long tar) {
-        int lo = 0;
-        long ans = -1;
-        int hi = list.size()-1;
-
-        while(lo<=hi){
-            int mid = lo + (hi-lo)/2;
-
-            if(list.get(mid)>tar){
-                hi  = mid-1;
-            }else{
-                ans = lo;
-                lo = mid+1;
+            while (cnt >= (long) k) {
+                ans += (long) (n - en);
+                int sele = nums[st];
+                map.put(sele, map.get(sele) - 1l);
+                cnt -= map.get(sele);
+                if (map.get(sele) == 0)
+                    map.remove(sele);
+                st++;
             }
+            en++;
         }
 
         return ans;
     }
+
 }

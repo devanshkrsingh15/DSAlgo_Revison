@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import java.util.*;
 
 public class LC_Daily {
@@ -142,4 +145,46 @@ public class LC_Daily {
         }
 
     }
+
+    class LC2359 {
+        int ans = (int) 1e9;
+        int ansidx = -1;
+
+        public int closestMeetingNode(int[] edges, int node1, int node2) {
+            int n = edges.length;
+            HashMap<Integer, Integer> map = new HashMap<>();
+            getPath(edges, node1, map, 0, true);
+            getPath(edges, node2, map, 0, false);
+            return ansidx;
+
+        }
+
+        private void getPath(int[] edges, int src, HashMap<Integer, Integer> map, int dis, boolean isBuilding) {
+
+            if (isBuilding == false) {
+                if (map.containsKey(src)) {
+                    int cans = Math.max(dis, map.get(src));
+                    if (cans < ans) {
+                        ans = cans;
+                        ansidx = src;
+                    } else if (cans == ans) {
+                        ansidx = Math.min(ansidx, src);
+                    }
+                }
+            }
+
+            if (isBuilding)
+                map.put(src, dis);
+            else if (!isBuilding) {
+                map.put(src + (int) 1e5, dis);
+            }
+
+            int nbr = edges[src];
+            if ((isBuilding && nbr != -1 && !map.containsKey(nbr))
+                    || (!isBuilding && nbr != -1 && !map.containsKey(nbr + (int) 1e5)))
+                getPath(edges, nbr, map, dis + 1, isBuilding);
+        }
+
+    }
+
 }
