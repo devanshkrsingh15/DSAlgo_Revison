@@ -187,4 +187,31 @@ public class LC_Daily {
 
     }
 
+
+
+    class LC787 {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int[]arr = new int[n];
+        Arrays.fill(arr,(int)1e9);
+        arr[src] = 0;
+
+        for(int f = 0 ;f<=k;f++){
+            int[]uarr = new int[n];
+            for(int i = 0 ;i<n;i++)uarr[i] = arr[i];
+
+
+            for(int[]fl :flights ){
+                int u = fl[0];
+                int v = fl[1];
+                int c = fl[2];
+                uarr[v]= Math.min(uarr[v],arr[u] + c );
+            }
+
+            arr= uarr;
+        }
+
+        return arr[dst]==(int)1e9 ? -1: arr[dst];
+    }
+}
+
 }
