@@ -187,31 +187,97 @@ public class LC_Daily {
 
     }
 
-
-
     class LC787 {
-    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        int[]arr = new int[n];
-        Arrays.fill(arr,(int)1e9);
-        arr[src] = 0;
+        public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+            int[] arr = new int[n];
+            Arrays.fill(arr, (int) 1e9);
+            arr[src] = 0;
 
-        for(int f = 0 ;f<=k;f++){
-            int[]uarr = new int[n];
-            for(int i = 0 ;i<n;i++)uarr[i] = arr[i];
+            for (int f = 0; f <= k; f++) {
+                int[] uarr = new int[n];
+                for (int i = 0; i < n; i++)
+                    uarr[i] = arr[i];
 
+                for (int[] fl : flights) {
+                    int u = fl[0];
+                    int v = fl[1];
+                    int c = fl[2];
+                    uarr[v] = Math.min(uarr[v], arr[u] + c);
+                }
 
-            for(int[]fl :flights ){
-                int u = fl[0];
-                int v = fl[1];
-                int c = fl[2];
-                uarr[v]= Math.min(uarr[v],arr[u] + c );
+                arr = uarr;
             }
 
-            arr= uarr;
+            return arr[dst] == (int) 1e9 ? -1 : arr[dst];
         }
 
-        return arr[dst]==(int)1e9 ? -1: arr[dst];
     }
-}
+
+    class LC472 {
+        class TrieNode {
+            char ch;
+            boolean isFinal;
+            TrieNode[] child;
+
+            TrieNode(char ch) {
+                this.ch = ch;
+                isFinal = false;
+                child = new TrieNode[26];
+            }
+
+        }
+
+        TrieNode root = new TrieNode('*');
+
+        public List<String> findAllConcatenatedWordsInADict(String[] words) {
+            for (String s : words) {
+                insert(s);
+            }
+
+            List<String> ans = new ArrayList<>();
+            for (String s : words) {
+                if (check(s, 0, 0)) {
+                    ans.add(s);
+                }
+            }
+
+            return ans;
+
+        }
+
+        private boolean check(String s, int idx, int cnt) {
+            if (idx == s.length())
+                return cnt >= 2;
+
+            TrieNode curr = root;
+            boolean res = false;
+            for (int i = idx; i < s.length(); i++) {
+                char ch = s.charAt(i);
+                if (curr.child[ch - 'a'] != null) {
+                    curr = curr.child[ch - 'a'];
+                    if (curr.isFinal) {
+                        boolean a = check(s, i + 1, cnt + 1);
+                        if (a)
+                            return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            return res;
+        }
+
+        private void insert(String s) {
+            TrieNode curr = root;
+            for (int i = 0; i < s.length(); i++) {
+                char ch = s.charAt(i);
+                if (curr.child[ch - 'a'] == null)
+                    curr.child[ch - 'a'] = new TrieNode(ch);
+                curr = curr.child[ch - 'a'];
+            }
+            curr.isFinal = true;
+        }
+    }
 
 }
