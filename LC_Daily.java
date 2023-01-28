@@ -280,4 +280,51 @@ public class LC_Daily {
         }
     }
 
+    //352. Data Stream as Disjoint Intervals
+    class SummaryRanges {
+
+        HashSet<Integer>numbers;
+        int max  = 0;
+        int min = (int)1e9;
+        public SummaryRanges() {
+            numbers = new HashSet<>();
+        }
+        
+        public void addNum(int value) {
+            numbers.add(value);
+            max=  Math.max(max,value);
+            min=  Math.min(min,value);
+        }
+        
+        public int[][] getIntervals() {
+            ArrayList<int[]>intervals = new ArrayList<>();
+            boolean[]taken = new boolean[(int)1e5];
+            for(int i = min;i<=max;i++){
+                if(numbers.contains(i) && !taken[i]){
+                    int st = i;
+                    int en = i;
+                    int ptr = st;
+                    taken[i] = true;
+                    while(numbers.contains(ptr+1)){
+                        en = ptr+1;
+                        ptr++;
+                        taken[ptr] = true;
+                    }
+
+                    intervals.add(new int[]{st,en});
+                }
+            }
+        
+            int[][]ans = new int[intervals.size()][];
+            int idx = 0;
+            for(int []intr : intervals){
+                ans[idx++] = intr;
+            }
+
+            return ans;
+        
+        
+        }
+    }
+    
 }
