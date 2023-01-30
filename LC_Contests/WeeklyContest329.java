@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 public class WeeklyContest329 {
@@ -68,4 +69,35 @@ public class WeeklyContest329 {
         return one_zero && zero_one;
     }
 
+}
+//2547. Minimum Cost to Split an Array
+class Solution {
+    long k;
+    public int minCost(int[] nums, int K) {
+        k = K;
+        long[]dp = new long[nums.length+1];
+        Arrays.fill(dp,-1l);
+        return (int)minCost_(nums,0,dp);
+    }
+
+    public long minCost_(int[]nums,int idx,long[]dp){
+        if(idx>=nums.length) return 0l;
+        if(dp[idx]!=-1l) return dp[idx];
+
+        long min = (long)1e16;
+        int len = 0;
+        HashMap<Integer,Integer>map = new HashMap<>();
+        for(int i = idx;i<nums.length;i++){
+
+            map.put(nums[i],map.getOrDefault(nums[i],0)+1);
+            if(map.get(nums[i])==2) len+=map.get(nums[i]);
+            else if(map.get(nums[i])>2) len++;
+               
+            
+            min = Math.min(min, minCost_(nums,i+1,dp) + k+ len);
+        }
+        
+        return dp[idx] = min;
+
+    }
 }

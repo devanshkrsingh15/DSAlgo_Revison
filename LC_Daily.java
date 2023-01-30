@@ -280,235 +280,250 @@ public class LC_Daily {
         }
     }
 
-    //352. Data Stream as Disjoint Intervals
+    // 352. Data Stream as Disjoint Intervals
     class SummaryRanges {
 
-        HashSet<Integer>numbers;
-        int max  = 0;
-        int min = (int)1e9;
+        HashSet<Integer> numbers;
+        int max = 0;
+        int min = (int) 1e9;
+
         public SummaryRanges() {
             numbers = new HashSet<>();
         }
-        
+
         public void addNum(int value) {
             numbers.add(value);
-            max=  Math.max(max,value);
-            min=  Math.min(min,value);
+            max = Math.max(max, value);
+            min = Math.min(min, value);
         }
-        
+
         public int[][] getIntervals() {
-            ArrayList<int[]>intervals = new ArrayList<>();
-            boolean[]taken = new boolean[(int)1e5];
-            for(int i = min;i<=max;i++){
-                if(numbers.contains(i) && !taken[i]){
+            ArrayList<int[]> intervals = new ArrayList<>();
+            boolean[] taken = new boolean[(int) 1e5];
+            for (int i = min; i <= max; i++) {
+                if (numbers.contains(i) && !taken[i]) {
                     int st = i;
                     int en = i;
                     int ptr = st;
                     taken[i] = true;
-                    while(numbers.contains(ptr+1)){
-                        en = ptr+1;
+                    while (numbers.contains(ptr + 1)) {
+                        en = ptr + 1;
                         ptr++;
                         taken[ptr] = true;
                     }
 
-                    intervals.add(new int[]{st,en});
+                    intervals.add(new int[] { st, en });
                 }
             }
-        
-            int[][]ans = new int[intervals.size()][];
+
+            int[][] ans = new int[intervals.size()][];
             int idx = 0;
-            for(int []intr : intervals){
+            for (int[] intr : intervals) {
                 ans[idx++] = intr;
             }
 
             return ans;
-        
-        
+
         }
     }
-
 
     class LFUCache {
-    public class Node {
-        int key, val, freq;
-        Node next=null;
-        Node prev = null;
+        public class Node {
+            int key, val, freq;
+            Node next = null;
+            Node prev = null;
 
-        Node(int key, int val, int freq) {
-            this.key = key;
-            this.val = val;
-            this.freq = freq;
-        }
-    }
-
-    // (first) Head <-> ...... <-> Tail (last)
-    public class DoubleLinkedList {
-        Node head = null;
-        Node tail = null;
-        int len = 0;
-
-        public void AddFist(Node node) {
-            if (this.head == null) {
-                this.head = node;
-                this.tail = node;
-            } else {
-                this.head.prev = node;
-                node.next = this.head;
-                this.head = node;
+            Node(int key, int val, int freq) {
+                this.key = key;
+                this.val = val;
+                this.freq = freq;
             }
-            size++;
-            len++;
         }
 
-        public void AddLast(Node node) {
-            if (this.head == null) {
-                this.head = node;
-                this.tail = node;
-            } else {
-                this.tail.next = node;
-                node.prev = this.tail;
-                this.tail = node;
+        // (first) Head <-> ...... <-> Tail (last)
+        public class DoubleLinkedList {
+            Node head = null;
+            Node tail = null;
+            int len = 0;
+
+            public void AddFist(Node node) {
+                if (this.head == null) {
+                    this.head = node;
+                    this.tail = node;
+                } else {
+                    this.head.prev = node;
+                    node.next = this.head;
+                    this.head = node;
+                }
+                size++;
+                len++;
             }
-            size++;
-            len++;
-        }
 
-        public void remove(Node node) {
-            if (this.head == node) {
-                RemoveFirst();
-            } else if (this.tail == node) {
-                RemoveLast();
-            } else {
-                Node pnode = node.prev;
-                Node nnode = node.next;
+            public void AddLast(Node node) {
+                if (this.head == null) {
+                    this.head = node;
+                    this.tail = node;
+                } else {
+                    this.tail.next = node;
+                    node.prev = this.tail;
+                    this.tail = node;
+                }
+                size++;
+                len++;
+            }
 
-                pnode.next = nnode;
-                nnode.prev = pnode;
+            public void remove(Node node) {
+                if (this.head == node) {
+                    RemoveFirst();
+                } else if (this.tail == node) {
+                    RemoveLast();
+                } else {
+                    Node pnode = node.prev;
+                    Node nnode = node.next;
 
-                node.prev = null;
-                node.next = null;
-                
+                    pnode.next = nnode;
+                    nnode.prev = pnode;
+
+                    node.prev = null;
+                    node.next = null;
+
+                    size--;
+                    len--;
+                }
+            }
+
+            public void RemoveFirst() {
+                if (this.head == this.tail) {
+                    this.head = null;
+                    this.tail = null;
+                } else {
+                    Node nhead = this.head.next;
+                    nhead.prev = null;
+                    this.head.next = null;
+                    this.head = nhead;
+                }
+                size--;
+                len--;
+
+            }
+
+            public void RemoveLast() {
+                if (this.head == this.tail) {
+                    this.head = null;
+                    this.tail = null;
+                } else {
+                    Node ntail = this.tail.prev;
+                    ntail.next = null;
+                    this.tail.prev = null;
+                    this.tail = ntail;
+                }
                 size--;
                 len--;
             }
-        }
-
-        public void RemoveFirst() {
-            if (this.head == this.tail) {
-                this.head = null;
-                this.tail = null;
-            } else {
-                Node nhead = this.head.next;
-                nhead.prev = null;
-                this.head.next = null;
-                this.head = nhead;
-            }
-            size--;
-            len--;
 
         }
 
-        public void RemoveLast() {
-            if (this.head == this.tail) {
-                this.head = null;
-                this.tail = null;
-            } else {
-                Node ntail = this.tail.prev;
-                ntail.next = null;
-                this.tail.prev = null;
-                this.tail = ntail;
-            }
-            size--;
-            len--;
+        int size = 0;
+        int cap = 0;
+        int maxF = 0;
+        int minF = 0;
+
+        HashMap<Integer, Node> nodeMappping;
+        HashMap<Integer, DoubleLinkedList> freqMapping;
+
+        public LFUCache(int capacity) {
+            initialize(capacity);
         }
 
-    }
-
-    int size = 0;
-    int cap = 0;
-    int maxF = 0;
-    int minF = 0;
-    
-    HashMap<Integer, Node> nodeMappping;
-    HashMap<Integer, DoubleLinkedList> freqMapping;
-
-    public LFUCache(int capacity) {
-        initialize(capacity);
-    }
-
-    private void initialize(int capacity) {
-        this.nodeMappping = new HashMap<>();
-        this.freqMapping = new HashMap<>();
-        this.size = 0;
-        this.cap = capacity;
-    }
-
-    public int get(int key) {
-        if (!nodeMappping.containsKey(key))
-            return -1;
-
-        Node node = nodeMappping.get(key);
-        makeRecent(node);
-        return node.val;
-
-    }
-
-    private void makeRecent(Node node) {
-        int of = node.freq;
-        int nf = of + 1;
-
-        DoubleLinkedList olist = freqMapping.get(of);
-        olist.remove(node);
-
-        if (olist.len == 0) {
-            freqMapping.remove(of);
-            if (minF == of)
-                minF++;
+        private void initialize(int capacity) {
+            this.nodeMappping = new HashMap<>();
+            this.freqMapping = new HashMap<>();
+            this.size = 0;
+            this.cap = capacity;
         }
 
-        node.freq = nf;
-        nodeMappping.put(node.key,node);
-        
-        freqMapping.putIfAbsent(nf, new DoubleLinkedList());
-        DoubleLinkedList nlist = freqMapping.get(nf);
+        public int get(int key) {
+            if (!nodeMappping.containsKey(key))
+                return -1;
 
-        maxF = Math.max(maxF, nf);
-        nlist.AddLast(node);
-    }
-
-    public void put(int key, int value) {
-        if(this.cap==0) return;
-
-        if (!nodeMappping.containsKey(key)) {
-            if (this.size == this.cap) {
-                removeLeastFrequent();
-            }
-
-            Node node = new Node(key, value, 1);
-            nodeMappping.put(key, node);
-            
-            freqMapping.putIfAbsent(1, new DoubleLinkedList());
-            DoubleLinkedList list = freqMapping.get(1);
-            list.AddLast(node);
-            
-            minF = 1;
-        } else {
             Node node = nodeMappping.get(key);
-            node.val = value;
             makeRecent(node);
+            return node.val;
+
+        }
+
+        private void makeRecent(Node node) {
+            int of = node.freq;
+            int nf = of + 1;
+
+            DoubleLinkedList olist = freqMapping.get(of);
+            olist.remove(node);
+
+            if (olist.len == 0) {
+                freqMapping.remove(of);
+                if (minF == of)
+                    minF++;
+            }
+
+            node.freq = nf;
+            nodeMappping.put(node.key, node);
+
+            freqMapping.putIfAbsent(nf, new DoubleLinkedList());
+            DoubleLinkedList nlist = freqMapping.get(nf);
+
+            maxF = Math.max(maxF, nf);
+            nlist.AddLast(node);
+        }
+
+        public void put(int key, int value) {
+            if (this.cap == 0)
+                return;
+
+            if (!nodeMappping.containsKey(key)) {
+                if (this.size == this.cap) {
+                    removeLeastFrequent();
+                }
+
+                Node node = new Node(key, value, 1);
+                nodeMappping.put(key, node);
+
+                freqMapping.putIfAbsent(1, new DoubleLinkedList());
+                DoubleLinkedList list = freqMapping.get(1);
+                list.AddLast(node);
+
+                minF = 1;
+            } else {
+                Node node = nodeMappping.get(key);
+                node.val = value;
+                makeRecent(node);
+            }
+        }
+
+        private void removeLeastFrequent() {
+            DoubleLinkedList list = freqMapping.get(minF);
+            Node n = list.head;
+            nodeMappping.remove(n.key);
+            list.RemoveFirst();
+            if (list.len == 0) {
+                freqMapping.remove(minF);
+            }
         }
     }
 
-    private void removeLeastFrequent() {
-        DoubleLinkedList list = freqMapping.get(minF);
-        Node n = list.head;
-        nodeMappping.remove(n.key);
-        list.RemoveFirst();
-        if (list.len == 0) {
-            freqMapping.remove(minF);
+    class LC1137 {
+        public int tribonacci(int n) {
+            int[] dp = new int[n + 1];
+            for (int i = 0; i <= n; i++) {
+                if (i <= 1)
+                    dp[i] = i;
+                else if (i == 2)
+                    dp[i] = 1;
+                else
+                    dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
+            }
+
+            return dp[n];
         }
     }
-}
 
-    
 }
