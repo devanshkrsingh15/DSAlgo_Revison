@@ -526,4 +526,116 @@ public class LC_Daily {
         }
     }
 
+    class LC1626 {
+        int[][] dp;
+
+        public int bestTeamScore(int[] scores, int[] ages) {
+            int n = scores.length;
+            ArrayList<int[]> list = new ArrayList<>();
+            dp = new int[n + 1][(int) 1e3 + 15];
+            for (int[] d : dp)
+                Arrays.fill(d, -1);
+
+            for (int i = 0; i < n; i++) {
+                int ag = ages[i];
+                int sc = scores[i];
+                list.add(new int[] { ag, sc });
+            }
+
+            Collections.sort(list, (a, b) -> {
+                if (a[0] == b[0])
+                    return a[1] - b[1];
+                return a[0] - b[0];
+            });
+            return bestTeamScore_(list, 0, (int) 1e3 + 10);
+
+        }
+
+        public int bestTeamScore_(ArrayList<int[]> list, int idx, int prvIdx) {
+            if (idx == list.size())
+                return 0;
+            if (dp[idx][prvIdx] != -1)
+                return dp[idx][prvIdx];
+
+            int max = 0;
+            int myScore = list.get(idx)[1];
+            int myAge = list.get(idx)[0];
+
+            if (prvIdx == (int) 1e3 + 10 || list.get(prvIdx)[1] <= myScore)
+                max = Math.max(max, bestTeamScore_(list, idx + 1, idx) + myScore);
+            max = Math.max(max, bestTeamScore_(list, idx + 1, prvIdx));
+
+            return dp[idx][prvIdx] = max;
+        }
+    }
+
+    class LC1071 {
+        public String gcdOfStrings(String str1, String str2) {
+            HashSet<String> hs1 = getDivisors(str1);
+            HashSet<String> hs2 = getDivisors(str2);
+
+            if (hs1.size() == 0 || hs2.size() == 0)
+                return "";
+
+            int maxLen = 0;
+            String maxStr = "";
+
+            for (String s1 : hs1) {
+                if (hs2.contains(s1)) {
+                    if (maxLen < s1.length()) {
+                        maxLen = s1.length();
+                        maxStr = s1;
+                    }
+                }
+            }
+
+            return maxStr;
+        }
+
+        public HashSet<String> getDivisors(String s) {
+            int len = s.length();
+            HashSet<String> hs = new HashSet<>();
+            for (int i = 0; i < len; i++) {
+                String cs = s.substring(0, i + 1);
+
+                if (check(cs, s, i + 1)) {
+                    hs.add(cs);
+                }
+
+            }
+
+            return hs;
+        }
+
+        public boolean check(String cs, String s, int st) {
+            int n = s.length();
+            int m = cs.length();
+            if (n % m != 0)
+                return false;
+
+            for (int i = st; i < n; i += m) {
+                if (i + m > n)
+                    return false;
+                if (!cs.equals(s.substring(i, i + m)))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public String gcdOfStringsOpti(String str1, String str2) {
+            if (!(str1 + str2).equals((str2 + str1)))
+                return "";
+
+            int gcd = findGcd(str1.length(), str2.length());
+            return str1.substring(0, gcd);
+        }
+
+        private int findGcd(int a, int b) {
+            if (b == 0)
+                return a;
+            return findGcd(b, a % b);
+        }
+    }
+
 }
