@@ -638,4 +638,40 @@ public class LC_Daily {
         }
     }
 
+    class LC953 {
+        public boolean isAlienSorted(String[] words, String o) {
+            int[]order = new int[26];
+            for(int i = 0 ;  i<o.length();i++){
+                char ch = o.charAt(i);
+                order[ch-'a'] = i;
+            }
+    
+            String prv = words[0];
+            for(int i =1 ;i<words.length;i++){
+                String curr = words[i];
+                int lim = Math.max(prv.length(),curr.length());
+                int idx = 0;
+                while(idx<lim){
+                    char a = (idx<curr.length()) ? curr.charAt(idx) : ' ';
+                    char b = (idx<prv.length()) ? prv.charAt(idx) :  ' ';
+                    int u = (a ==' ') ? -1 : order[a-'a'];
+                    int v = (b ==' ') ? -1 : order[b-'a'];
+                    idx++;
+                    if(u == v){
+                       continue;
+                    }else if(u > v){
+                        break;
+                    }else{
+                        return false;
+                    }
+                }
+                prv = curr;
+            }
+           
+           return true;
+        }
+    
+       
+    }
+
 }
