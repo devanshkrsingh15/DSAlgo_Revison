@@ -640,38 +640,85 @@ public class LC_Daily {
 
     class LC953 {
         public boolean isAlienSorted(String[] words, String o) {
-            int[]order = new int[26];
-            for(int i = 0 ;  i<o.length();i++){
+            int[] order = new int[26];
+            for (int i = 0; i < o.length(); i++) {
                 char ch = o.charAt(i);
-                order[ch-'a'] = i;
+                order[ch - 'a'] = i;
             }
-    
+
             String prv = words[0];
-            for(int i =1 ;i<words.length;i++){
+            for (int i = 1; i < words.length; i++) {
                 String curr = words[i];
-                int lim = Math.max(prv.length(),curr.length());
+                int lim = Math.max(prv.length(), curr.length());
                 int idx = 0;
-                while(idx<lim){
-                    char a = (idx<curr.length()) ? curr.charAt(idx) : ' ';
-                    char b = (idx<prv.length()) ? prv.charAt(idx) :  ' ';
-                    int u = (a ==' ') ? -1 : order[a-'a'];
-                    int v = (b ==' ') ? -1 : order[b-'a'];
+                while (idx < lim) {
+                    char a = (idx < curr.length()) ? curr.charAt(idx) : ' ';
+                    char b = (idx < prv.length()) ? prv.charAt(idx) : ' ';
+                    int u = (a == ' ') ? -1 : order[a - 'a'];
+                    int v = (b == ' ') ? -1 : order[b - 'a'];
                     idx++;
-                    if(u == v){
-                       continue;
-                    }else if(u > v){
+                    if (u == v) {
+                        continue;
+                    } else if (u > v) {
                         break;
-                    }else{
+                    } else {
                         return false;
                     }
                 }
                 prv = curr;
             }
-           
-           return true;
+
+            return true;
         }
-    
-       
+
     }
 
+    class LC6 {
+        public String convert(String s, int numRows) {
+            int n = s.length();
+            char arr[][] = new char[numRows][n];
+            for (char[] a : arr)
+                Arrays.fill(a, '*');
+            int r = 0;
+            int c = 0;
+            int idx = 0;
+            int maxC = 0;
+            boolean down = true;
+            while (idx < n) {
+                if (down) {
+                    arr[r][c] = s.charAt(idx++);
+                    r++;
+                    if (r == numRows) {
+                        down = false;
+                        c++;
+                        r -= 2;
+                    }
+                } else {
+                    if (r <= 0) {
+                        r = Math.max(0, r);
+                        down = true;
+                        continue;
+                    }
+                    arr[r][c] = s.charAt(idx++);
+                    r--;
+                    c++;
+                }
+            }
+
+            int cnt = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < numRows; i++) {
+                for (int j = 0; j < maxC; j++) {
+                    if (arr[i][j] != '*') {
+                        sb.append(arr[i][j]);
+                        cnt++;
+                    }
+                    if (cnt == n)
+                        return sb.toString();
+                }
+            }
+
+            return sb.toString();
+        }
+    }
 }
