@@ -721,4 +721,45 @@ public class LC_Daily {
             return sb.toString();
         }
     }
+
+
+    class LC567 {
+        public boolean checkInclusion(String s1, String s2) {
+            int[]farr = new int[26];
+            for(int i = 0;i<s1.length();i++){
+                char ch = s1.charAt(i);
+                farr[ch-'a']++;
+            }
+    
+            int[][]arr = new int[s2.length()][26];
+            for(int i = 0;i<s2.length();i++){
+                char ch = s2.charAt(i);
+                arr[i][ch-'a']++;
+                 for(int  j = 0;j<26;j++){
+                    if(i-1>=0)arr[i][j] += arr[i-1][j];
+                }
+            }
+    
+            for(int i = 0;i<s2.length();i++){
+                if(i+s1.length()-1<s2.length()){
+                     int cnt = 0;
+                     
+                    for(int j = 0;j<26;j++){
+                       
+                        if(farr[j] == ( (i==0) ?  arr[i+s1.length()-1][j] : arr[i+s1.length()-1][j] -   arr[i-1][j] )){
+                            cnt++;
+                        }
+                    }
+                      if(cnt==26) return true;
+                }
+    
+              
+            }
+    
+            return false;
+    
+            
+    
+        }
+    }
 }
