@@ -762,4 +762,35 @@ public class LC_Daily {
     
         }
     }
+
+    class LC438 {
+        public List<Integer> findAnagrams(String s, String p) {
+            ArrayList<Integer>ans = new ArrayList<>();
+            int[]arr  = new int[26];
+            int cnt = 0;
+            for(int i = 0 ;i<p.length();i++){
+                if(arr[p.charAt(i)-'a']==0) cnt++;
+                arr[p.charAt(i)-'a']++;
+            }
+          
+            
+            int ei = 0;
+            int si=0;
+
+            while(ei<s.length()){
+                arr[s.charAt(ei)-'a']--;
+                if(arr[s.charAt(ei)-'a']==0) cnt--;
+                ei++;
+                while(cnt==0){
+                    if(ei-si==p.length()) ans.add(si);
+                    arr[s.charAt(si)-'a']++;
+                    if(arr[s.charAt(si)-'a']==1) cnt++;
+                    si++;
+                }
+            }
+
+
+            return ans;
+        }
+    }
 }
