@@ -21,6 +21,31 @@ public class WeeklyContest330 {
         return hs.size();
 
     }
+    
+    public int monkeyMove(int n) {
+        /*
+         * total moves => 2^n (each monkey has 2 options)
+         * if all moves clockwise && anticlockwise then no collisions occur
+         * 
+         * if n=> odd 2^n - 2 ; when collisions occur
+         * if n => even 2^n - 2 -2 ; extra - 2 when adjacent pair moves clock and
+         * anticlockwise ; when collisions occurP
+         */
+         long ans = 1;
+         long mod = (long) 1e9 + 7;
+         long x = 2l;
+         while(n>0){
+            if(n%2==1){
+                ans = (ans%mod*x%mod)%mod;
+                n = n-1;
+            }else{
+                x = (x%mod*x%mod)%mod;
+                n = n/2;
+            }
+         }
+
+         return (int)(((ans%mod  - 2l)%mod  + mod)%mod) ;
+    }
 
     public long putMarbles(int[] weights, int k) {
         int n = weights.length;

@@ -722,75 +722,96 @@ public class LC_Daily {
         }
     }
 
-
     class LC567 {
         public boolean checkInclusion(String s1, String s2) {
-            int[]farr = new int[26];
-            for(int i = 0;i<s1.length();i++){
+            int[] farr = new int[26];
+            for (int i = 0; i < s1.length(); i++) {
                 char ch = s1.charAt(i);
-                farr[ch-'a']++;
+                farr[ch - 'a']++;
             }
-    
-            int[][]arr = new int[s2.length()][26];
-            for(int i = 0;i<s2.length();i++){
+
+            int[][] arr = new int[s2.length()][26];
+            for (int i = 0; i < s2.length(); i++) {
                 char ch = s2.charAt(i);
-                arr[i][ch-'a']++;
-                 for(int  j = 0;j<26;j++){
-                    if(i-1>=0)arr[i][j] += arr[i-1][j];
+                arr[i][ch - 'a']++;
+                for (int j = 0; j < 26; j++) {
+                    if (i - 1 >= 0)
+                        arr[i][j] += arr[i - 1][j];
                 }
             }
-    
-            for(int i = 0;i<s2.length();i++){
-                if(i+s1.length()-1<s2.length()){
-                     int cnt = 0;
-                     
-                    for(int j = 0;j<26;j++){
-                       
-                        if(farr[j] == ( (i==0) ?  arr[i+s1.length()-1][j] : arr[i+s1.length()-1][j] -   arr[i-1][j] )){
+
+            for (int i = 0; i < s2.length(); i++) {
+                if (i + s1.length() - 1 < s2.length()) {
+                    int cnt = 0;
+
+                    for (int j = 0; j < 26; j++) {
+
+                        if (farr[j] == ((i == 0) ? arr[i + s1.length() - 1][j]
+                                : arr[i + s1.length() - 1][j] - arr[i - 1][j])) {
                             cnt++;
                         }
                     }
-                      if(cnt==26) return true;
+                    if (cnt == 26)
+                        return true;
                 }
-    
-              
+
             }
-    
+
             return false;
-    
-            
-    
+
         }
     }
 
     class LC438 {
         public List<Integer> findAnagrams(String s, String p) {
-            ArrayList<Integer>ans = new ArrayList<>();
-            int[]arr  = new int[26];
+            ArrayList<Integer> ans = new ArrayList<>();
+            int[] arr = new int[26];
             int cnt = 0;
-            for(int i = 0 ;i<p.length();i++){
-                if(arr[p.charAt(i)-'a']==0) cnt++;
-                arr[p.charAt(i)-'a']++;
+            for (int i = 0; i < p.length(); i++) {
+                if (arr[p.charAt(i) - 'a'] == 0)
+                    cnt++;
+                arr[p.charAt(i) - 'a']++;
             }
-          
-            
-            int ei = 0;
-            int si=0;
 
-            while(ei<s.length()){
-                arr[s.charAt(ei)-'a']--;
-                if(arr[s.charAt(ei)-'a']==0) cnt--;
+            int ei = 0;
+            int si = 0;
+
+            while (ei < s.length()) {
+                arr[s.charAt(ei) - 'a']--;
+                if (arr[s.charAt(ei) - 'a'] == 0)
+                    cnt--;
                 ei++;
-                while(cnt==0){
-                    if(ei-si==p.length()) ans.add(si);
-                    arr[s.charAt(si)-'a']++;
-                    if(arr[s.charAt(si)-'a']==1) cnt++;
+                while (cnt == 0) {
+                    if (ei - si == p.length())
+                        ans.add(si);
+                    arr[s.charAt(si) - 'a']++;
+                    if (arr[s.charAt(si) - 'a'] == 1)
+                        cnt++;
                     si++;
                 }
             }
 
-
             return ans;
+        }
+    }
+
+    class LC1470 {
+        public int[] shuffle(int[] nums, int n) {
+            int[] arr = new int[2 * n];
+            int len = nums.length;
+            int idx = 0;
+            for (int i = 0; i < len / 2; i++) {
+                arr[idx] = nums[i];
+                idx += 2;
+            }
+            idx = 1;
+
+            for (int i = len / 2; i < len; i++) {
+                arr[idx] = nums[i];
+                idx += 2;
+            }
+
+            return arr;
         }
     }
 }
