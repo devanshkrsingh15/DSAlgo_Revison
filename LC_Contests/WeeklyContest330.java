@@ -74,4 +74,6 @@ public class WeeklyContest330 {
 
     }
 
+    //2552. Count Increasing Quadruplets
+
 }

@@ -814,4 +814,23 @@ public class LC_Daily {
             return arr;
         }
     }
+
+    class LC904 {
+        public int totalFruit(int[] fruits) {
+            int[]farr = new int[(int)1e5+7];
+            int cnt = 0;
+            int ei = 0; int si = 0; int n =  fruits.length;
+            int max=  0;
+            while(ei<n){
+                if(farr[fruits[ei++]]++ == 0) cnt++;
+                while(cnt>2){
+                    if(farr[fruits[si++]]-- == 1) cnt--;
+                }
+    
+                max = Math.max(max,ei-si);
+             }
+    
+             return max;
+        }
+    }
 }
