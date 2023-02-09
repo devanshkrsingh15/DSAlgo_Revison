@@ -817,20 +817,60 @@ public class LC_Daily {
 
     class LC904 {
         public int totalFruit(int[] fruits) {
-            int[]farr = new int[(int)1e5+7];
+            int[] farr = new int[(int) 1e5 + 7];
             int cnt = 0;
-            int ei = 0; int si = 0; int n =  fruits.length;
-            int max=  0;
-            while(ei<n){
-                if(farr[fruits[ei++]]++ == 0) cnt++;
-                while(cnt>2){
-                    if(farr[fruits[si++]]-- == 1) cnt--;
+            int ei = 0;
+            int si = 0;
+            int n = fruits.length;
+            int max = 0;
+            while (ei < n) {
+                if (farr[fruits[ei++]]++ == 0)
+                    cnt++;
+                while (cnt > 2) {
+                    if (farr[fruits[si++]]-- == 1)
+                        cnt--;
                 }
-    
-                max = Math.max(max,ei-si);
-             }
-    
-             return max;
+
+                max = Math.max(max, ei - si);
+            }
+
+            return max;
+        }
+    }
+
+    class LC2306 {
+        public long distinctNames(String[] ideas) {
+            HashSet<String> sets[] = new HashSet[26];
+            for (int i = 0; i < 26; i++) {
+                sets[i] = new HashSet<>();
+            }
+
+            for (String id : ideas) {
+                char ch = id.charAt(0);
+                sets[ch - 'a'].add(id.substring(1));
+            }
+
+            long ans = 0l;
+
+            for (int i = 0; i < 26; i++) {
+                for (int j = i + 1; j < 26; j++) {
+                    HashSet<String> setA = sets[i];
+                    HashSet<String> setB = sets[j];
+
+                    long sameSuff = 0l;
+
+                    for (String s : setA) {
+                        if (setB.contains(s))
+                            sameSuff++;
+                    }
+
+                    ans += ((long) setA.size() - sameSuff) * ((long) setB.size() - sameSuff) * 2;
+
+                }
+            }
+
+            return ans;
+
         }
     }
 }
