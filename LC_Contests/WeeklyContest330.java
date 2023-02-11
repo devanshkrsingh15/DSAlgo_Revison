@@ -21,7 +21,7 @@ public class WeeklyContest330 {
         return hs.size();
 
     }
-    
+
     public int monkeyMove(int n) {
         /*
          * total moves => 2^n (each monkey has 2 options)
@@ -31,20 +31,20 @@ public class WeeklyContest330 {
          * if n => even 2^n - 2 -2 ; extra - 2 when adjacent pair moves clock and
          * anticlockwise ; when collisions occurP
          */
-         long ans = 1;
-         long mod = (long) 1e9 + 7;
-         long x = 2l;
-         while(n>0){
-            if(n%2==1){
-                ans = (ans%mod*x%mod)%mod;
-                n = n-1;
-            }else{
-                x = (x%mod*x%mod)%mod;
-                n = n/2;
+        long ans = 1;
+        long mod = (long) 1e9 + 7;
+        long x = 2l;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans = (ans % mod * x % mod) % mod;
+                n = n - 1;
+            } else {
+                x = (x % mod * x % mod) % mod;
+                n = n / 2;
             }
-         }
+        }
 
-         return (int)(((ans%mod  - 2l)%mod  + mod)%mod) ;
+        return (int) (((ans % mod - 2l) % mod + mod) % mod);
     }
 
     public long putMarbles(int[] weights, int k) {
@@ -74,6 +74,58 @@ public class WeeklyContest330 {
 
     }
 
-    //2552. Count Increasing Quadruplets
+    // 2552. Count Increasing Quadruplets
+    public long countQuadruplets(int[] nums) {
+        /*
+         * i<j<k<l
+         * nums[i] < nums[k] < nums[j] < nums[l]
+         * nums[i] < nums[l]
+         * only irregularity is in nums[j] > nums[k]
+         * 
+         * so we fix j and k , and count number of ele on left less then nums[j]
+         * and count number of ele on right greater than nums[k]
+         */
+
+        int n = nums.length;
+        int[][] left = new int[n + 1][n + 1];
+        int[][] right = new int[n + 1][n + 1];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j <= n; j++) {
+                int ele = nums[i];
+                if (ele < j)
+                    left[i][j]++;
+                if (i != 0)
+                    left[i][j] += left[i - 1][j];
+            }
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = 1; j <= n; j++) {
+                int ele = nums[i];
+                if (ele > j)
+                    right[i][j]++;
+                if (i != n - 1)
+                    right[i][j] += right[i + 1][j];
+            }
+        }
+
+        long ans = 0;
+        for (int j = 1; j < n - 2; j++) {
+            for (int k = n - 2; k > j; k--) {
+                if (nums[j] > nums[k]) {
+                    int ej = nums[j];
+                    int ek = nums[k];
+
+                    long a = (long) left[j - 1][ek];
+                    long b = (long) right[k + 1][ej];
+
+                    ans += a * b;
+                }
+            }
+        }
+
+        return ans;
+    }
 
 }

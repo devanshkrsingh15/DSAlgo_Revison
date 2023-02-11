@@ -872,5 +872,173 @@ public class LC_Daily {
             return ans;
 
         }
+
+        
     }
+
+
+    public int maxDistance(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int max = -1;
+
+        int ones = 0;
+        int zeros = 0;
+        for(int i = 0 ;i<n;i++){
+            for(int j = 0;j<m;j++){
+                 if(grid[i][j]==0) zeros ++;
+                 if(grid[i][j]==1) ones ++;
+            }
+        }
+
+        if(ones==0 || zeros==0) return -1;
+        
+        if(ones==1){
+            int x1 =-1;
+            int y1 =-1;
+
+           for(int i = 0 ;i<n;i++){
+            for(int j = 0;j<m;j++){
+                if(grid[i][j]==1){
+                    x1 = i;
+                    y1 = j;
+                }
+            }
+        }
+
+
+            for(int i = 0 ;i<n;i++){
+            for(int j = 0;j<m;j++){
+                if(grid[i][j]==0){
+                    max = Math.max(max,Math.abs(i-x1) + Math.abs(j-y1) );
+                }
+            }
+            }
+
+           
+                 return max;
+         }
+
+        for(int i = 0 ;i<n;i++){
+            for(int j = 0 ;j<m;j++){
+                if(grid[i][j]==0){
+                    int res = bfs(grid,i,j);
+                   if(res!=-1){
+                    int x = res/m;
+                    int y = res%m;
+                   
+                    max = Math.max(max,Math.abs(i-x) + Math.abs(j-y) );
+                   }
+                }
+
+
+                
+            }
+        }
+
+        return max;
+    }
+
+    public int bfs(int[][]grid,int i,int j){
+        int n = grid.length;
+        int m = grid[0].length;
+
+        boolean vis[][] = new boolean[n][m];
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
+
+        ArrayDeque<Integer>q = new ArrayDeque<>();
+        q.add(i*m + j);
+
+        while(q.size()!=0){
+            int s = q.size();
+            while(s-->0){
+                int ridx = q.remove();
+                int r = ridx/m;
+                int c = ridx%m;
+
+                if(grid[r][c]==1) return r*m + c;
+                if(vis[r][c]) continue;
+
+                vis[r][c] = true;
+
+                for(int k = 0 ;k<direcs.length;k++){
+                    int x = r + direcs[k][0];
+                    int y = c + direcs[k][1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && !vis[x][y]){
+                        q.add(x*m + y);
+                    }
+                }
+            }
+
+        }
+
+        return -1;
+    }
+
+   
+
+}
+
+class LC1129 {
+    class Edge{
+       int u; int v; int col;
+       Edge(int u, int v, int col){
+           this.u = u;
+           this.v = v;
+           this.col = col;
+       }
+   }
+   //red wt = 1
+   //blue wt = 0;
+   public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+       ArrayList<Edge>graph[] = new ArrayList[n];
+       for(int i = 0 ;i<n;i++){
+           graph[i] = new ArrayList<>();
+       }
+
+       for(int []ed: redEdges){
+           int u = ed[0];
+           int v = ed[1];
+           graph[u].add(new Edge(u,v,1));
+       
+       }
+
+       for(int []ed: blueEdges){
+           int u = ed[0];
+           int v = ed[1];
+           graph[u].add(new Edge(u,v,0));
+       }
+
+       int[]ans = new int[n];
+       Arrays.fill(ans,-1);
+       
+       boolean[][]vis = new boolean[n][2];
+
+       ArrayDeque<int[]>q  = new ArrayDeque<>();
+       q.add(new int[]{0,-1});  //src,color
+       vis[0][0] = vis[0][1] = true;
+       int level = 0;
+       while(q.size()!=0){
+           int s = q.size();
+
+           while(s-->0){
+               int[]ridx = q.remove();
+               int idx = ridx[0];
+               int color = ridx[1];                
+               if(ans[idx]==-1)ans[idx] = level;
+
+               for(Edge ed: graph[idx]){
+                   if(!vis[ed.v][ed.col] && color!=ed.col){
+                       q.add(new int[]{ed.v,ed.col});
+                       vis[ed.v][ed.col] = true;
+                   }
+               }
+           }
+
+           level++;
+       }
+
+       return ans;
+   }
 }
