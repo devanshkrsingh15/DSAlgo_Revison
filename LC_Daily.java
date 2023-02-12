@@ -1042,3 +1042,56 @@ class LC1129 {
        return ans;
    }
 }
+
+class LC2477 {
+    long ans = 0l;
+    int S = 0;
+
+    public long minimumFuelCost(int[][] roads, int seats) {
+        S = seats;
+        ArrayList<Integer>graph[] = buildGraph(roads);
+        if(graph.length==1) return 0l;
+        
+        int n = graph.length;
+        boolean[]vis = new boolean[n];
+        dfs(0,graph,vis);
+        return ans;
+    }
+
+    public int dfs(int src, ArrayList<Integer>graph[],boolean[]vis){
+        int size=0;
+        vis[src] = true;
+
+        for(int nbr : graph[src]){
+            if(!vis[nbr]){
+                size += dfs(nbr,graph,vis);
+            }
+        }
+        size++;
+
+        if(src!=0) ans += size/S + (size%S>0 ? 1 : 0); 
+        
+        return size;
+    }
+
+    
+    
+    public ArrayList<Integer>[] buildGraph(int[][]roads){
+        int n = roads.length;
+        ArrayList<Integer>[]graph = new ArrayList[n+1];
+        
+        for(int i = 0;i<=n;i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for(int[]rd :roads){
+            int u = rd[0];
+            int v = rd[1];
+
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        return graph;
+    }
+}
