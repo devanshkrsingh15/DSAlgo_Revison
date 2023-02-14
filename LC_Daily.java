@@ -873,9 +873,7 @@ public class LC_Daily {
 
         }
 
-        
     }
-
 
     public int maxDistance(int[][] grid) {
         int n = grid.length;
@@ -884,89 +882,90 @@ public class LC_Daily {
 
         int ones = 0;
         int zeros = 0;
-        for(int i = 0 ;i<n;i++){
-            for(int j = 0;j<m;j++){
-                 if(grid[i][j]==0) zeros ++;
-                 if(grid[i][j]==1) ones ++;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 0)
+                    zeros++;
+                if (grid[i][j] == 1)
+                    ones++;
             }
         }
 
-        if(ones==0 || zeros==0) return -1;
-        
-        if(ones==1){
-            int x1 =-1;
-            int y1 =-1;
+        if (ones == 0 || zeros == 0)
+            return -1;
 
-           for(int i = 0 ;i<n;i++){
-            for(int j = 0;j<m;j++){
-                if(grid[i][j]==1){
-                    x1 = i;
-                    y1 = j;
+        if (ones == 1) {
+            int x1 = -1;
+            int y1 = -1;
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (grid[i][j] == 1) {
+                        x1 = i;
+                        y1 = j;
+                    }
                 }
             }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (grid[i][j] == 0) {
+                        max = Math.max(max, Math.abs(i - x1) + Math.abs(j - y1));
+                    }
+                }
+            }
+
+            return max;
         }
 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 0) {
+                    int res = bfs(grid, i, j);
+                    if (res != -1) {
+                        int x = res / m;
+                        int y = res % m;
 
-            for(int i = 0 ;i<n;i++){
-            for(int j = 0;j<m;j++){
-                if(grid[i][j]==0){
-                    max = Math.max(max,Math.abs(i-x1) + Math.abs(j-y1) );
-                }
-            }
-            }
-
-           
-                 return max;
-         }
-
-        for(int i = 0 ;i<n;i++){
-            for(int j = 0 ;j<m;j++){
-                if(grid[i][j]==0){
-                    int res = bfs(grid,i,j);
-                   if(res!=-1){
-                    int x = res/m;
-                    int y = res%m;
-                   
-                    max = Math.max(max,Math.abs(i-x) + Math.abs(j-y) );
-                   }
+                        max = Math.max(max, Math.abs(i - x) + Math.abs(j - y));
+                    }
                 }
 
-
-                
             }
         }
 
         return max;
     }
 
-    public int bfs(int[][]grid,int i,int j){
+    public int bfs(int[][] grid, int i, int j) {
         int n = grid.length;
         int m = grid[0].length;
 
         boolean vis[][] = new boolean[n][m];
-        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
-        ArrayDeque<Integer>q = new ArrayDeque<>();
-        q.add(i*m + j);
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.add(i * m + j);
 
-        while(q.size()!=0){
+        while (q.size() != 0) {
             int s = q.size();
-            while(s-->0){
+            while (s-- > 0) {
                 int ridx = q.remove();
-                int r = ridx/m;
-                int c = ridx%m;
+                int r = ridx / m;
+                int c = ridx % m;
 
-                if(grid[r][c]==1) return r*m + c;
-                if(vis[r][c]) continue;
+                if (grid[r][c] == 1)
+                    return r * m + c;
+                if (vis[r][c])
+                    continue;
 
                 vis[r][c] = true;
 
-                for(int k = 0 ;k<direcs.length;k++){
+                for (int k = 0; k < direcs.length; k++) {
                     int x = r + direcs[k][0];
                     int y = c + direcs[k][1];
 
-                    if(x>=0 && y>=0 && x<n && y<m && !vis[x][y]){
-                        q.add(x*m + y);
+                    if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y]) {
+                        q.add(x * m + y);
                     }
                 }
             }
@@ -976,71 +975,74 @@ public class LC_Daily {
         return -1;
     }
 
-   
-
 }
 
 class LC1129 {
-    class Edge{
-       int u; int v; int col;
-       Edge(int u, int v, int col){
-           this.u = u;
-           this.v = v;
-           this.col = col;
-       }
-   }
-   //red wt = 1
-   //blue wt = 0;
-   public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
-       ArrayList<Edge>graph[] = new ArrayList[n];
-       for(int i = 0 ;i<n;i++){
-           graph[i] = new ArrayList<>();
-       }
+    class Edge {
+        int u;
+        int v;
+        int col;
 
-       for(int []ed: redEdges){
-           int u = ed[0];
-           int v = ed[1];
-           graph[u].add(new Edge(u,v,1));
-       
-       }
+        Edge(int u, int v, int col) {
+            this.u = u;
+            this.v = v;
+            this.col = col;
+        }
+    }
 
-       for(int []ed: blueEdges){
-           int u = ed[0];
-           int v = ed[1];
-           graph[u].add(new Edge(u,v,0));
-       }
+    // red wt = 1
+    // blue wt = 0;
+    public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+        ArrayList<Edge> graph[] = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
 
-       int[]ans = new int[n];
-       Arrays.fill(ans,-1);
-       
-       boolean[][]vis = new boolean[n][2];
+        for (int[] ed : redEdges) {
+            int u = ed[0];
+            int v = ed[1];
+            graph[u].add(new Edge(u, v, 1));
 
-       ArrayDeque<int[]>q  = new ArrayDeque<>();
-       q.add(new int[]{0,-1});  //src,color
-       vis[0][0] = vis[0][1] = true;
-       int level = 0;
-       while(q.size()!=0){
-           int s = q.size();
+        }
 
-           while(s-->0){
-               int[]ridx = q.remove();
-               int idx = ridx[0];
-               int color = ridx[1];                
-               if(ans[idx]==-1)ans[idx] = level;
+        for (int[] ed : blueEdges) {
+            int u = ed[0];
+            int v = ed[1];
+            graph[u].add(new Edge(u, v, 0));
+        }
 
-               for(Edge ed: graph[idx]){
-                   if(!vis[ed.v][ed.col] && color!=ed.col){
-                       q.add(new int[]{ed.v,ed.col});
-                       vis[ed.v][ed.col] = true;
-                   }
-               }
-           }
+        int[] ans = new int[n];
+        Arrays.fill(ans, -1);
 
-           level++;
-       }
+        boolean[][] vis = new boolean[n][2];
 
-       return ans;
-   }
+        ArrayDeque<int[]> q = new ArrayDeque<>();
+        q.add(new int[] { 0, -1 }); // src,color
+        vis[0][0] = vis[0][1] = true;
+        int level = 0;
+        while (q.size() != 0) {
+            int s = q.size();
+
+            while (s-- > 0) {
+                int[] ridx = q.remove();
+                int idx = ridx[0];
+                int color = ridx[1];
+                if (ans[idx] == -1)
+                    ans[idx] = level;
+
+                for (Edge ed : graph[idx]) {
+                    if (!vis[ed.v][ed.col] && color != ed.col) {
+                        q.add(new int[] { ed.v, ed.col });
+                        vis[ed.v][ed.col] = true;
+                    }
+                }
+            }
+
+            level++;
+        }
+
+        return ans;
+    }
 }
 
 class LC2477 {
@@ -1049,42 +1051,42 @@ class LC2477 {
 
     public long minimumFuelCost(int[][] roads, int seats) {
         S = seats;
-        ArrayList<Integer>graph[] = buildGraph(roads);
-        if(graph.length==1) return 0l;
-        
+        ArrayList<Integer> graph[] = buildGraph(roads);
+        if (graph.length == 1)
+            return 0l;
+
         int n = graph.length;
-        boolean[]vis = new boolean[n];
-        dfs(0,graph,vis);
+        boolean[] vis = new boolean[n];
+        dfs(0, graph, vis);
         return ans;
     }
 
-    public int dfs(int src, ArrayList<Integer>graph[],boolean[]vis){
-        int size=0;
+    public int dfs(int src, ArrayList<Integer> graph[], boolean[] vis) {
+        int size = 0;
         vis[src] = true;
 
-        for(int nbr : graph[src]){
-            if(!vis[nbr]){
-                size += dfs(nbr,graph,vis);
+        for (int nbr : graph[src]) {
+            if (!vis[nbr]) {
+                size += dfs(nbr, graph, vis);
             }
         }
         size++;
 
-        if(src!=0) ans += size/S + (size%S>0 ? 1 : 0); 
-        
+        if (src != 0)
+            ans += size / S + (size % S > 0 ? 1 : 0);
+
         return size;
     }
 
-    
-    
-    public ArrayList<Integer>[] buildGraph(int[][]roads){
+    public ArrayList<Integer>[] buildGraph(int[][] roads) {
         int n = roads.length;
-        ArrayList<Integer>[]graph = new ArrayList[n+1];
-        
-        for(int i = 0;i<=n;i++){
+        ArrayList<Integer>[] graph = new ArrayList[n + 1];
+
+        for (int i = 0; i <= n; i++) {
             graph[i] = new ArrayList<>();
         }
 
-        for(int[]rd :roads){
+        for (int[] rd : roads) {
             int u = rd[0];
             int v = rd[1];
 
@@ -1093,5 +1095,88 @@ class LC2477 {
         }
 
         return graph;
+    }
+}
+
+class LC1523 {
+    public int countOdds(int low, int high) {
+        if (low % 2 == 0)
+            low++;
+        if (high % 2 == 0)
+            high--;
+
+        long n = (high - low) / 2 + 1;
+
+        return (int) n;
+    }
+}
+
+
+class LC67 {
+    public String addBinary(String a, String b) {
+        if(a.length()<b.length()){
+            return addBinary(b,a);
+        }
+
+        int n = a.length();
+        int m = b.length();
+        int i = n-1;
+        int j = m-1;
+        int carry = 0;
+
+        StringBuilder sb  =  new StringBuilder();
+
+        while(j>=0){
+            char cha = a.charAt(i);
+            char chb = b.charAt(j);
+
+            int an = cha-'0';
+            int am = chb-'0';
+
+            if(an==0 && am==0){
+                sb.append(carry);
+                carry = 0;
+            }else if(an==1 && am==1){
+                int app = (carry==1) ? 1 : 0;
+                sb.append(app);
+                carry = 1;
+            }else {
+                int app = (carry==1) ? 0 : 1;
+                sb.append(app);
+                carry = (carry==1) ? 1 : 0;
+            }
+
+            i--;
+            j--;
+
+        }
+
+        while(i>=0){
+            char cha = a.charAt(i);
+            int an = cha-'0';
+            int am = carry;
+
+            if(an==0 && am==0){
+                sb.append(carry);
+                carry = 0;
+            }else if(an==1 && am==1){
+                int app = 0;
+                sb.append(app);
+                carry = 1;
+            }else {
+                int app = 1;
+                sb.append(app);
+                carry = 0;
+            }
+
+            i--;
+        }
+
+        if(carry!=0)sb.append(carry);
+      
+        
+
+        sb.reverse();
+        return sb.toString();
     }
 }
