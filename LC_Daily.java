@@ -1112,6 +1112,38 @@ class LC1523 {
 }
 
 
+class LC989 {
+    public List<Integer> addToArrayForm(int[] num, int k) {
+        int i = num.length-1;
+        ArrayList<Integer>ans = new ArrayList<>();
+        int carry = 0;
+
+        while(i>=0 || k!=0){
+            int a = (i>=0) ? num[i] : 0;
+            int b =(k>0)  ? k%10 : 0 ;
+            int sum = a + b + carry;
+
+            if(sum<10){
+                ans.add(sum);
+                carry = 0;
+            }else{
+                ans.add(sum%10);
+                carry = sum/10;
+            }
+
+            i--;
+            k/=10;
+        }
+        if(carry!=0){
+            ans.add(carry);
+        }
+
+        Collections.reverse(ans);
+        return ans;
+    }
+}
+
+
 class LC67 {
     public String addBinary(String a, String b) {
         if(a.length()<b.length()){
