@@ -1219,3 +1219,22 @@ class LC104 {
         return Math.max( maxDepth(root.left) , maxDepth(root.right) )+ 1;
     }
 }
+
+
+class LC35 {
+    public int searchInsert(int[] nums, int tar) {
+        int l =0 ;
+        int h = nums.length-1;
+
+        while(l<=h){
+            int m = l + (h-l)/2;
+
+            if(nums[m]==tar) return m;
+            else if(nums[m]<tar) l = m+1;
+            else h= m-1;
+
+        }
+
+        return l;
+    }
+}

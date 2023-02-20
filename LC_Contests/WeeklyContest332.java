@@ -146,4 +146,55 @@ public class WeeklyContest332 {
 
         return ans;
     }
+
+    //2565. Subsequence With the Minimum Score
+    public int minimumScore(String s, String t) {
+        if(t.equals(s)) return 0;
+
+        TreeSet<Integer>chars[] = new TreeSet[26];
+        for(int i = 0;i<s.length();i++){
+            char ch = s.charAt(i);
+            chars[ch-'a'] = new TreeSet<>();
+            chars[ch-'a'].add(i);
+        }
+
+        int i = 0;
+        int j = t.length()-1;
+
+        int min=  -1;
+        int max = -1;
+
+        int lastIth = -1;
+        int lastJth = s.length();
+
+        while(i<j){
+            char chi= t.charAt(i);
+            if(chars[chi-'a']==null) min=i;
+            else if(chars[chi-'a'].ceiling(lastIth+1)!=null){
+                int ci  = chars[chi-'a'].ceiling(lastIth+1);
+                lastIth = ci;
+                chars[chi-'a'].remove(ci);
+            }else min = i;
+                
+
+            char chj= t.charAt(j);
+            if(chars[chj-'a']==null) max=j;
+            else if(chars[chj-'a'].floor(lastJth-1)!=null){
+                int cj = chars[chj-'a'].floor(lastJth-1);
+                lastJth = cj;
+                chars[chj-'a'].remove(cj);
+            }else max = j;
+                
+
+            
+
+            i++;
+            j--;
+
+        }
+
+        return max - min + 1;
+        
+
+    }
 }
