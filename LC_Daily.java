@@ -1111,30 +1111,29 @@ class LC1523 {
     }
 }
 
-
 class LC989 {
     public List<Integer> addToArrayForm(int[] num, int k) {
-        int i = num.length-1;
-        ArrayList<Integer>ans = new ArrayList<>();
+        int i = num.length - 1;
+        ArrayList<Integer> ans = new ArrayList<>();
         int carry = 0;
 
-        while(i>=0 || k!=0){
-            int a = (i>=0) ? num[i] : 0;
-            int b =(k>0)  ? k%10 : 0 ;
+        while (i >= 0 || k != 0) {
+            int a = (i >= 0) ? num[i] : 0;
+            int b = (k > 0) ? k % 10 : 0;
             int sum = a + b + carry;
 
-            if(sum<10){
+            if (sum < 10) {
                 ans.add(sum);
                 carry = 0;
-            }else{
-                ans.add(sum%10);
-                carry = sum/10;
+            } else {
+                ans.add(sum % 10);
+                carry = sum / 10;
             }
 
             i--;
-            k/=10;
+            k /= 10;
         }
-        if(carry!=0){
+        if (carry != 0) {
             ans.add(carry);
         }
 
@@ -1143,39 +1142,38 @@ class LC989 {
     }
 }
 
-
 class LC67 {
     public String addBinary(String a, String b) {
-        if(a.length()<b.length()){
-            return addBinary(b,a);
+        if (a.length() < b.length()) {
+            return addBinary(b, a);
         }
 
         int n = a.length();
         int m = b.length();
-        int i = n-1;
-        int j = m-1;
+        int i = n - 1;
+        int j = m - 1;
         int carry = 0;
 
-        StringBuilder sb  =  new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        while(j>=0){
+        while (j >= 0) {
             char cha = a.charAt(i);
             char chb = b.charAt(j);
 
-            int an = cha-'0';
-            int am = chb-'0';
+            int an = cha - '0';
+            int am = chb - '0';
 
-            if(an==0 && am==0){
+            if (an == 0 && am == 0) {
                 sb.append(carry);
                 carry = 0;
-            }else if(an==1 && am==1){
-                int app = (carry==1) ? 1 : 0;
+            } else if (an == 1 && am == 1) {
+                int app = (carry == 1) ? 1 : 0;
                 sb.append(app);
                 carry = 1;
-            }else {
-                int app = (carry==1) ? 0 : 1;
+            } else {
+                int app = (carry == 1) ? 0 : 1;
                 sb.append(app);
-                carry = (carry==1) ? 1 : 0;
+                carry = (carry == 1) ? 1 : 0;
             }
 
             i--;
@@ -1183,19 +1181,19 @@ class LC67 {
 
         }
 
-        while(i>=0){
+        while (i >= 0) {
             char cha = a.charAt(i);
-            int an = cha-'0';
+            int an = cha - '0';
             int am = carry;
 
-            if(an==0 && am==0){
+            if (an == 0 && am == 0) {
                 sb.append(carry);
                 carry = 0;
-            }else if(an==1 && am==1){
+            } else if (an == 1 && am == 1) {
                 int app = 0;
                 sb.append(app);
                 carry = 1;
-            }else {
+            } else {
                 int app = 1;
                 sb.append(app);
                 carry = 0;
@@ -1204,34 +1202,102 @@ class LC67 {
             i--;
         }
 
-        if(carry!=0)sb.append(carry);
-      
-        
+        if (carry != 0)
+            sb.append(carry);
 
         sb.reverse();
         return sb.toString();
     }
 }
 
-class LC104 {
-    public int maxDepth(TreeNode root) {
-        if(root==null) return 0;
-        return Math.max( maxDepth(root.left) , maxDepth(root.right) )+ 1;
+class LC540 {
+    public int singleNonDuplicate(int[] nums) {
+        int n = nums.length;
+        int lo = 0;
+        int hi = n - 1;
+
+        if (n == 1)
+            return nums[lo];
+
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (mid > 0 && mid < n - 1) {
+                if (nums[mid - 1] != nums[mid] && nums[mid + 1] != nums[mid])
+                    return nums[mid];
+
+                if ((nums[mid - 1] == nums[mid] && mid % 2 == 1) || (nums[mid + 1] == nums[mid] && mid % 2 == 0)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
+            } else if (mid == 0) {
+                if (nums[mid + 1] != nums[mid])
+                    return nums[mid];
+
+            } else {
+                if (nums[mid - 1] != nums[mid])
+                    return nums[mid];
+            }
+        }
+
+        return 0;
+
     }
 }
 
+class LC1011 {
+    public int shipWithinDays(int[] weights, int days) {
+        int max = 0;
+        int min = 0;
+        for(int ele : weights){
+            min=Math.max(min,ele);
+            max+=ele;
+        }
+
+        int ans = -1;
+
+        while(min<=max){
+            int mid = min + (max - min)/2;
+            if(check(weights,days,mid)){
+                ans= mid;
+                max = mid-1;
+            }else{
+                min = mid+1;
+            }
+        }
+        return ans;
+    }
+
+    public boolean check(int[]arr,int D,int cap){
+        int d =1;
+        int cp = 0;
+        for(int ele : arr){
+            cp+=ele;
+            if(cp>cap){
+                cp= ele;
+                d++;
+            }
+        }
+
+        return d<=D;
+    }
+}
 
 class LC35 {
     public int searchInsert(int[] nums, int tar) {
-        int l =0 ;
-        int h = nums.length-1;
+        int l = 0;
+        int h = nums.length - 1;
 
-        while(l<=h){
-            int m = l + (h-l)/2;
+        while (l <= h) {
+            int m = l + (h - l) / 2;
 
-            if(nums[m]==tar) return m;
-            else if(nums[m]<tar) l = m+1;
-            else h= m-1;
+            if (nums[m] == tar)
+                return m;
+            else if (nums[m] < tar)
+                l = m + 1;
+            else
+                h = m - 1;
 
         }
 

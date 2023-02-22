@@ -150,51 +150,64 @@ public class WeeklyContest332 {
     //2565. Subsequence With the Minimum Score
     public int minimumScore(String s, String t) {
         if(t.equals(s)) return 0;
-
-        TreeSet<Integer>chars[] = new TreeSet[26];
-        for(int i = 0;i<s.length();i++){
-            char ch = s.charAt(i);
-            chars[ch-'a'] = new TreeSet<>();
-            chars[ch-'a'].add(i);
+        int slen= s.length();
+        int tlen= t.length();
+  
+        ArrayList<Integer>rightList = new ArrayList<>(); //indices of s
+        ArrayList<Integer>leftList = new ArrayList<>(); //indices of s
+  
+        int i = slen-1;
+        int j = tlen -1;
+  
+        while(i>=0 && j>=0){
+            if(s.charAt(i)==t.charAt(j)){
+                rightList.add(i);
+                j--;
+            }
+            i--;
         }
-
-        int i = 0;
-        int j = t.length()-1;
-
-        int min=  -1;
-        int max = -1;
-
-        int lastIth = -1;
-        int lastJth = s.length();
-
-        while(i<j){
-            char chi= t.charAt(i);
-            if(chars[chi-'a']==null) min=i;
-            else if(chars[chi-'a'].ceiling(lastIth+1)!=null){
-                int ci  = chars[chi-'a'].ceiling(lastIth+1);
-                lastIth = ci;
-                chars[chi-'a'].remove(ci);
-            }else min = i;
-                
-
-            char chj= t.charAt(j);
-            if(chars[chj-'a']==null) max=j;
-            else if(chars[chj-'a'].floor(lastJth-1)!=null){
-                int cj = chars[chj-'a'].floor(lastJth-1);
-                lastJth = cj;
-                chars[chj-'a'].remove(cj);
-            }else max = j;
-                
-
-            
-
+  
+  
+        int ans = tlen - rightList.size();
+        Collections.reverse(rightList);
+  
+        if(ans==0) return 0;
+  
+        i=0;
+        j= 0;
+        while(i<slen && j<tlen){
+            if(s.charAt(i)==t.charAt(j)){
+                leftList.add(i);
+                j++;
+            }
             i++;
-            j--;
-
         }
-
-        return max - min + 1;
-        
-
-    }
+  
+  
+        for(int idx = 0 ; idx<leftList.size();idx++){
+            int findIdx =find(rightList,leftList.get(idx)+1);
+            int leftLen = idx +1;
+            int rightLen = rightList.size() - findIdx;
+  
+            ans =Math.min(ans,tlen - rightLen - leftLen);
+  
+        }
+  
+        return ans;
+      }
+  
+      public int find(ArrayList<Integer>list,int tar){
+          int lo = 0;
+          int hi = list.size()-1;
+          while(lo<=hi){
+              int mid = lo +(hi-lo)/2;
+  
+              if(list.get(mid)==tar) return mid;
+              else if(list.get(mid)>tar) hi = mid-1;
+              else lo = mid+1;
+          }
+  
+          return lo;
+  
+      }
 }
