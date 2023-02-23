@@ -1304,3 +1304,29 @@ class LC35 {
         return l;
     }
 }
+
+
+
+
+
+class LC502 {
+    public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+        PriorityQueue<Integer>profits_pq =  new PriorityQueue<>((a,b)->{return profits[b] - profits[a];});
+        PriorityQueue<Integer>capitals_pq =  new PriorityQueue<>((a,b)->{return capital[a] - capital[b];});
+
+        int n = capital.length;
+        for(int i = 0 ;i<n;i++) capitals_pq.add(i);
+        
+        while(k-->0){
+            while(capitals_pq.size()!=0 && w>=capital[capitals_pq.peek()]){
+                profits_pq.add(capitals_pq.peek());
+                capitals_pq.remove();
+            }
+            if(profits_pq.size()==0) return w;
+            w += profits[profits_pq.remove()];
+        }
+
+        return w;
+
+    }
+}
