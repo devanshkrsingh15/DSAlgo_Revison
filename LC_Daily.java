@@ -1305,6 +1305,35 @@ class LC35 {
     }
 }
 
+class LC1675 {
+    public int minimumDeviation(int[] nums) {
+        int n = nums.length;
+        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{return b-a;});
+
+        int min = (int)1e9 +10;
+        int max = -1;
+
+        for(int ele:nums){
+            int nele = (ele%2==0) ? ele : 2*ele ;
+            min = Math.min(min,nele);
+            max = Math.max(max,nele);
+            pq.add(nele);
+        }
+
+        int ans = max - min;
+
+        while(pq.peek()%2==0){
+            int rp = pq.remove();
+            min = Math.min(min,rp/2);
+            pq.add(rp/2);
+            ans = Math.min(ans,pq.peek()-min);
+        }
+
+        return ans;
+
+    }
+}
+
 
 
 
