@@ -1359,3 +1359,35 @@ class LC502 {
 
     }
 }
+
+
+
+class  EditDis {
+    public int minDistance(String word1, String word2) {
+        int n = word1.length();
+        int m = word2.length();
+        int[][]dp = new int[n+1][m+1];
+        for(int[]d:dp) Arrays.fill(d,-1);
+
+        return minDistance_(word1,word2,n,m,dp);
+    }
+
+    public int minDistance_(String word1, String word2,int n,int m,int[][]dp){
+        if(n==0 || m==0){
+            return (n==0 && m==0) ? 0 : (m==0 ? n : m); 
+        }
+
+        if(dp[n][m]!=-1) return dp[n][m];
+
+        int min = (int)1e9;
+
+        if(word1.charAt(n-1)==word2.charAt(m-1)) min =Math.min(min,minDistance_(word1,word2,n-1,m-1,dp)) ;
+        else{
+            min = Math.min(min,minDistance_(word1,word2,n,m-1,dp)+1); //INSERT
+            min = Math.min(min,minDistance_(word1,word2,n-1,m,dp)+1); //DELETE
+            min = Math.min(min,minDistance_(word1,word2,n-1,m-1,dp)+1); //REPLACE
+
+        }
+        return dp[n][m] = min;
+    }
+}
