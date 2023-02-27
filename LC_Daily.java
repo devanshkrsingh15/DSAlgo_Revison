@@ -1391,3 +1391,69 @@ class  EditDis {
         return dp[n][m] = min;
     }
 }
+
+class LC427 {
+    class Node{
+    public boolean val;
+    public boolean isLeaf;
+    public Node topLeft;
+    public Node topRight;
+    public Node bottomLeft;
+    public Node bottomRight;
+
+    
+    public Node() {
+        this.val = false;
+        this.isLeaf = false;
+        this.topLeft = null;
+        this.topRight = null;
+        this.bottomLeft = null;
+        this.bottomRight = null;
+    }
+    
+    public Node(boolean val, boolean isLeaf) {
+        this.val = val;
+        this.isLeaf = isLeaf;
+        this.topLeft = null;
+        this.topRight = null;
+        this.bottomLeft = null;
+        this.bottomRight = null;
+    }
+    
+    public Node(boolean val, boolean isLeaf, Node topLeft, Node topRight, Node bottomLeft, Node bottomRight) {
+        this.val = val;
+        this.isLeaf = isLeaf;
+        this.topLeft = topLeft;
+        this.topRight = topRight;
+        this.bottomLeft = bottomLeft;
+        this.bottomRight = bottomRight;
+    }
+}
+    public Node construct(int[][] grid) {
+        int len = grid.length;
+        return construct_(grid,0,0,len);
+    }
+
+    public Node construct_(int[][] grid,int i,int j,int n){
+        if(areEqual(grid,i,j,n)){
+            return new Node(grid[i][j]==1,true,null,null,null,null);
+        }
+        Node rn = new Node(true,false);
+        rn.topLeft = construct_(grid,i,j,n/2);
+        rn.topRight = construct_(grid,i,j+n/2,n/2);
+        rn.bottomLeft = construct_(grid,i+n/2,j,n/2);
+        rn.bottomRight = construct_(grid,i+n/2,j+n/2,n/2);
+        return rn;
+    }
+
+    public boolean areEqual(int[][]grid,int r,int c,int len){
+        int val =grid[r][c];
+        for(int i = r;i<r+len;i++){
+            for(int j = c;j<c+len;j++){
+                if(grid[i][j]!=val) return false;
+            }
+        }
+
+        return true;
+    }
+}
