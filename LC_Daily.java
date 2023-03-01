@@ -1457,3 +1457,42 @@ class LC427 {
         return true;
     }
 }
+
+class LC912 {
+    public int[] sortArray(int[] nums) {
+        int n = nums.length;
+        return mergeSort(nums,0,n-1);
+    }
+
+    public int[] mergeSort(int[]arr,int lo,int hi){
+        if(lo==hi) return new int[]{arr[lo]};
+
+        int mid = lo + (hi-lo)/2;
+        int[]lft= mergeSort(arr,lo,mid);
+        int[]right= mergeSort(arr,mid+1,hi);
+
+        return mergeTwoSortedArrays(lft,right);
+    }
+
+    public int[] mergeTwoSortedArrays(int[]arr1,int[]arr2){
+        int n = arr1.length;
+        int m = arr2.length;
+
+        int[]narr = new int[n+m];
+        int i = 0;
+        int j = 0;
+        int idx = 0;
+
+        while(i<n && j<m){
+            if(arr1[i]<=arr2[j]){
+                narr[idx++] = arr1[i++];
+            }else{
+                narr[idx++] = arr2[j++];
+            }
+        }
+
+        while(i<n) narr[idx++] = arr1[i++];
+        while(j<m) narr[idx++] = arr2[j++];
+        return narr;
+    }
+}
