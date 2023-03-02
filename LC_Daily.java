@@ -1496,3 +1496,38 @@ class LC912 {
         return narr;
     }
 }
+
+
+class LC443 {
+    public int compress(char[] chars) {
+        int i = 0;
+        int n = chars.length;
+        int len = 0;
+        int idx = 0;
+
+        while(i<n){
+            char ch = chars[i];
+            if(i+1<n && ch==chars[i+1]){
+                int cnt = 1;
+                while(i+1<n && ch==chars[i+1]){
+                    cnt++;
+                    i++;
+                }
+                String tmp =""+cnt + "";
+                len += tmp.length()+1;
+                chars[idx++]= ch;
+                for(int j= 0;j<tmp.length();j++){
+                    chars[idx++] =tmp.charAt(j);
+                }
+                i++;
+            }else{
+                i++;
+                len += 1;
+                chars[idx++]= ch;
+            }
+
+        }
+
+        return len; 
+    }
+}
