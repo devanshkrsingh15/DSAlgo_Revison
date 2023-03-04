@@ -1531,3 +1531,66 @@ class LC443 {
         return len; 
     }
 }
+
+
+
+class LC28 {
+    public int strStr(String h, String nd) {
+        int n = h.length();
+        int m = nd.length();
+        if(m>n) return -1;
+        if(h.equals(nd)) return 0;
+
+        int en = 0;
+        while(en<n){
+            char ch = h.charAt(en);
+            int oen = en;
+            if(ch==nd.charAt(0)){
+                int ans = en;
+                int idx = 0;
+                while(en<n && idx<m && h.charAt(en)==nd.charAt(idx)){
+                    en++;
+                    idx++;
+                }
+                if(idx==m) return ans;
+            }
+            en = oen+1;
+            
+        }
+        return -1;
+
+    }
+}
+
+
+class LC2444 {
+    public long countSubarrays(int[] nums, int minK, int maxK) {
+        long ans = 0;
+        int min = -1;
+        int max = -1;
+
+        int en = 0;
+        int n = nums.length;
+        int st = 0;
+
+        while(en<n){
+            int ele = nums[en];
+            if(ele==minK) min = en;
+            if(ele==maxK) max = en;
+
+            if(ele<minK || ele>maxK){
+                min = -1;
+                max = -1;
+                st = en+1;
+            }
+
+            if(min!=-1 && max!=-1){
+                ans += (long)(Math.min(min,max) - st + 1);
+            }
+
+            en++;
+        }
+
+        return ans;
+    }
+}
