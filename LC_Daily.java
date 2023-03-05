@@ -1594,3 +1594,58 @@ class LC2444 {
         return ans;
     }
 }
+
+class LC1345 {
+    public int minJumps(int[] arr) {
+        Queue<Integer>q = new ArrayDeque<>();
+        int n = arr.length;
+        boolean[]vis = new boolean[n];
+        q.add(0); //src,par
+        vis[0] = true;
+        HashMap<Integer,ArrayList<Integer>>map = new HashMap<>();
+        for(int i = 0 ;i<n;i++){
+            int ele = arr[i];
+            map.putIfAbsent(ele,new ArrayList<>());
+            map.get(ele).add(i);
+        }
+
+        int level = 0;
+        while(q.size()!=0){
+            int s = q.size();
+            while(s-->0){
+                int src= q.remove();
+               
+                if(src==n-1) return level;
+                
+                if(src-1>0 && !vis[src-1]){ 
+                    vis[src-1] = true;
+                    q.add(src-1);
+                }
+                if(src+1<n && !vis[src+1]){ 
+                     vis[src+1] = true;
+                    q.add(src+1);
+                }
+
+                int val =arr[src];
+                if(map.containsKey(val)){
+                for(int nsrc : map.get(val)){
+                    if(nsrc!=src && !vis[nsrc]){ 
+                        vis[nsrc] = true;
+                        q.add(nsrc);
+                        }
+                }
+                map.remove(val);
+                }
+
+
+
+            }
+            level++;
+        }
+
+        return -1;
+
+
+
+    }
+}
