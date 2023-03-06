@@ -1649,3 +1649,40 @@ class LC1345 {
 
     }
 }
+
+class LC1539 {
+    public int findKthPositive(int[] arr, int k) {
+        int n = arr.length;
+        int hi = n-1;
+        int lo = 0;
+        int K = k+1;
+        while(lo<=hi){
+            int mid= lo + (hi-lo)/2;
+            if(arr[mid]-mid<K) lo = mid+1;
+            else hi=mid-1;
+        }
+
+        int val =1;
+      
+        if(hi>=0){
+            int diff = arr[hi] - hi;
+            diff--;
+            k-=diff;
+            val= arr[hi];
+        }else if(hi==-1 &&  arr[0]>k){
+             while(k-->1){
+            val++;
+        }
+        return val;
+        }
+
+       
+
+        while(k-->=1){
+            val++;
+        }
+
+        
+        return val;
+    }
+}
