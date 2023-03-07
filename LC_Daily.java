@@ -1597,7 +1597,7 @@ class LC2444 {
 
 class LC1345 {
     public int minJumps(int[] arr) {
-        Queue<Integer>q = new ArrayDeque<>();
+        ArrayDeque<Integer>q = new ArrayDeque<>();
         int n = arr.length;
         boolean[]vis = new boolean[n];
         q.add(0); //src,par
@@ -1684,5 +1684,39 @@ class LC1539 {
 
         
         return val;
+    }
+}
+
+class LC2187 {
+    public long minimumTime(int[] time, int totalTrips) {
+        long min = 1l;
+        long max = (long)1e18;
+
+        long ans = (long)time[0]*(long)totalTrips;
+
+        while(min<=max){
+            long mid = min + (max - min)/2;
+            if(isPossible(time,totalTrips,mid)){
+                ans = mid;
+                max = mid-1;
+            }else{
+                min = mid+1;
+            }
+        }
+
+        return ans;
+    }
+
+    public boolean isPossible(int[]arr,long tot,long curr){
+        long trips = 0;
+        for(int ele :arr){
+            long a = (curr/(long)ele);
+            trips += a;
+            if(trips>=tot) return true;
+        }
+
+
+
+        return false;
     }
 }
