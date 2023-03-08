@@ -24,7 +24,7 @@ public class WeeklyContest335 {
 
     }
 
-    //2583. Kth Largest Sum in a Binary Tree
+    // 2583. Kth Largest Sum in a Binary Tree
     public long kthLargestLevelSum(TreeNode root, int k) {
         ArrayDeque<TreeNode> q = new ArrayDeque<>();
         q.add(root);
@@ -55,9 +55,50 @@ public class WeeklyContest335 {
 
         return pq.size() < k ? -1l : pq.peek();
     }
+
+    // 2584. Split the Array to Make Coprime Products
+    class Solution {
+        public int findValidSplit(int[] nums) {
+            int n = nums.length;
+            HashSet<Integer> fsets[] = new HashSet[n];
+            HashMap<Integer, Integer> lastPos = new HashMap<>();
+
+            for (int idx = 0; idx < n; idx++) {
+                int ele = nums[idx];
+                HashSet<Integer> set = new HashSet<>();
+
+                for (int i = 2; i <= (int) Math.sqrt(ele); i++) {
+                    while (ele % i == 0) {
+                        lastPos.put(i, idx);
+                        set.add(i);
+                        ele /= i;
+                    }
+                }
+                if (ele > 1) {
+                    lastPos.put(ele, idx);
+                    set.add(ele);
+                }
+
+                fsets[idx] = set;
+            }
+
+            int max = 0;
+            for (int i = 0; i < n - 1; i++) {
+                int cnt = 0;
+                for (int p : fsets[i]) {
+                    max = Math.max(max, lastPos.get(p));
+                }
+                if (max == i)
+                    return i;
+            }
+
+            return -1;
+        }
+
+    }
 }
 
- class TreeNode {
+class TreeNode {
     int val;
     TreeNode left;
     TreeNode right;
