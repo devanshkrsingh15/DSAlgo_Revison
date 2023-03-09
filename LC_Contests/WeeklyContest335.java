@@ -96,6 +96,39 @@ public class WeeklyContest335 {
         }
 
     }
+
+    //2585. Number of Ways to Earn Points
+    public int waysToReachTarget(int tar, int[][] types) {
+        int n = types.length;
+        long[][]dp = new long[n+1][tar+1];
+        for(long[]d:dp) Arrays.fill(d,-1l);
+
+        return (int)waysToReachTarget_(types,0,tar,dp);
+    }
+
+    long mod = (long)1e9 + 7;
+    public long waysToReachTarget_(int[][]types,int idx,int tar, long[][]dp){
+        int n = types.length;
+        if(idx==n || tar==0){
+            return dp[idx][tar] = (tar==0) ? 1l : 0l;
+        }
+
+        if(dp[idx][tar]!=-1l) return dp[idx][tar];
+
+        long exc = waysToReachTarget_(types,idx+1,tar,dp);
+
+        int tot = types[idx][0];
+        int m = types[idx][1];
+        long inc = 0;
+        for(int i = 1;i<=tot;i++){
+            if(tar-m*i >= 0){
+                inc = (inc%mod + waysToReachTarget_(types,idx+1,tar-m*i,dp)%mod)%mod;
+            }
+        }
+
+        long ans = (inc%mod + exc%mod)%mod;
+        return dp[idx][tar] = ans;
+    }
 }
 
 class TreeNode {
