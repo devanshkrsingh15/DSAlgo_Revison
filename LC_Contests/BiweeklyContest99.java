@@ -49,4 +49,35 @@ public class BiweeklyContest99 {
         return ans;
 
     }
+
+    //2580. Count Ways to Group Overlapping Ranges
+    public int countWays(int[][] ranges) {
+        Arrays.sort(ranges,(a,b)->{
+            if(a[0]==b[0]) return a[1] - b[1];
+            return a[0] - b[0]; 
+        });
+
+        Stack<int[]>st = new Stack<>();
+        for(int[]rn :ranges ){
+            int start = rn[0];
+            int end = rn[1];
+
+            while(st.size()!=0 && st.peek()[1]>=rn[0]){
+                int[]rem_rn = st.pop();
+                start = Math.min(start,rem_rn[0]);
+                end = Math.max(end,rem_rn[1]);
+            }
+
+            st.push(new int[]{start,end});
+        }
+
+        int size = st.size();
+        long mod = (long)1e9 + 7;
+        long ans = 1;
+        for(int i = 0 ; i<size;i++){
+            ans= (ans%mod * 2%mod)%mod;
+        }
+
+        return (int)ans;
+    }
 }
