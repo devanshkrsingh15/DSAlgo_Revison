@@ -80,4 +80,80 @@ public class BiweeklyContest99 {
 
         return (int)ans;
     }
+
+
+    //2581. Count Number of Possible Root Nodes
+    class Solution {
+        int idx = 0;
+        public int rootCount(int[][] edges, int[][] guesses, int k) {
+            int n = edges.length+1;
+            ArrayList<Integer>graph[] = buildGraph(edges);
+            boolean[]vis = new boolean[n];
+            int[]par = new int[n]; Arrays.fill(par,-1);
+            int[]eulerArr = new int[n];
+            HashMap<Integer,int[]>subtreeLim = new HashMap<>(); //lidx,ridx
+            builderEuler(graph,0,-1,vis,par,eulerArr,subtreeLim);
+            
+            int[]guessCountArray = new int[n];
+            for(int[]g :guesses ){
+                int u = g[0];
+                int v = g[1];
+                if(par[v]==u){
+                    guessCountArray[subtreeLim.get(0)[0]]++;
+                    if(subtreeLim.get(0)[1]+1<n) guessCountArray[subtreeLim.get(0)[1]+1]--;
+                    int l = subtreeLim.get(v)[0];
+                    int r = subtreeLim.get(v)[1];
+                    guessCountArray[l]--;
+                    if(r+1<n)guessCountArray[r+1]++;
+                }else{
+                    int l = subtreeLim.get(u)[0];
+                    int r = subtreeLim.get(u)[1];
+                    // System.out.println( v + " - " + l + " " + r);
+                    guessCountArray[l]++;
+                    if(r+1<n)guessCountArray[r+1]--;
+                }
+            }
+    
+            int ans= 0;
+            for(int i =1;i<n;i++){
+                guessCountArray[i]+=guessCountArray[i-1];
+            }
+    
+            for(int i =0;i<n;i++){
+                if(guessCountArray[i] >= k) ans++; 
+            }
+            return ans;
+        }
+    
+        public void builderEuler(ArrayList<Integer>graph[],int src,int pr,boolean[]vis,int[]par,int[]eulerArr,HashMap<Integer,int[]>subtreeLim ){
+            vis[src] = true;
+            par[src] = pr;
+            eulerArr[idx] = src;
+            int st = idx;
+           
+            for(int nbr : graph[src]){
+                if(!vis[nbr]){
+                    idx++;
+                    builderEuler(graph,nbr,src,vis,par,eulerArr,subtreeLim);
+                }
+            }
+            int en = idx;
+            subtreeLim.put(src,new int[]{st,en});
+        }
+    
+        public ArrayList<Integer>[] buildGraph(int[][]edges){
+            int n = edges.length+1;
+            ArrayList<Integer>[]graph = new ArrayList[n];
+            for(int i = 0 ; i<n;i++) graph[i] = new ArrayList<>();
+    
+            for(int[]ed: edges){
+                int u = ed[0];
+                int v = ed[1];
+                graph[u].add(v);
+                graph[v].add(u);
+            }
+    
+            return graph;
+        }
+    }
 }
