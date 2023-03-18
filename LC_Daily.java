@@ -1812,3 +1812,30 @@ class BrowserHistory {
  * String param_2 = obj.back(steps);
  * String param_3 = obj.forward(steps);
  */
+
+
+
+ class LC2555 {
+    public int maximizeWin(int[] prizePositions, int k) {
+        int n = prizePositions.length;
+        if(prizePositions[0]+k>=prizePositions[n-1]) return n;
+
+        int st = 0;
+        int en = 0;
+        int[]dp = new int[n+1];
+        dp[0] = 0;
+        int max = 0;
+        while(en<n){
+            while(prizePositions[st] + k<prizePositions[en]){
+                st++;
+            }
+
+            dp[en+1] = Math.max(dp[en],en-st+1);
+            max = Math.max(max,en-st+1 + dp[st]);
+            en++;
+        }
+        return max;
+    }
+
+
+}
