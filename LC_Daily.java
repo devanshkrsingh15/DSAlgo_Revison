@@ -1720,3 +1720,95 @@ class LC2187 {
         return false;
     }
 }
+
+
+class Trie {
+    class TrieNode{
+        char ch;
+        TrieNode[]children;
+        boolean isEnd;
+        
+        TrieNode(char ch){
+            this.ch= ch;
+            this.children = new TrieNode[26];
+            this.isEnd = false;
+        }
+    }
+
+    TrieNode root;
+
+    public Trie() {
+        root = new TrieNode('-');
+    }
+    
+    public void insert(String word) {
+        TrieNode tmp = root;
+        for(int i = 0 ;i<word.length();i++){
+            char ch = word.charAt(i);
+            if(tmp.children[ch-'a']==null) tmp.children[ch-'a'] = new TrieNode(ch);
+            tmp = tmp.children[ch-'a']; 
+        }
+        tmp.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode tmp = root;
+        for(int i = 0 ;i<word.length();i++){
+            char ch = word.charAt(i);
+            if(tmp.children[ch-'a']==null) return false;
+            tmp = tmp.children[ch-'a']; 
+        }
+
+        return tmp.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        TrieNode tmp = root;
+        for(int i = 0 ;i<prefix.length();i++){
+            char ch = prefix.charAt(i);
+            if(tmp.children[ch-'a']==null) return false;
+            tmp = tmp.children[ch-'a']; 
+        }
+
+        return true;
+    }
+}
+
+class BrowserHistory {
+    Stack<String>ms;
+    Stack<String>hs;
+
+    public BrowserHistory(String homepage) {
+        ms = new Stack<>();
+        hs = new Stack<>();
+        ms.add(homepage);
+    }
+    
+    public void visit(String url) {
+        ms.push(url);
+        hs = new Stack<>();
+    }
+    
+    public String back(int steps) {
+        while(ms.size()!=0 && steps-->0){
+            hs.push(ms.pop());
+        }
+        if(ms.size()==0){ ms.push(hs.pop());}
+        return ms.peek();
+    }
+    
+    public String forward(int steps) {
+         while(hs.size()!=0 && steps-->0){
+            ms.push(hs.pop());
+        }
+        return ms.peek();
+    }
+}
+
+/**
+ * Your BrowserHistory object will be instantiated and called as such:
+ * BrowserHistory obj = new BrowserHistory(homepage);
+ * obj.visit(url);
+ * String param_2 = obj.back(steps);
+ * String param_3 = obj.forward(steps);
+ */
