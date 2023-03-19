@@ -1839,3 +1839,64 @@ class BrowserHistory {
 
 
 }
+
+class WordDictionary {
+
+    class Node{
+        char ch;
+        HashMap<Character,Node>children;
+        boolean isEnd;
+
+        Node(char ch){
+            this.ch = ch;
+            this.children = new HashMap<>();
+            this.isEnd = false;
+        }
+    }
+
+    Node root;
+
+    public WordDictionary() {
+        root = new Node('*');
+    }
+    
+    public void addWord(String word) {
+        Node tmp = root;
+        for(int i = 0; i<word.length();i++){
+            char ch= word.charAt(i);
+            tmp.children.putIfAbsent(ch,new Node(ch));
+            tmp= tmp.children.get(ch);
+        }
+
+        tmp.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+       return search_(word,0,root);
+    }
+
+    public boolean search_(String word,int idx,Node tmp){
+        if(idx==word.length()) return tmp.isEnd;
+
+        char ch = word.charAt(idx);
+        if(ch=='.'){
+            for(char nch:tmp.children.keySet()){
+                if(search_(word,idx+1,tmp.children.get(nch))){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        if(!tmp.children.containsKey(ch)) return false;
+
+        return search_(word,idx+1,tmp.children.get(ch));
+    }
+}
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary obj = new WordDictionary();
+ * obj.addWord(word);
+ * boolean param_2 = obj.search(word);
+ */
