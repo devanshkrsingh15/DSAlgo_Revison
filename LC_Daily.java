@@ -1915,3 +1915,20 @@ class WordDictionary {
         return n<=0;
     }
 }
+
+public long zeroFilledSubarray(int[] nums) {
+        int n = nums.length;
+        long[]dp = new long[n];
+        long ans = 0l;
+        for(int i = 0;i<n;i++){
+            if(i==0){
+                dp[i] = (nums[i]==0) ? 1l: 0l;
+            }else{
+                dp[i] = (nums[i]==0) ? dp[i-1] + 1l : 0l;
+            }
+
+            ans += dp[i];
+        }
+
+        return ans;
+    }
