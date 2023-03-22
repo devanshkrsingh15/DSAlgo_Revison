@@ -1932,3 +1932,39 @@ public long zeroFilledSubarray(int[] nums) {
 
         return ans;
     }
+
+
+    class Solution {
+    public int minScore(int n, int[][] roads) {
+        HashMap<Integer,Integer>graph[] = new HashMap[n+1];
+        for(int i = 0 ;i<=n;i++){
+            graph[i] = new HashMap<>();
+        }
+        for(int[]rd : roads){
+            int u = rd[0];
+            int v = rd[1];
+            int wt = rd[2];
+            graph[u].put(v,Math.min(wt,graph[u].getOrDefault(v,(int)1e9)));
+            graph[v].put(u,Math.min(wt,graph[v].getOrDefault(u,(int)1e9)));
+        }
+
+
+        return dfs(graph,1,n,new HashSet<>());
+        
+    }
+
+    public int  dfs(HashMap<Integer,Integer>graph[],int src,int dest,HashSet<Integer>vis){
+        int ans = (int)1e9;
+        vis.add(src);
+        HashMap<Integer,Integer>map  = graph[src];
+        for(int nbr : map.keySet()){
+
+            int wt = map.get(nbr);
+            if(!vis.contains(nbr)) ans = Math.min(ans,dfs(graph,nbr,dest,vis));
+            ans = Math.min(ans,wt);
+            
+        }
+
+        return ans;
+    }
+}
