@@ -70,8 +70,26 @@ public class WeeklyContest337 {
     }
 
     //2597. The Number of Beautiful Subsets
-     public int beautifulSubsets(int[] nums, int k) {
+    public int beautifulSubsets(int[] nums, int k) {
+        return beautifulSubsets_(nums,k,0,new HashMap<>()) - 1;
+    }
+    
+    public int beautifulSubsets_(int[]nums,int k,int idx,HashMap<Integer,Integer>hm){
+        if(idx==nums.length){
+            return 1;
+        }
+        int ans = 0;
+        int ele = nums[idx];
+        if(!hm.containsKey(ele+k) && !hm.containsKey(ele-k)){
+             hm.put(ele,hm.getOrDefault(ele,0)+1);
+             ans += beautifulSubsets_(nums,k,idx+1,hm);
+             hm.put(nums[idx],hm.get(nums[idx])-1);
+             if(hm.get(ele)==0) hm.remove(ele);
+        }
         
+        ans += beautifulSubsets_(nums,k,idx+1,hm);
+        
+        return ans;
     }
 
 }
