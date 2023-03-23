@@ -1250,37 +1250,37 @@ class LC1011 {
     public int shipWithinDays(int[] weights, int days) {
         int max = 0;
         int min = 0;
-        for(int ele : weights){
-            min=Math.max(min,ele);
-            max+=ele;
+        for (int ele : weights) {
+            min = Math.max(min, ele);
+            max += ele;
         }
 
         int ans = -1;
 
-        while(min<=max){
-            int mid = min + (max - min)/2;
-            if(check(weights,days,mid)){
-                ans= mid;
-                max = mid-1;
-            }else{
-                min = mid+1;
+        while (min <= max) {
+            int mid = min + (max - min) / 2;
+            if (check(weights, days, mid)) {
+                ans = mid;
+                max = mid - 1;
+            } else {
+                min = mid + 1;
             }
         }
         return ans;
     }
 
-    public boolean check(int[]arr,int D,int cap){
-        int d =1;
+    public boolean check(int[] arr, int D, int cap) {
+        int d = 1;
         int cp = 0;
-        for(int ele : arr){
-            cp+=ele;
-            if(cp>cap){
-                cp= ele;
+        for (int ele : arr) {
+            cp += ele;
+            if (cp > cap) {
+                cp = ele;
                 d++;
             }
         }
 
-        return d<=D;
+        return d <= D;
     }
 }
 
@@ -1308,25 +1308,27 @@ class LC35 {
 class LC1675 {
     public int minimumDeviation(int[] nums) {
         int n = nums.length;
-        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{return b-a;});
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+            return b - a;
+        });
 
-        int min = (int)1e9 +10;
+        int min = (int) 1e9 + 10;
         int max = -1;
 
-        for(int ele:nums){
-            int nele = (ele%2==0) ? ele : 2*ele ;
-            min = Math.min(min,nele);
-            max = Math.max(max,nele);
+        for (int ele : nums) {
+            int nele = (ele % 2 == 0) ? ele : 2 * ele;
+            min = Math.min(min, nele);
+            max = Math.max(max, nele);
             pq.add(nele);
         }
 
         int ans = max - min;
 
-        while(pq.peek()%2==0){
+        while (pq.peek() % 2 == 0) {
             int rp = pq.remove();
-            min = Math.min(min,rp/2);
-            pq.add(rp/2);
-            ans = Math.min(ans,pq.peek()-min);
+            min = Math.min(min, rp / 2);
+            pq.add(rp / 2);
+            ans = Math.min(ans, pq.peek() - min);
         }
 
         return ans;
@@ -1334,24 +1336,26 @@ class LC1675 {
     }
 }
 
-
-
-
-
 class LC502 {
     public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
-        PriorityQueue<Integer>profits_pq =  new PriorityQueue<>((a,b)->{return profits[b] - profits[a];});
-        PriorityQueue<Integer>capitals_pq =  new PriorityQueue<>((a,b)->{return capital[a] - capital[b];});
+        PriorityQueue<Integer> profits_pq = new PriorityQueue<>((a, b) -> {
+            return profits[b] - profits[a];
+        });
+        PriorityQueue<Integer> capitals_pq = new PriorityQueue<>((a, b) -> {
+            return capital[a] - capital[b];
+        });
 
         int n = capital.length;
-        for(int i = 0 ;i<n;i++) capitals_pq.add(i);
-        
-        while(k-->0){
-            while(capitals_pq.size()!=0 && w>=capital[capitals_pq.peek()]){
+        for (int i = 0; i < n; i++)
+            capitals_pq.add(i);
+
+        while (k-- > 0) {
+            while (capitals_pq.size() != 0 && w >= capital[capitals_pq.peek()]) {
                 profits_pq.add(capitals_pq.peek());
                 capitals_pq.remove();
             }
-            if(profits_pq.size()==0) return w;
+            if (profits_pq.size() == 0)
+                return w;
             w += profits[profits_pq.remove()];
         }
 
@@ -1360,32 +1364,33 @@ class LC502 {
     }
 }
 
-
-
-class  EditDis {
+class EditDis {
     public int minDistance(String word1, String word2) {
         int n = word1.length();
         int m = word2.length();
-        int[][]dp = new int[n+1][m+1];
-        for(int[]d:dp) Arrays.fill(d,-1);
+        int[][] dp = new int[n + 1][m + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
 
-        return minDistance_(word1,word2,n,m,dp);
+        return minDistance_(word1, word2, n, m, dp);
     }
 
-    public int minDistance_(String word1, String word2,int n,int m,int[][]dp){
-        if(n==0 || m==0){
-            return (n==0 && m==0) ? 0 : (m==0 ? n : m); 
+    public int minDistance_(String word1, String word2, int n, int m, int[][] dp) {
+        if (n == 0 || m == 0) {
+            return (n == 0 && m == 0) ? 0 : (m == 0 ? n : m);
         }
 
-        if(dp[n][m]!=-1) return dp[n][m];
+        if (dp[n][m] != -1)
+            return dp[n][m];
 
-        int min = (int)1e9;
+        int min = (int) 1e9;
 
-        if(word1.charAt(n-1)==word2.charAt(m-1)) min =Math.min(min,minDistance_(word1,word2,n-1,m-1,dp)) ;
-        else{
-            min = Math.min(min,minDistance_(word1,word2,n,m-1,dp)+1); //INSERT
-            min = Math.min(min,minDistance_(word1,word2,n-1,m,dp)+1); //DELETE
-            min = Math.min(min,minDistance_(word1,word2,n-1,m-1,dp)+1); //REPLACE
+        if (word1.charAt(n - 1) == word2.charAt(m - 1))
+            min = Math.min(min, minDistance_(word1, word2, n - 1, m - 1, dp));
+        else {
+            min = Math.min(min, minDistance_(word1, word2, n, m - 1, dp) + 1); // INSERT
+            min = Math.min(min, minDistance_(word1, word2, n - 1, m, dp) + 1); // DELETE
+            min = Math.min(min, minDistance_(word1, word2, n - 1, m - 1, dp) + 1); // REPLACE
 
         }
         return dp[n][m] = min;
@@ -1393,64 +1398,65 @@ class  EditDis {
 }
 
 class LC427 {
-    class Node{
-    public boolean val;
-    public boolean isLeaf;
-    public Node topLeft;
-    public Node topRight;
-    public Node bottomLeft;
-    public Node bottomRight;
+    class Node {
+        public boolean val;
+        public boolean isLeaf;
+        public Node topLeft;
+        public Node topRight;
+        public Node bottomLeft;
+        public Node bottomRight;
 
-    
-    public Node() {
-        this.val = false;
-        this.isLeaf = false;
-        this.topLeft = null;
-        this.topRight = null;
-        this.bottomLeft = null;
-        this.bottomRight = null;
+        public Node() {
+            this.val = false;
+            this.isLeaf = false;
+            this.topLeft = null;
+            this.topRight = null;
+            this.bottomLeft = null;
+            this.bottomRight = null;
+        }
+
+        public Node(boolean val, boolean isLeaf) {
+            this.val = val;
+            this.isLeaf = isLeaf;
+            this.topLeft = null;
+            this.topRight = null;
+            this.bottomLeft = null;
+            this.bottomRight = null;
+        }
+
+        public Node(boolean val, boolean isLeaf, Node topLeft, Node topRight, Node bottomLeft, Node bottomRight) {
+            this.val = val;
+            this.isLeaf = isLeaf;
+            this.topLeft = topLeft;
+            this.topRight = topRight;
+            this.bottomLeft = bottomLeft;
+            this.bottomRight = bottomRight;
+        }
     }
-    
-    public Node(boolean val, boolean isLeaf) {
-        this.val = val;
-        this.isLeaf = isLeaf;
-        this.topLeft = null;
-        this.topRight = null;
-        this.bottomLeft = null;
-        this.bottomRight = null;
-    }
-    
-    public Node(boolean val, boolean isLeaf, Node topLeft, Node topRight, Node bottomLeft, Node bottomRight) {
-        this.val = val;
-        this.isLeaf = isLeaf;
-        this.topLeft = topLeft;
-        this.topRight = topRight;
-        this.bottomLeft = bottomLeft;
-        this.bottomRight = bottomRight;
-    }
-}
+
     public Node construct(int[][] grid) {
         int len = grid.length;
-        return construct_(grid,0,0,len);
+        return construct_(grid, 0, 0, len);
     }
 
-    public Node construct_(int[][] grid,int i,int j,int n){
-        if(areEqual(grid,i,j,n)){
-            return new Node(grid[i][j]==1,true,null,null,null,null);
+    public Node construct_(int[][] grid, int i, int j, int n) {
+        if (areEqual(grid, i, j, n)) {
+            return new Node(grid[i][j] == 1, true, null, null, null, null);
         }
-        Node rn = new Node(true,false);
-        rn.topLeft = construct_(grid,i,j,n/2);
-        rn.topRight = construct_(grid,i,j+n/2,n/2);
-        rn.bottomLeft = construct_(grid,i+n/2,j,n/2);
-        rn.bottomRight = construct_(grid,i+n/2,j+n/2,n/2);
+        Node rn = new Node(true, false);
+        rn.topLeft = construct_(grid, i, j, n / 2);
+        rn.topRight = construct_(grid, i, j + n / 2, n / 2);
+        rn.bottomLeft = construct_(grid, i + n / 2, j, n / 2);
+        rn.bottomRight = construct_(grid, i + n / 2, j + n / 2, n / 2);
         return rn;
     }
 
-    public boolean areEqual(int[][]grid,int r,int c,int len){
-        int val =grid[r][c];
-        for(int i = r;i<r+len;i++){
-            for(int j = c;j<c+len;j++){
-                if(grid[i][j]!=val) return false;
+    public boolean areEqual(int[][] grid, int r, int c, int len) {
+        int val = grid[r][c];
+        for (int i = r; i < r + len; i++) {
+            for (int j = c; j < c + len; j++) {
+                if (grid[i][j] != val)
+                    return false;
             }
         }
 
@@ -1461,42 +1467,44 @@ class LC427 {
 class LC912 {
     public int[] sortArray(int[] nums) {
         int n = nums.length;
-        return mergeSort(nums,0,n-1);
+        return mergeSort(nums, 0, n - 1);
     }
 
-    public int[] mergeSort(int[]arr,int lo,int hi){
-        if(lo==hi) return new int[]{arr[lo]};
+    public int[] mergeSort(int[] arr, int lo, int hi) {
+        if (lo == hi)
+            return new int[] { arr[lo] };
 
-        int mid = lo + (hi-lo)/2;
-        int[]lft= mergeSort(arr,lo,mid);
-        int[]right= mergeSort(arr,mid+1,hi);
+        int mid = lo + (hi - lo) / 2;
+        int[] lft = mergeSort(arr, lo, mid);
+        int[] right = mergeSort(arr, mid + 1, hi);
 
-        return mergeTwoSortedArrays(lft,right);
+        return mergeTwoSortedArrays(lft, right);
     }
 
-    public int[] mergeTwoSortedArrays(int[]arr1,int[]arr2){
+    public int[] mergeTwoSortedArrays(int[] arr1, int[] arr2) {
         int n = arr1.length;
         int m = arr2.length;
 
-        int[]narr = new int[n+m];
+        int[] narr = new int[n + m];
         int i = 0;
         int j = 0;
         int idx = 0;
 
-        while(i<n && j<m){
-            if(arr1[i]<=arr2[j]){
+        while (i < n && j < m) {
+            if (arr1[i] <= arr2[j]) {
                 narr[idx++] = arr1[i++];
-            }else{
+            } else {
                 narr[idx++] = arr2[j++];
             }
         }
 
-        while(i<n) narr[idx++] = arr1[i++];
-        while(j<m) narr[idx++] = arr2[j++];
+        while (i < n)
+            narr[idx++] = arr1[i++];
+        while (j < m)
+            narr[idx++] = arr2[j++];
         return narr;
     }
 }
-
 
 class LC443 {
     public int compress(char[] chars) {
@@ -1505,63 +1513,63 @@ class LC443 {
         int len = 0;
         int idx = 0;
 
-        while(i<n){
+        while (i < n) {
             char ch = chars[i];
-            if(i+1<n && ch==chars[i+1]){
+            if (i + 1 < n && ch == chars[i + 1]) {
                 int cnt = 1;
-                while(i+1<n && ch==chars[i+1]){
+                while (i + 1 < n && ch == chars[i + 1]) {
                     cnt++;
                     i++;
                 }
-                String tmp =""+cnt + "";
-                len += tmp.length()+1;
-                chars[idx++]= ch;
-                for(int j= 0;j<tmp.length();j++){
-                    chars[idx++] =tmp.charAt(j);
+                String tmp = "" + cnt + "";
+                len += tmp.length() + 1;
+                chars[idx++] = ch;
+                for (int j = 0; j < tmp.length(); j++) {
+                    chars[idx++] = tmp.charAt(j);
                 }
                 i++;
-            }else{
+            } else {
                 i++;
                 len += 1;
-                chars[idx++]= ch;
+                chars[idx++] = ch;
             }
 
         }
 
-        return len; 
+        return len;
     }
 }
-
-
 
 class LC28 {
     public int strStr(String h, String nd) {
         int n = h.length();
         int m = nd.length();
-        if(m>n) return -1;
-        if(h.equals(nd)) return 0;
+        if (m > n)
+            return -1;
+        if (h.equals(nd))
+            return 0;
 
         int en = 0;
-        while(en<n){
+        while (en < n) {
             char ch = h.charAt(en);
             int oen = en;
-            if(ch==nd.charAt(0)){
+            if (ch == nd.charAt(0)) {
                 int ans = en;
                 int idx = 0;
-                while(en<n && idx<m && h.charAt(en)==nd.charAt(idx)){
+                while (en < n && idx < m && h.charAt(en) == nd.charAt(idx)) {
                     en++;
                     idx++;
                 }
-                if(idx==m) return ans;
+                if (idx == m)
+                    return ans;
             }
-            en = oen+1;
-            
+            en = oen + 1;
+
         }
         return -1;
 
     }
 }
-
 
 class LC2444 {
     public long countSubarrays(int[] nums, int minK, int maxK) {
@@ -1573,19 +1581,21 @@ class LC2444 {
         int n = nums.length;
         int st = 0;
 
-        while(en<n){
+        while (en < n) {
             int ele = nums[en];
-            if(ele==minK) min = en;
-            if(ele==maxK) max = en;
+            if (ele == minK)
+                min = en;
+            if (ele == maxK)
+                max = en;
 
-            if(ele<minK || ele>maxK){
+            if (ele < minK || ele > maxK) {
                 min = -1;
                 max = -1;
-                st = en+1;
+                st = en + 1;
             }
 
-            if(min!=-1 && max!=-1){
-                ans += (long)(Math.min(min,max) - st + 1);
+            if (min != -1 && max != -1) {
+                ans += (long) (Math.min(min, max) - st + 1);
             }
 
             en++;
@@ -1597,47 +1607,46 @@ class LC2444 {
 
 class LC1345 {
     public int minJumps(int[] arr) {
-        ArrayDeque<Integer>q = new ArrayDeque<>();
+        ArrayDeque<Integer> q = new ArrayDeque<>();
         int n = arr.length;
-        boolean[]vis = new boolean[n];
-        q.add(0); //src,par
+        boolean[] vis = new boolean[n];
+        q.add(0); // src,par
         vis[0] = true;
-        HashMap<Integer,ArrayList<Integer>>map = new HashMap<>();
-        for(int i = 0 ;i<n;i++){
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
             int ele = arr[i];
-            map.putIfAbsent(ele,new ArrayList<>());
+            map.putIfAbsent(ele, new ArrayList<>());
             map.get(ele).add(i);
         }
 
         int level = 0;
-        while(q.size()!=0){
+        while (q.size() != 0) {
             int s = q.size();
-            while(s-->0){
-                int src= q.remove();
-               
-                if(src==n-1) return level;
-                
-                if(src-1>0 && !vis[src-1]){ 
-                    vis[src-1] = true;
-                    q.add(src-1);
+            while (s-- > 0) {
+                int src = q.remove();
+
+                if (src == n - 1)
+                    return level;
+
+                if (src - 1 > 0 && !vis[src - 1]) {
+                    vis[src - 1] = true;
+                    q.add(src - 1);
                 }
-                if(src+1<n && !vis[src+1]){ 
-                     vis[src+1] = true;
-                    q.add(src+1);
+                if (src + 1 < n && !vis[src + 1]) {
+                    vis[src + 1] = true;
+                    q.add(src + 1);
                 }
 
-                int val =arr[src];
-                if(map.containsKey(val)){
-                for(int nsrc : map.get(val)){
-                    if(nsrc!=src && !vis[nsrc]){ 
-                        vis[nsrc] = true;
-                        q.add(nsrc);
+                int val = arr[src];
+                if (map.containsKey(val)) {
+                    for (int nsrc : map.get(val)) {
+                        if (nsrc != src && !vis[nsrc]) {
+                            vis[nsrc] = true;
+                            q.add(nsrc);
                         }
+                    }
+                    map.remove(val);
                 }
-                map.remove(val);
-                }
-
-
 
             }
             level++;
@@ -1645,44 +1654,41 @@ class LC1345 {
 
         return -1;
 
-
-
     }
 }
 
 class LC1539 {
     public int findKthPositive(int[] arr, int k) {
         int n = arr.length;
-        int hi = n-1;
+        int hi = n - 1;
         int lo = 0;
-        int K = k+1;
-        while(lo<=hi){
-            int mid= lo + (hi-lo)/2;
-            if(arr[mid]-mid<K) lo = mid+1;
-            else hi=mid-1;
+        int K = k + 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (arr[mid] - mid < K)
+                lo = mid + 1;
+            else
+                hi = mid - 1;
         }
 
-        int val =1;
-      
-        if(hi>=0){
+        int val = 1;
+
+        if (hi >= 0) {
             int diff = arr[hi] - hi;
             diff--;
-            k-=diff;
-            val= arr[hi];
-        }else if(hi==-1 &&  arr[0]>k){
-             while(k-->1){
+            k -= diff;
+            val = arr[hi];
+        } else if (hi == -1 && arr[0] > k) {
+            while (k-- > 1) {
+                val++;
+            }
+            return val;
+        }
+
+        while (k-- >= 1) {
             val++;
         }
-        return val;
-        }
 
-       
-
-        while(k-->=1){
-            val++;
-        }
-
-        
         return val;
     }
 }
@@ -1690,46 +1696,44 @@ class LC1539 {
 class LC2187 {
     public long minimumTime(int[] time, int totalTrips) {
         long min = 1l;
-        long max = (long)1e18;
+        long max = (long) 1e18;
 
-        long ans = (long)time[0]*(long)totalTrips;
+        long ans = (long) time[0] * (long) totalTrips;
 
-        while(min<=max){
-            long mid = min + (max - min)/2;
-            if(isPossible(time,totalTrips,mid)){
+        while (min <= max) {
+            long mid = min + (max - min) / 2;
+            if (isPossible(time, totalTrips, mid)) {
                 ans = mid;
-                max = mid-1;
-            }else{
-                min = mid+1;
+                max = mid - 1;
+            } else {
+                min = mid + 1;
             }
         }
 
         return ans;
     }
 
-    public boolean isPossible(int[]arr,long tot,long curr){
+    public boolean isPossible(int[] arr, long tot, long curr) {
         long trips = 0;
-        for(int ele :arr){
-            long a = (curr/(long)ele);
+        for (int ele : arr) {
+            long a = (curr / (long) ele);
             trips += a;
-            if(trips>=tot) return true;
+            if (trips >= tot)
+                return true;
         }
-
-
 
         return false;
     }
 }
 
-
 class Trie {
-    class TrieNode{
+    class TrieNode {
         char ch;
-        TrieNode[]children;
+        TrieNode[] children;
         boolean isEnd;
-        
-        TrieNode(char ch){
-            this.ch= ch;
+
+        TrieNode(char ch) {
+            this.ch = ch;
             this.children = new TrieNode[26];
             this.isEnd = false;
         }
@@ -1740,34 +1744,37 @@ class Trie {
     public Trie() {
         root = new TrieNode('-');
     }
-    
+
     public void insert(String word) {
         TrieNode tmp = root;
-        for(int i = 0 ;i<word.length();i++){
+        for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);
-            if(tmp.children[ch-'a']==null) tmp.children[ch-'a'] = new TrieNode(ch);
-            tmp = tmp.children[ch-'a']; 
+            if (tmp.children[ch - 'a'] == null)
+                tmp.children[ch - 'a'] = new TrieNode(ch);
+            tmp = tmp.children[ch - 'a'];
         }
         tmp.isEnd = true;
     }
-    
+
     public boolean search(String word) {
         TrieNode tmp = root;
-        for(int i = 0 ;i<word.length();i++){
+        for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);
-            if(tmp.children[ch-'a']==null) return false;
-            tmp = tmp.children[ch-'a']; 
+            if (tmp.children[ch - 'a'] == null)
+                return false;
+            tmp = tmp.children[ch - 'a'];
         }
 
         return tmp.isEnd;
     }
-    
+
     public boolean startsWith(String prefix) {
         TrieNode tmp = root;
-        for(int i = 0 ;i<prefix.length();i++){
+        for (int i = 0; i < prefix.length(); i++) {
             char ch = prefix.charAt(i);
-            if(tmp.children[ch-'a']==null) return false;
-            tmp = tmp.children[ch-'a']; 
+            if (tmp.children[ch - 'a'] == null)
+                return false;
+            tmp = tmp.children[ch - 'a'];
         }
 
         return true;
@@ -1775,30 +1782,32 @@ class Trie {
 }
 
 class BrowserHistory {
-    Stack<String>ms;
-    Stack<String>hs;
+    Stack<String> ms;
+    Stack<String> hs;
 
     public BrowserHistory(String homepage) {
         ms = new Stack<>();
         hs = new Stack<>();
         ms.add(homepage);
     }
-    
+
     public void visit(String url) {
         ms.push(url);
         hs = new Stack<>();
     }
-    
+
     public String back(int steps) {
-        while(ms.size()!=0 && steps-->0){
+        while (ms.size() != 0 && steps-- > 0) {
             hs.push(ms.pop());
         }
-        if(ms.size()==0){ ms.push(hs.pop());}
+        if (ms.size() == 0) {
+            ms.push(hs.pop());
+        }
         return ms.peek();
     }
-    
+
     public String forward(int steps) {
-         while(hs.size()!=0 && steps-->0){
+        while (hs.size() != 0 && steps-- > 0) {
             ms.push(hs.pop());
         }
         return ms.peek();
@@ -1813,118 +1822,112 @@ class BrowserHistory {
  * String param_3 = obj.forward(steps);
  */
 
-
-
- class LC2555 {
+class LC2555 {
     public int maximizeWin(int[] prizePositions, int k) {
         int n = prizePositions.length;
-        if(prizePositions[0]+k>=prizePositions[n-1]) return n;
+        if (prizePositions[0] + k >= prizePositions[n - 1])
+            return n;
 
         int st = 0;
         int en = 0;
-        int[]dp = new int[n+1];
+        int[] dp = new int[n + 1];
         dp[0] = 0;
         int max = 0;
-        while(en<n){
-            while(prizePositions[st] + k<prizePositions[en]){
+        while (en < n) {
+            while (prizePositions[st] + k < prizePositions[en]) {
                 st++;
             }
 
-            dp[en+1] = Math.max(dp[en],en-st+1);
-            max = Math.max(max,en-st+1 + dp[st]);
+            dp[en + 1] = Math.max(dp[en], en - st + 1);
+            max = Math.max(max, en - st + 1 + dp[st]);
             en++;
         }
         return max;
     }
 
-
 }
 
-class WordDictionary {
 
-    class Node{
+
+    class Node {
         char ch;
-        HashMap<Character,Node>children;
+        HashMap<Character, Node> children;
         boolean isEnd;
 
-        Node(char ch){
+        Node(char ch) {
             this.ch = ch;
             this.children = new HashMap<>();
             this.isEnd = false;
         }
     }
 
-    Node root;
-
-    public WordDictionary() {
-        root = new Node('*');
-    }
-    
+    Node root = new Node('*');
     public void addWord(String word) {
         Node tmp = root;
-        for(int i = 0; i<word.length();i++){
-            char ch= word.charAt(i);
-            tmp.children.putIfAbsent(ch,new Node(ch));
-            tmp= tmp.children.get(ch);
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            tmp.children.putIfAbsent(ch, new Node(ch));
+            tmp = tmp.children.get(ch);
         }
 
         tmp.isEnd = true;
     }
-    
+
     public boolean search(String word) {
-       return search_(word,0,root);
+        return search_(word, 0, root);
     }
 
-    public boolean search_(String word,int idx,Node tmp){
-        if(idx==word.length()) return tmp.isEnd;
+    public boolean search_(String word, int idx, Node tmp) {
+        if (idx == word.length())
+            return tmp.isEnd;
 
         char ch = word.charAt(idx);
-        if(ch=='.'){
-            for(char nch:tmp.children.keySet()){
-                if(search_(word,idx+1,tmp.children.get(nch))){
+        if (ch == '.') {
+            for (char nch : tmp.children.keySet()) {
+                if (search_(word, idx + 1, tmp.children.get(nch))) {
                     return true;
                 }
             }
 
             return false;
         }
-        if(!tmp.children.containsKey(ch)) return false;
+        if (!tmp.children.containsKey(ch))
+            return false;
 
-        return search_(word,idx+1,tmp.children.get(ch));
+        return search_(word, idx + 1, tmp.children.get(ch));
     }
-}
 
-/**
- * Your WordDictionary object will be instantiated and called as such:
- * WordDictionary obj = new WordDictionary();
- * obj.addWord(word);
- * boolean param_2 = obj.search(word);
- */
 
- class LC605 {
+
+
+     * Your WordDictionary object will be instantiated and called as such:
+     * WordDictionary obj = new WordDictionary();
+     * obj.addWord(word);
+     * boolean param_2 = obj.search(word);
+     */
+
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
-        for(int i = 0;i<flowerbed.length;i++){
-           if(flowerbed[i]==0){
-               if((i==0 || flowerbed[i-1]==0) && (i==flowerbed.length-1 || flowerbed[i+1]==0)){
-                   flowerbed[i] = 1;
-                   n--;
-               }
-           }
+        for (int i = 0; i < flowerbed.length; i++) {
+            if (flowerbed[i] == 0) {
+                if ((i == 0 || flowerbed[i - 1] == 0) && (i == flowerbed.length - 1 || flowerbed[i + 1] == 0)) {
+                    flowerbed[i] = 1;
+                    n--;
+                }
+            }
         }
 
-        return n<=0;
+        return n <= 0;
     }
-}
 
-public long zeroFilledSubarray(int[] nums) {
+    public long zeroFilledSubarray(int[] nums) {
         int n = nums.length;
-        long[]dp = new long[n];
+        long[] dp = new long[n];
         long ans = 0l;
-        for(int i = 0;i<n;i++){
-            if(i==0){
-                dp[i] = (nums[i]==0) ? 1l: 0l;
-            }else{
-                dp[i] = (nums[i]==0) ? dp[i-1] + 1l : 0l;
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                dp[i] = (nums[i] == 0) ? 1l : 0l;
+            } else {
+                dp[i] = (nums[i] == 0) ? dp[i - 1] + 1l : 0l;
             }
 
             ans += dp[i];
@@ -1933,38 +1936,77 @@ public long zeroFilledSubarray(int[] nums) {
         return ans;
     }
 
-
-    class Solution {
     public int minScore(int n, int[][] roads) {
-        HashMap<Integer,Integer>graph[] = new HashMap[n+1];
-        for(int i = 0 ;i<=n;i++){
+        HashMap<Integer, Integer> graph[] = new HashMap[n + 1];
+        for (int i = 0; i <= n; i++) {
             graph[i] = new HashMap<>();
         }
-        for(int[]rd : roads){
+        for (int[] rd : roads) {
             int u = rd[0];
             int v = rd[1];
             int wt = rd[2];
-            graph[u].put(v,Math.min(wt,graph[u].getOrDefault(v,(int)1e9)));
-            graph[v].put(u,Math.min(wt,graph[v].getOrDefault(u,(int)1e9)));
+            graph[u].put(v, Math.min(wt, graph[u].getOrDefault(v, (int) 1e9)));
+            graph[v].put(u, Math.min(wt, graph[v].getOrDefault(u, (int) 1e9)));
         }
 
+        return dfs(graph, 1, n, new HashSet<>());
 
-        return dfs(graph,1,n,new HashSet<>());
-        
     }
 
-    public int  dfs(HashMap<Integer,Integer>graph[],int src,int dest,HashSet<Integer>vis){
-        int ans = (int)1e9;
+    public int dfs(HashMap<Integer, Integer> graph[], int src, int dest, HashSet<Integer> vis) {
+        int ans = (int) 1e9;
         vis.add(src);
-        HashMap<Integer,Integer>map  = graph[src];
-        for(int nbr : map.keySet()){
+        HashMap<Integer, Integer> map = graph[src];
+        for (int nbr : map.keySet()) {
 
             int wt = map.get(nbr);
-            if(!vis.contains(nbr)) ans = Math.min(ans,dfs(graph,nbr,dest,vis));
-            ans = Math.min(ans,wt);
-            
+            if (!vis.contains(nbr))
+                ans = Math.min(ans, dfs(graph, nbr, dest, vis));
+            ans = Math.min(ans, wt);
+
         }
 
         return ans;
     }
-}
+
+    public int findPar(int u, int[] par) {
+        if (par[u] == u)
+            return u;
+        else {
+            int tmp = findPar(par[u], par);
+            par[u] = tmp;
+            return tmp;
+        }
+    }
+
+    public int makeConnected(int n, int[][] connections) {
+            int[]par = new int[n];
+            for(int i = 0 ;i<n;i++) par[i] = i;
+    
+            int avl = 0;
+            for(int[]ed :connections){
+                int u = ed[0];
+                int v = ed[1];
+    
+                int p1 = findPar(u,par);
+                int p2 = findPar(v,par);
+    
+                if(p1==p2){
+                    avl++;
+                }else{
+                    par[p2]= p1;
+                }
+    
+            }
+    
+            int req = 0;
+            for(int i = 0;i<n;i++){
+                if(par[i]==i)req++;
+            }
+    
+            req--;
+    
+            return (avl>=req) ? req :-1;
+    
+    
+    }
