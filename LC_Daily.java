@@ -975,7 +975,7 @@ public class LC_Daily {
         return -1;
     }
 
-}
+
 
 class LC1129 {
     class Edge {
@@ -1814,14 +1814,6 @@ class BrowserHistory {
     }
 }
 
-/**
- * Your BrowserHistory object will be instantiated and called as such:
- * BrowserHistory obj = new BrowserHistory(homepage);
- * obj.visit(url);
- * String param_2 = obj.back(steps);
- * String param_3 = obj.forward(steps);
- */
-
 class LC2555 {
     public int maximizeWin(int[] prizePositions, int k) {
         int n = prizePositions.length;
@@ -1846,8 +1838,6 @@ class LC2555 {
     }
 
 }
-
-
 
     class Node {
         char ch;
@@ -1896,15 +1886,6 @@ class LC2555 {
 
         return search_(word, idx + 1, tmp.children.get(ch));
     }
-
-
-
-
-     * Your WordDictionary object will be instantiated and called as such:
-     * WordDictionary obj = new WordDictionary();
-     * obj.addWord(word);
-     * boolean param_2 = obj.search(word);
-     */
 
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
         for (int i = 0; i < flowerbed.length; i++) {
@@ -2010,3 +1991,49 @@ class LC2555 {
     
     
     }
+
+
+    class LC1466 {
+        public int minReorder(int n, int[][] connections) {
+            ArrayList<Integer>graph[] = new ArrayList[n];
+            HashMap<Integer,HashSet<Integer>>direcs = new HashMap<>();
+            for(int i = 0 ; i<n ; i++){
+                graph[i] = new ArrayList<>();
+                direcs.put(i,new HashSet<>());
+            }
+    
+            int ans = 0;
+            for(int[]ed : connections){
+                int u = ed[0];
+                int v = ed[1];
+                graph[u].add(v);
+                graph[v].add(u);
+                direcs.get(u).add(v);
+            }
+    
+            Queue<Integer>q = new ArrayDeque<>();
+            q.add(0);
+            boolean[]vis= new boolean[n];
+    
+            while(q.size()!=0){
+                int s = q.size();
+                while(s-->0){
+                    int src = q.remove();
+                    if(vis[src]) continue;
+                    vis[src] = true;
+                    for(int nbr : graph[src]){
+                        if(!vis[nbr]){
+                            if(direcs.get(src).contains(nbr)) ans++;
+                            q.add(nbr);
+                        }
+                    }
+                }
+            }
+    
+            return ans;
+        }
+    }
+
+
+}
+
