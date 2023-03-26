@@ -2037,3 +2037,44 @@ class LC2555 {
 
 }
 
+class LC2360 {
+    int ans = -1;
+    public int longestCycle(int[] edges) {
+        int n = edges.length;
+        boolean[]vis = new boolean[n];
+        for(int i = 0;i<n;i++){
+            if(!vis[i]){
+               bfs(edges,i,vis);
+            }
+        }
+        return ans;
+    }
+
+    public void bfs(int[] edges,int src,boolean[]vis){
+        int n = edges.length;
+        Queue<Integer>q = new ArrayDeque<>();
+        q.add(src);
+        int level = 0;
+        HashMap<Integer,Integer>map = new HashMap<>();
+
+        while(q.size()!=0){
+            int s = q.size();
+            while(s-->0){
+                int ridx = q.remove();
+                map.putIfAbsent(ridx,level);
+                if(vis[ridx]) continue;
+                vis[ridx] = true;
+                int nbr = edges[ridx];
+                if(nbr!=-1){
+                    if(!vis[nbr]) q.add(nbr);
+                    if(map.containsKey(nbr)){
+                        ans =Math.max(ans,level - map.get(nbr) + 1);
+                    }
+                }
+            }
+            level++;
+        }
+       
+    }
+}
+
