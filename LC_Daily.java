@@ -2052,7 +2052,7 @@ class LC2360 {
 
     public void bfs(int[] edges,int src,boolean[]vis){
         int n = edges.length;
-        Queue<Integer>q = new ArrayDeque<>();
+        ArrayDeque<Integer>q = new ArrayDeque<>();
         q.add(src);
         int level = 0;
         HashMap<Integer,Integer>map = new HashMap<>();
@@ -2075,6 +2075,21 @@ class LC2360 {
             level++;
         }
        
+    }
+    //2598. Smallest Missing Non-negative Integer After Operations
+    public int findSmallestInteger(int[] nums, int value) {
+        int[]remArray = new int[value];
+        for(int ele : nums) remArray[ (ele%value + value)%value]++;
+        
+        int i = 0;
+        while(true){
+            int r = i%value;
+            if(remArray[r]==0) break;
+            remArray[r]--;
+            i++;
+        }
+
+        return i;
     }
 }
 
