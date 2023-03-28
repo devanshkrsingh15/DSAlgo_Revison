@@ -2093,3 +2093,27 @@ class LC2360 {
     }
 }
 
+public int mincostTickets(int[] days, int[] costs) {
+        int[]daysAllowed = new int[]{1,7,30};
+        int[]dp = new int[400];
+        Arrays.fill(dp,-1);
+        boolean[]travel=  new boolean[400];
+        for(int ele :days ) travel[ele] =true;
+        int n = days.length;
+        int last = days[n-1];
+        return mincostTickets_(last+1,costs,1,dp,daysAllowed,travel);
+    }
+
+    public int mincostTickets_(int tar,int[]costs,int cd,int[]dp,int[]daysAllowed,boolean[]travel){
+        if(cd>=tar) return 0;
+        if(dp[cd]!=-1) return dp[cd];
+        int min = (int)1e9;
+
+        if(travel[cd]==false) return dp[cd]=mincostTickets_(tar,costs,cd+1,dp,daysAllowed,travel);
+
+        for(int i = 0;i<3;i++){
+            int ncd = cd + daysAllowed[i];
+            min = Math.min(min,mincostTickets_(tar,costs,ncd,dp,daysAllowed,travel) + costs[i]);
+        }
+        return dp[cd] = min;
+    }
