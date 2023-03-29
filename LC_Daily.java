@@ -2117,3 +2117,22 @@ public int mincostTickets(int[] days, int[] costs) {
         }
         return dp[cd] = min;
     }
+    
+    public int maxSatisfaction(int[] satisfaction) {
+        int n = satisfaction.length;
+        int[][]dp = new int[n+1][n+1];
+        for(int[]d :dp) Arrays.fill(d,-(int)1e9);
+        Arrays.sort(satisfaction);
+        return maxSatisfaction_(satisfaction,0,1,dp);
+    }
+
+    public int maxSatisfaction_(int[]arr,int idx,int time,int[][]dp){
+        if(idx==arr.length) return 0;
+        if(dp[idx][time]!=-(int)1e9) return dp[idx][time];
+
+        int max = -(int)1e9;
+
+        max = Math.max(max,maxSatisfaction_(arr,idx+1,time,dp));
+        max = Math.max(max,maxSatisfaction_(arr,idx+1,time+1,dp) + arr[idx]*time);
+        return dp[idx][time] = max;
+    }
