@@ -2136,3 +2136,59 @@ public int mincostTickets(int[] days, int[] costs) {
         max = Math.max(max,maxSatisfaction_(arr,idx+1,time+1,dp) + arr[idx]*time);
         return dp[idx][time] = max;
     }
+
+    class ScrambleString {
+    HashMap<String,Boolean>dp = new HashMap<>();
+    public boolean isScramble(String s1, String s2) {
+        if(s1.equals(s2)){
+            dp.put(s1+"+"+s2,true);
+            return true;
+        }
+
+        if(haveSameCharacters(s1,s2)==false){
+            dp.put(s1+"+"+s2,false);
+            return false;
+        }
+
+        if(dp.containsKey(s1+"+"+s2)) return dp.get(s1+"+"+s2);
+
+        for(int i = 1;i<s1.length();i++){
+            //swapping
+            boolean f1 = isScramble(s1.substring(0,i),s2.substring(s2.length()-i));
+            boolean f2 = isScramble(s1.substring(i),s2.substring(0,s2.length()-i));
+            if(f1 && f2){
+                dp.put(s1+"+"+s2,true);
+                return true;
+            }
+
+            //not swapping
+            f1 = isScramble(s1.substring(0,i),s2.substring(0,i));
+            f2 = isScramble(s1.substring(i),s2.substring(i));
+            if(f1 && f2){
+                dp.put(s1+"+"+s2,true);
+                return true;
+            }
+
+        }
+
+        dp.put(s1+"+"+s2,false);
+        return false;
+    }
+
+    public boolean haveSameCharacters(String s1,String s2){
+        int m1 = getMask(s1);
+        int m2 = getMask(s2);
+        return m1==m2;
+    }
+
+    public int getMask(String s){
+        int mask = 0;
+        for(int i = 0;i<s.length();i++){
+            char ch = s.charAt(i);
+            int m = (1<<(ch-'a'));
+            mask |= m;
+        }
+
+        return mask;
+    }
+}
