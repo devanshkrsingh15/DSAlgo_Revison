@@ -2192,3 +2192,73 @@ public int mincostTickets(int[] days, int[] costs) {
         return mask;
     }
 }
+
+class LC1444 {
+    long mod = (long)1e9 + 7;
+    long[][][]dp;
+    public int ways(String[] pizza, int k) {
+        int n = pizza.length;
+        int m = pizza[0].length();
+        char grid[][] = convert(pizza);
+        int[][]countApple = new int[n][m];
+        for(int i = n-1;i>=0;i--){
+           for(int j = m-1;j>=0;j--){
+               countApple[i][j] = grid[i][j]=='A' ? 1 : 0 ;
+               if(i+1<n)  countApple[i][j]+= countApple[i+1][j]; 
+               if(j+1<m)  countApple[i][j]+= countApple[i][j+1]; 
+               if(i+1<n && j+1<m) countApple[i][j] -= countApple[i+1][j+1];
+           }
+        }
+        
+        dp = new long[60][60][20];
+        for(long[][]d2 : dp){
+            for(long[]d1:d2){
+                Arrays.fill(d1,-1l);
+            }
+        }
+
+        return (int)ways_(countApple,0,0,k);
+    }
+
+    public long ways_(int[][]countApple,int str,int stc,int parts){
+        if(countApple[str][stc]==0) return 0l;
+        if(parts==1) return 1l;
+
+        if(dp[str][stc][parts]!=-1l) return (long)dp[str][stc][parts]; 
+        int n = countApple.length;
+        int m = countApple[0].length;
+
+        long ans = 0l;
+
+        //horizontal
+        for(int r = str +1 ;r< n;r++){
+            if(countApple[str][stc]  - countApple[r][stc]> 0){
+                ans =( ans%mod + ways_(countApple,r,stc,parts-1)%mod)%mod;
+            }
+        }
+
+        //vertical
+        for(int c = stc +1 ;c<m;c++){
+            if(countApple[str][stc] - countApple[str][c] > 0){
+                ans = (ans%mod + ways_(countApple,str,c,parts-1)%mod)%mod;
+            }
+        }
+
+        return dp[str][stc][parts] =  ans;
+
+    }
+
+    public char[][] convert(String[] pizza){
+        int n = pizza.length;
+        int m = pizza[0].length();
+        char[][]arr = new char[n][m];
+        for(int i = 0;i<n;i++){
+            String st = pizza[i];
+            for(int j= 0;j<m;j++){
+                arr[i][j] = st.charAt(j);
+            }
+        }
+
+        return arr;
+    }
+}
