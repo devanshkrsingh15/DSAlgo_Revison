@@ -104,4 +104,38 @@ public class BiweeklyContest100 {
 
         return score;
     }
+
+
+    //2594. Minimum Time to Repair Cars
+    public long repairCars(int[] ranks, int cars) {
+        int n =  ranks.length;
+        long min = 0l;
+        long max = 100*(long)cars*(long)cars;
+
+        long ans = 0l;
+        while(min<=max){
+            long mid = min + (max - min)/2;
+
+            if(isPossible(ranks,cars,mid)){
+                ans = mid;
+                max = mid-1;
+            }else{
+                min = mid +1;
+            }
+        }
+
+        return ans;
+    }
+
+    public boolean isPossible(int[]ranks,int cars,long tot){
+        int n = ranks.length;
+        for(int i = 0 ;i <n ;i ++){
+            long r = (long)ranks[i];
+            int c = (int)Math.sqrt((tot*1.0)/(r*1.0));
+            cars-=c;
+            if(cars<=0) return true;
+        }
+
+        return false;
+    }
 }

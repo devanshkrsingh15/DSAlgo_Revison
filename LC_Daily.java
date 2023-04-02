@@ -2286,6 +2286,42 @@ public class LC_Daily {
     }
 
 
+    class LC2300 {
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        Arrays.sort(potions);
+        int ans[] = new int[spells.length];
+        int i =0;
+        for(int sp : spells){
+            int reqP = (int)Math.ceil( (success*1.0)/(sp*1.0));
+            int idx = find(potions,reqP);
+            ans[i] = potions.length - idx;
+            i++;
+        }
+
+        return ans;        
+    }
+
+    public int find(int[]arr,int tar){
+        int lo = 0;
+        int hi = arr.length-1;
+        int ans =arr.length ;
+
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(arr[mid]>=tar){
+                ans = mid;
+                hi = mid-1;
+            }else{
+                lo = mid+1;
+            }
+        }
+
+        return ans;
+    }
+}
+
+
 
 
 
