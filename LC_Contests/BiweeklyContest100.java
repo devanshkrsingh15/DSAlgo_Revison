@@ -138,4 +138,35 @@ public class BiweeklyContest100 {
 
         return false;
     }
+
+    class LC881 {
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        int n = people.length;
+        int i = 0;
+        int j = n-1;
+
+        int boats = 0;
+
+        while(i<=j){
+            if(i==j){
+                boats++;
+                i++;
+                j--;
+            }else{
+                int sum = people[i] + people[j];
+                if(sum<=limit){
+                     boats++;
+                     i++;
+                     j--;
+                }else{
+                    boats++;
+                    j--;
+                }
+            }
+        }
+
+        return  boats;
+    }
+}
 }
