@@ -2321,8 +2321,27 @@ public class LC_Daily {
     }
 }
 
+class LC2405 {
+    public int partitionString(String s) {
+        int ans = 0;
+        int n = s.length();
+        int mask = 0;
+        int ei = 0;
+        while(ei<n){
+            char ch = s.charAt(ei);
+            int k = (1<<(ch-'a'));
+            if( (mask & k)==0 ){
+                mask |= k;
+            }else{
+                mask =0;
+                mask |= k;
+                ans++;
+            }
 
-
-
+            ei++;
+        }
+        return ans+1;
+    }
+}
 
 }
