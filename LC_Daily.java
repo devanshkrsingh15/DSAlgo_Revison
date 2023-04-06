@@ -2285,63 +2285,146 @@ public class LC_Daily {
 
     }
 
-
     class LC2300 {
-    public int[] successfulPairs(int[] spells, int[] potions, long success) {
-        Arrays.sort(potions);
-        int ans[] = new int[spells.length];
-        int i =0;
-        for(int sp : spells){
-            int reqP = (int)Math.ceil( (success*1.0)/(sp*1.0));
-            int idx = find(potions,reqP);
-            ans[i] = potions.length - idx;
-            i++;
-        }
-
-        return ans;        
-    }
-
-    public int find(int[]arr,int tar){
-        int lo = 0;
-        int hi = arr.length-1;
-        int ans =arr.length ;
-
-        while(lo<=hi){
-            int mid = lo + (hi-lo)/2;
-
-            if(arr[mid]>=tar){
-                ans = mid;
-                hi = mid-1;
-            }else{
-                lo = mid+1;
-            }
-        }
-
-        return ans;
-    }
-}
-
-class LC2405 {
-    public int partitionString(String s) {
-        int ans = 0;
-        int n = s.length();
-        int mask = 0;
-        int ei = 0;
-        while(ei<n){
-            char ch = s.charAt(ei);
-            int k = (1<<(ch-'a'));
-            if( (mask & k)==0 ){
-                mask |= k;
-            }else{
-                mask =0;
-                mask |= k;
-                ans++;
+        public int[] successfulPairs(int[] spells, int[] potions, long success) {
+            Arrays.sort(potions);
+            int ans[] = new int[spells.length];
+            int i = 0;
+            for (int sp : spells) {
+                int reqP = (int) Math.ceil((success * 1.0) / (sp * 1.0));
+                int idx = find(potions, reqP);
+                ans[i] = potions.length - idx;
+                i++;
             }
 
-            ei++;
+            return ans;
         }
-        return ans+1;
+
+        public int find(int[] arr, int tar) {
+            int lo = 0;
+            int hi = arr.length - 1;
+            int ans = arr.length;
+
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+
+                if (arr[mid] >= tar) {
+                    ans = mid;
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            return ans;
+        }
     }
-}
+
+    class LC2405 {
+        public int partitionString(String s) {
+            int ans = 0;
+            int n = s.length();
+            int mask = 0;
+            int ei = 0;
+            while (ei < n) {
+                char ch = s.charAt(ei);
+                int k = (1 << (ch - 'a'));
+                if ((mask & k) == 0) {
+                    mask |= k;
+                } else {
+                    mask = 0;
+                    mask |= k;
+                    ans++;
+                }
+
+                ei++;
+            }
+            return ans + 1;
+        }
+    }
+
+    class LC2439 {
+        public int minimizeArrayValue(int[] nums) {
+            int lo = 0;
+            int hi = (int) 1e9;
+            int ans = -1;
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (isPossible(nums, mid)) {
+                    ans = mid;
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            return ans;
+        }
+
+        public boolean isPossible(int[] arr, int max) {
+            int n = arr.length;
+            int cnt = 1;
+            long sof = 0;
+            for (int ele : arr) {
+                sof += (long) ele;
+                if (sof > (long) max * (long) cnt)
+                    return false;
+                cnt++;
+            }
+
+            return true;
+        }
+    }
+
+    class LC1254 {
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
+
+        public int closedIsland(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+
+            boolean[][] vis = new boolean[n][m];
+            for (int i = 0; i < n; i++) {
+                if (grid[i][0] == 0 && !vis[i][0])
+                    dfs(grid, i, 0, vis);
+                if (grid[i][m - 1] == 0 && !vis[i][m - 1])
+                    dfs(grid, i, m - 1, vis);
+            }
+
+            for (int j = 0; j < m; j++) {
+                if (grid[0][j] == 0 && !vis[0][j])
+                    dfs(grid, 0, j, vis);
+                if (grid[n - 1][j] == 0 && !vis[n - 1][j])
+                    dfs(grid, n - 1, j, vis);
+            }
+
+            int ans = 0;
+            for (int i = 1; i < n - 1; i++) {
+                for (int j = 1; j < m - 1; j++) {
+                    if (!vis[i][j] && grid[i][j] == 0) {
+                        ans++;
+                        dfs(grid, i, j, vis);
+                    }
+                }
+            }
+
+            return ans;
+        }
+
+        public void dfs(int[][] grid, int i, int j, boolean[][] vis) {
+            int n = grid.length;
+            int m = grid[0].length;
+
+            vis[i][j] = true;
+            for (int k = 0; k < direcs.length; k++) {
+                int x = i + direcs[k][0];
+                int y = j + direcs[k][1];
+
+                if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y] && grid[x][y] == 0) {
+                    dfs(grid, x, y, vis);
+                }
+            }
+        }
+    }
 
 }

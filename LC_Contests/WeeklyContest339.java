@@ -72,4 +72,22 @@ public class WeeklyContest339 {
 
         return ans;
     }
+
+    //2611. Mice and Cheese
+    public int miceAndCheese(int[] reward1, int[] reward2, int k) {
+        int n = reward1.length;
+        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{return b-a;});
+        int ans = 0;
+
+        for(int i = 0 ;i<n;i++) ans+= reward2[i];
+
+        for(int i = 0 ;i<n;i++) pq.add(reward1[i] -reward2[i]);
+        
+        while(k-->0) ans += pq.remove();
+
+        return ans;
+
+    }
+
+    
 }
