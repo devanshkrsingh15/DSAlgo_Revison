@@ -69,4 +69,43 @@ public class WeeklyContest340 {
     }
 
     //2616. Minimize the Maximum Difference of Pairs
+    public int minimizeMax(int[] nums, int p) {
+        int n = nums.length;
+        if(n<=1) return 0;
+        
+        Arrays.sort(nums);
+        int lo = 0;
+        int hi = nums[n-1] - nums[0];
+        int ans = 0;
+        
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+            
+            if(isPossible(nums,mid,p)){
+                ans = mid;
+                hi = mid-1;
+            }else{
+                lo = mid+1;
+            }
+        }
+        
+        return ans;
+    }
+    
+    public boolean isPossible(int[]nums,int maxDiff,int reqP){
+        int i = 1;
+        int pairs= 0;
+
+        while(i<nums.length){
+            if(nums[i] - nums[i-1] <=maxDiff){
+                i+=2;
+                pairs++;
+            }else{
+                i++;
+            }
+        }
+
+
+        return pairs>=reqP;
+    }
 }
