@@ -1,0 +1,72 @@
+import java.util.*;
+
+public class WeeklyContest340 {
+
+    // 2614. Prime In Diagonal
+    public int diagonalPrime(int[][] nums) {
+        int n = nums.length;
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i == j || i + j + 1 == n) && isPrime(nums[i][j])) {
+                    max = Math.max(max, nums[i][j]);
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public boolean isPrime(int val) {
+        for (int i = 2; i <= (int) Math.sqrt(val); i++) {
+            if (val % i == 0)
+                return false;
+        }
+
+        return val > 1;
+    }
+
+    // 2615. Sum of Distances
+
+    public long[] distance(int[] nums) {
+        HashMap<Long, ArrayList<Long>> prefixSum = new HashMap<>();
+        HashMap<Long, ArrayList<Integer>> freqIndices = new HashMap<>();
+
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            long val = (long) nums[i];
+            prefixSum.putIfAbsent(val, new ArrayList<>());
+            freqIndices.putIfAbsent(val, new ArrayList<>());
+
+            freqIndices.get(val).add(i);
+            long sof = prefixSum.get(val).size() == 0 ? 0 : prefixSum.get(val).get(prefixSum.get(val).size() - 1);
+            prefixSum.get(val).add(sof + i);
+        }
+
+        long[] ans = new long[n];
+
+        for (long k : freqIndices.keySet()) {
+            if (freqIndices.get(k).size() == 1) {
+                ans[freqIndices.get(k).get(0)] = 0l;
+                continue;
+            }
+
+            ArrayList<Integer> idxList = freqIndices.get(k);
+            ArrayList<Long> sumList = prefixSum.get(k);
+
+            for (int i = 0; i < idxList.size(); i++) {
+                long leftSum = i == 0 ? 0 : (long) idxList.get(i) * (i) - sumList.get(i - 1);
+                long rightSum = i == idxList.size() - 1 ? 0
+                        : (sumList.get(idxList.size() - 1) - sumList.get(i))
+                                - (long) (idxList.size() - i - 1) * idxList.get(i);
+
+                ans[idxList.get(i)] = leftSum + rightSum;
+            }
+
+        }
+        return ans;
+    }
+
+    //2616. Minimize the Maximum Difference of Pairs
+}

@@ -2427,4 +2427,29 @@ public class LC_Daily {
         }
     }
 
+    //2390. Removing Stars From a String
+    class LC2390 {
+    public String removeStars(String s) {
+        Stack<Character>st = new  Stack<>();
+        for(int i = 0;i<s.length();i++){
+            char ch = s.charAt(i);
+            if(ch!='*'){
+                st.push(ch);
+            }else{
+                if(st.size()!=0 && st.peek()!='*'){
+                    st.pop();
+                }
+            }
+        }
+        if(st.size()==0) return "";
+        StringBuilder sb = new StringBuilder();
+        while(st.size()!=0){
+            sb.append(st.pop());
+        }
+
+        sb.reverse();
+        return sb.toString();
+    }
+}
+
 }
