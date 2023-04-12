@@ -108,4 +108,44 @@ public class WeeklyContest340 {
 
         return pairs>=reqP;
     }
+    //71. Simplify Path
+    class LC71 {
+        public String removeDoubleSlashes(String path){
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0;i<path.length();i++){
+                char ch = path.charAt(i);
+                sb.append(ch);
+                if(ch=='/'){
+                    while(i+1<path.length() && path.charAt(i+1)=='/') i++;
+                }
+            }
+    
+            return sb.toString();
+        }
+        public String simplifyPath(String path) {
+            // path = removeDoubleSlashes(path);
+            String[]arr = path.split("/");
+            ArrayList<String>list = new ArrayList<>();
+    
+            for(int i = 0;i<arr.length;i++){
+                String s = arr[i];
+                if(s.length()==0 || s.equals(".")) continue;
+                if(s.equals("..")){
+                    if(list.size()!=0)list.remove(list.size()-1);
+                    else continue;
+                }else list.add(s);
+            }
+    
+            if(list.size()==0) return "/";
+            
+    
+            StringBuilder sb= new StringBuilder();
+            for(String s : list){
+               sb.append('/');
+               sb.append(s);
+            }
+    
+             return sb.toString();
+        }
+  }
 }
