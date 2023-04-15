@@ -109,4 +109,44 @@ public class BiweeklyContest101 {
 
         return graph;
     }
+
+    // 2607. Make K-Subarray Sums Equal
+    public long makeSubKSumEqual(int[] arr, int k) {
+        int n = arr.length;
+        boolean[] vis = new boolean[n];
+        long ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                ArrayList<Integer> list = new ArrayList<>();
+                int ptr = i;
+                while (!vis[ptr]) {
+                    vis[ptr] = true;
+                    list.add(arr[ptr]);
+                    ptr = (ptr + k) % n;
+                }
+                ans += findMinOps(list);
+            }
+        }
+
+        return ans;
+    }
+
+    public long findMinOps(ArrayList<Integer> list) {
+        Collections.sort(list);
+        if (list.size() % 2 == 1) {
+            return findMinCostToEqual(list, list.get(list.size() / 2));
+        } else {
+            return Math.min(findMinCostToEqual(list, list.get(list.size() / 2)),
+                    findMinCostToEqual(list, list.get(list.size() / 2 - 1)));
+        }
+    }
+
+    public long findMinCostToEqual(ArrayList<Integer> list, int mele) {
+        long ans = 0l;
+        for (int ele : list) {
+            ans += (long) Math.abs(ele - mele);
+        }
+        return ans;
+    }
 }

@@ -2427,29 +2427,87 @@ public class LC_Daily {
         }
     }
 
-    //2390. Removing Stars From a String
+    // 2390. Removing Stars From a String
     class LC2390 {
-    public String removeStars(String s) {
-        Stack<Character>st = new  Stack<>();
-        for(int i = 0;i<s.length();i++){
-            char ch = s.charAt(i);
-            if(ch!='*'){
-                st.push(ch);
-            }else{
-                if(st.size()!=0 && st.peek()!='*'){
-                    st.pop();
+        public String removeStars(String s) {
+            Stack<Character> st = new Stack<>();
+            for (int i = 0; i < s.length(); i++) {
+                char ch = s.charAt(i);
+                if (ch != '*') {
+                    st.push(ch);
+                } else {
+                    if (st.size() != 0 && st.peek() != '*') {
+                        st.pop();
+                    }
                 }
             }
+            if (st.size() == 0)
+                return "";
+            StringBuilder sb = new StringBuilder();
+            while (st.size() != 0) {
+                sb.append(st.pop());
+            }
+
+            sb.reverse();
+            return sb.toString();
         }
-        if(st.size()==0) return "";
-        StringBuilder sb = new StringBuilder();
-        while(st.size()!=0){
-            sb.append(st.pop());
+    }
+
+    /// 2218. Maximum Value of K Coins From Piles
+    class LC2218 {
+        List<List<Long>> psum = new ArrayList<>();
+
+        public int maxValueOfCoins(List<List<Integer>> piles, int k) {
+            if (k == 0)
+                return 0;
+            long[][] dp = new long[piles.size() + 1][k + 1];
+            for (long d[] : dp)
+                Arrays.fill(d, -1l);
+
+            for (List<Integer> l : piles) {
+                List<Long> sum = new ArrayList<>();
+                long sof = 0l;
+                for (int ele : l) {
+                    sof += (long) ele;
+                    sum.add(sof);
+                }
+                psum.add(sum);
+            }
+
+            if (piles.size() <= 1) {
+                return piles.size() == 0 ? 0 : (int) (getSum(0, k - 1));
+            }
+
+            return (int) maxValueOfCoins_(piles, 0, k, dp);
         }
 
-        sb.reverse();
-        return sb.toString();
+        public long getSum(int pidx, int i) {
+            return psum.get(pidx).get(i);
+        }
+
+        public long maxValueOfCoins_(List<List<Integer>> piles, int pidx, int k, long[][] dp) {
+            if (pidx == piles.size() || k == 0) {
+                return (k == 0) ? 0 : -(long) 1e9;
+            }
+
+            if (dp[pidx][k] != -1l)
+                return dp[pidx][k];
+
+            long ans = maxValueOfCoins_(piles, pidx + 1, k, dp);
+
+            for (int i = 1; i <= k; i++) {
+                if (i - 1 < piles.get(pidx).size()) {
+                    long myAns = getSum(pidx, i - 1);
+                    long fAns = maxValueOfCoins_(piles, pidx + 1, k - i, dp);
+                    ans = Math.max(ans, myAns + fAns);
+                } else {
+                    break;
+                }
+            }
+
+            return dp[pidx][k] = ans;
+
+        }
     }
-}
 
 }
