@@ -2510,4 +2510,47 @@ public class LC_Daily {
         }
     }
 
+    // 1639. Number of Ways to Form a Target String Given a Dictionary
+
+    class LC1639 {
+        public int numWays(String[] words, String target) {
+            int n = words[0].length();
+            int[][] freqArray = new int[26][n];
+            for (String s : words) {
+                for (int i = 0; i < s.length(); i++) {
+                    char ch = s.charAt(i);
+                    freqArray[ch - 'a'][i]++;
+                }
+            }
+
+            long[][] dp = new long[target.length() + 1][n + 1];
+            for (long[] d : dp)
+                Arrays.fill(d, -1l);
+
+            return (int) numWays_(words, target, 0, 0, dp, freqArray);
+        }
+
+        long mod = (long) 1e9 + 7;
+
+        public long numWays_(String[] words, String tar, int tidx, int widx, long[][] dp, int[][] freqArray) {
+            if (tidx == tar.length() || widx == words[0].length()) {
+                return (tidx == tar.length()) ? 1l : 0l;
+            }
+
+            if (dp[tidx][widx] != -1l)
+                return dp[tidx][widx];
+
+            long ways = numWays_(words, tar, tidx, widx + 1, dp, freqArray);
+            char ch = tar.charAt(tidx);
+
+            if (freqArray[ch - 'a'][widx] > 0) {
+                ways = ways % mod + ((long) freqArray[ch - 'a'][widx] % mod
+                        * (long) numWays_(words, tar, tidx + 1, widx + 1, dp, freqArray) % mod) % mod;
+            }
+
+            return dp[tidx][widx] = ways % mod;
+
+        }
+
+    }
 }
