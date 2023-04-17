@@ -2553,4 +2553,20 @@ public class LC_Daily {
         }
 
     }
+
+
+    class LC1431 {
+    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+        int max = 0;
+        for(int ele : candies) max = Math.max(max,ele);
+
+        ArrayList<Boolean>list = new ArrayList<>();
+        for(int ele :candies){
+            list.add(max <= (ele + extraCandies));
+        }
+
+        return list;
+
+    }
+}
 }
