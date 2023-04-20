@@ -125,3 +125,84 @@ public class WeeklyContest341 {
 
     }
 }
+
+//2646. Minimize the Total Price of the Trips
+class LC2646 {
+  
+    int[]freq ;
+    public int minimumTotalPrice(int n, int[][] edges, int[] price, int[][] trips) {
+        freq = new int[n];
+        ArrayList<Integer>graph[] = buildGraph(n,edges);
+        for(int[]t :trips ){
+            int src = t[0];
+            int des = t[1];
+            freq[src]++;
+            dfs(graph,src,des,price,new boolean[n]);
+        }    
+        int[][]dp = new int[n+1][2];
+        for(int[]d:dp) Arrays.fill(d,-1);
+
+        return dfsCost(graph,-1,price,0,0,dp);
+    }
+
+    public boolean dfs(ArrayList<Integer>graph[],int src,int des,int[] price,boolean[]vis){
+        if(src==des) return true;
+        vis[src] = true;
+
+        for(int nbr :graph[src]){
+            if(!vis[nbr]){
+                boolean res = dfs(graph,nbr,des,price,vis);
+                if(res){
+                    freq[nbr]++;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public int dfsCost(ArrayList<Integer>graph[],int par,int[]price,int src,int canHalf,int[][]dp){
+        if(dp[src][canHalf]!=-1) return dp[src][canHalf];
+
+        int halfPath = (int)1e9;
+        int normalPath = (int)1e9;
+
+        if(canHalf==0){
+          //2 options
+          halfPath= (price[src]/2) * freq[src];
+          normalPath = price[src] * freq[src];
+
+          for(int nbr : graph[src]){
+            if(nbr!=par){
+                halfPath += dfsCost(graph,src,price,nbr,1,dp);
+                normalPath += dfsCost(graph,src,price,nbr,0,dp);
+            }
+        }
+
+        }else{
+          normalPath = price[src]* freq[src];
+          for(int nbr : graph[src]){
+            if(nbr!=par){
+                normalPath += dfsCost(graph,src,price,nbr,0,dp);
+            }
+        }
+        }
+
+
+        return dp[src][canHalf] = Math.min(normalPath,halfPath);
+    }
+
+    public ArrayList<Integer>[] buildGraph(int n ,int[][]edges){
+        ArrayList<Integer>graph[] = new ArrayList[n];
+        for(int i =0;i<n;i++) graph[i] = new ArrayList<>();
+
+        for(int[]ed:edges){
+            int u = ed[0];
+            int v = ed[1];
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+        return graph;
+    }
+}
