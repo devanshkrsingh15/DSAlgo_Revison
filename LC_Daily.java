@@ -2554,19 +2554,55 @@ public class LC_Daily {
 
     }
 
-
     class LC1431 {
-    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
-        int max = 0;
-        for(int ele : candies) max = Math.max(max,ele);
+        public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+            int max = 0;
+            for (int ele : candies)
+                max = Math.max(max, ele);
 
-        ArrayList<Boolean>list = new ArrayList<>();
-        for(int ele :candies){
-            list.add(max <= (ele + extraCandies));
+            ArrayList<Boolean> list = new ArrayList<>();
+            for (int ele : candies) {
+                list.add(max <= (ele + extraCandies));
+            }
+
+            return list;
+
+        }
+    }
+
+    class LC879 {
+        long[][][] dp;
+
+        public int profitableSchemes(int n, int minProfit, int[] group, int[] profit) {
+            dp = new long[group.length + 1][n + 1][minProfit + 1];
+            for (long[][] ddp : dp) {
+                for (long[] d : ddp)
+                    Arrays.fill(d, -1l);
+            }
+            return (int) profitableSchemes_(0, n, minProfit, group, profit);
         }
 
-        return list;
+        long mod = (long) 1e9 + 7;
 
+        // all profift greater than minProfit will belong to same group, as indexx can't
+        // be -ve
+        public long profitableSchemes_(int idx, int p, int pr, int[] gr, int[] pro) {
+            if (idx == gr.length || p == 0) {
+                return (pr == 0) ? 1l : 0l;
+            }
+
+            if (dp[idx][p][pr] != -1l)
+                return dp[idx][p][pr];
+
+            long ans = 0l;
+
+            ans = (ans % mod + profitableSchemes_(idx + 1, p, pr, gr, pro) % mod) % mod;
+            if (p - gr[idx] >= 0)
+                ans = (ans % mod + profitableSchemes_(idx + 1, p - gr[idx], Math.max(0, pr - pro[idx]), gr, pro) % mod)
+                        % mod;
+
+            return dp[idx][p][pr] = ans;
+
+        }
     }
-}
 }
