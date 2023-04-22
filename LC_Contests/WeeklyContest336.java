@@ -62,5 +62,20 @@ public class WeeklyContest336 {
 
     }
 
-    //2588. Count the Number of Beautiful Subarrays
+    //2588. Count the Number of Beautiful Sub-arrays
+    public long beautifulSubarrays(int[] nums) {
+        //we are subtract each set bit from all elements in an sub-array
+        //if we want all elements to be 0 => xor of all elements should be 0
+        HashMap<Integer,Long>map = new HashMap<>();
+        int pxor = 0;
+        map.put(0,1l);
+        long ans = 0;
+        for(int ele :nums){
+            pxor ^= ele;
+            ans += map.getOrDefault(pxor,0l);
+            map.put(pxor,map.getOrDefault(pxor,0l) + 1l);
+        }
+
+        return ans;
+    }
 }
