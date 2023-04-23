@@ -62,18 +62,61 @@ public class WeeklyContest336 {
 
     }
 
-    //2588. Count the Number of Beautiful Sub-arrays
+    // 2588. Count the Number of Beautiful Sub-arrays
     public long beautifulSubarrays(int[] nums) {
-        //we are subtract each set bit from all elements in an sub-array
-        //if we want all elements to be 0 => xor of all elements should be 0
-        HashMap<Integer,Long>map = new HashMap<>();
+        // we are subtract each set bit from all elements in an sub-array
+        // if we want all elements to be 0 => xor of all elements should be 0
+        HashMap<Integer, Long> map = new HashMap<>();
         int pxor = 0;
-        map.put(0,1l);
+        map.put(0, 1l);
         long ans = 0;
-        for(int ele :nums){
+        for (int ele : nums) {
             pxor ^= ele;
-            ans += map.getOrDefault(pxor,0l);
-            map.put(pxor,map.getOrDefault(pxor,0l) + 1l);
+            ans += map.getOrDefault(pxor, 0l);
+            map.put(pxor, map.getOrDefault(pxor, 0l) + 1l);
+        }
+
+        return ans;
+    }
+
+    /// 2589. Minimum Time to Complete All Tasks
+    public int findMinimumTime(int[][] tasks) {
+        /*
+         * tasks should be ran as late as possible
+         * sort on the basis of end time, so that the above statement can be achieved
+         */
+        
+        int[] arr = new int[2000 + 10];
+        int ans = 0;
+        Arrays.sort(tasks, (a, b) -> {
+            return (a[1] != b[1]) ? a[1] - b[1] : b[2] - a[2];
+        });
+
+        for (int[] t : tasks) {
+            int st = t[0];
+            int en = t[1];
+            int dur = t[2];
+
+            for (int i = en; i >= st; i--) {
+                if (arr[i] > 0)
+                    dur--;
+            }
+
+            if (dur > 0) {
+                for (int i = en; i >= st; i--) {
+                    if (arr[i] == 0) {
+                        arr[i]++;
+                        dur--;
+                    }
+                    if (dur == 0)
+                        break;
+                }
+            }
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] > 0)
+                ans++;
         }
 
         return ans;

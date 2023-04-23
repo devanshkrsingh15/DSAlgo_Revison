@@ -2627,4 +2627,35 @@ public class LC_Daily {
             return n - dp[0][n-1];
         }
     }
+    
+    class LC1416 {
+        long k;
+        public int numberOfArrays(String s, int K) {
+            k = (long)K;
+            long[]dp = new long[s.length()+1];
+            Arrays.fill(dp,-1l);
+    
+            return (int)numberOfArrays_(s,0,dp);
+        }
+    
+        long mod = (long)1e9 + 7;
+        public long numberOfArrays_(String s,int idx,long[]dp){
+            if(idx==s.length()){
+                return 1l;
+            }
+    
+            if(dp[idx]!=-1l) return dp[idx];
+    
+            long ans = 0;
+            if(s.charAt(idx)=='0')  return dp[idx] = ans%mod; 
+            long nums = 0;
+            for(int i = idx;i<s.length();i++){
+                nums = nums*10l  + (s.charAt(i)-'0') ;
+                if(nums>k) break;
+                ans = (ans%mod + numberOfArrays_(s,i+1,dp)%mod)%mod;
+                
+            }
+            return dp[idx] = ans%mod; 
+        }
+    }
 }
