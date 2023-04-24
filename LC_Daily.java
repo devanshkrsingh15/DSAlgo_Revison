@@ -2658,4 +2658,31 @@ public class LC_Daily {
             return dp[idx] = ans%mod; 
         }
     }
+
+    class LC1046 {
+    public int lastStoneWeight(int[] stones) {
+        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{
+            return stones[b] - stones[a];
+        });
+        int n = stones.length;
+        for(int i = 0;i<n;i++) pq.add(i);
+
+        while(pq.size()>1){
+            int max = pq.remove();
+            int smax = pq.peek();
+
+            if(stones[max]==stones[smax]){
+                pq.remove();
+            }else{
+                stones[max] -= stones[smax];
+                pq.remove();
+                pq.add(max);
+            }
+        }
+
+        return pq.size()>0 ? stones[pq.peek()] : 0 ;
+
+
+    }
+}
 }
