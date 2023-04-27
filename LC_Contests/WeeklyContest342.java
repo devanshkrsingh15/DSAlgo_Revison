@@ -58,4 +58,39 @@ public class WeeklyContest342 {
 
         return 0;
     }
+
+    //2654. Minimum Number of Operations to Make All Array Elements Equal to 1
+    public int minOperations(int[] nums) {
+        int n = nums.length;
+        int ones = 0;
+        for(int ele :nums ){
+            if(ele==1) ones++;
+        }
+        if(ones>0) return n - ones;
+
+        //if ones are not present, try to make one element as 
+
+        int min  = (int)1e9;
+        for(int i = 0 ;i<n;i++){
+            int g = nums[i];
+            for(int j = i+1;j<n;j++){
+                g = findGCD(g,nums[j]);
+                if(g==1){
+                    min = Math.min(j-i+1,min);
+                    break;
+                }
+            }
+        }
+
+        if(min==(int)1e9) return -1;
+
+        int stepsToGetOne = min - 1;
+        return stepsToGetOne + n-1;
+
+    }
+
+    public int findGCD(int a,int b){
+        if(b==0) return a;
+        return findGCD(b,a%b);
+    }
 }
