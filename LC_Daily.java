@@ -2609,80 +2609,144 @@ public class LC_Daily {
     class LC1312 {
         public int minInsertions(String s) {
             int n = s.length();
-            int[][]dp = new int[n][n];
-    
-            for(int gap = 0;gap<n;gap++){
-                for(int i = 0,j=i+gap;j<n;i++,j++){
-                    if(gap==0) dp[i][j] = 1;
-                    else{
-                        if(s.charAt(i)==s.charAt(j)){
-                            dp[i][j]  = dp[i+1][j-1] + 2;
-                        }else{
-                            dp[i][j] = Math.max(dp[i+1][j],dp[i][j-1]);
+            int[][] dp = new int[n][n];
+
+            for (int gap = 0; gap < n; gap++) {
+                for (int i = 0, j = i + gap; j < n; i++, j++) {
+                    if (gap == 0)
+                        dp[i][j] = 1;
+                    else {
+                        if (s.charAt(i) == s.charAt(j)) {
+                            dp[i][j] = dp[i + 1][j - 1] + 2;
+                        } else {
+                            dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
                         }
                     }
                 }
             }
-    
-            return n - dp[0][n-1];
+
+            return n - dp[0][n - 1];
         }
     }
-    
+
     class LC1416 {
         long k;
+
         public int numberOfArrays(String s, int K) {
-            k = (long)K;
-            long[]dp = new long[s.length()+1];
-            Arrays.fill(dp,-1l);
-    
-            return (int)numberOfArrays_(s,0,dp);
+            k = (long) K;
+            long[] dp = new long[s.length() + 1];
+            Arrays.fill(dp, -1l);
+
+            return (int) numberOfArrays_(s, 0, dp);
         }
-    
-        long mod = (long)1e9 + 7;
-        public long numberOfArrays_(String s,int idx,long[]dp){
-            if(idx==s.length()){
+
+        long mod = (long) 1e9 + 7;
+
+        public long numberOfArrays_(String s, int idx, long[] dp) {
+            if (idx == s.length()) {
                 return 1l;
             }
-    
-            if(dp[idx]!=-1l) return dp[idx];
-    
+
+            if (dp[idx] != -1l)
+                return dp[idx];
+
             long ans = 0;
-            if(s.charAt(idx)=='0')  return dp[idx] = ans%mod; 
+            if (s.charAt(idx) == '0')
+                return dp[idx] = ans % mod;
             long nums = 0;
-            for(int i = idx;i<s.length();i++){
-                nums = nums*10l  + (s.charAt(i)-'0') ;
-                if(nums>k) break;
-                ans = (ans%mod + numberOfArrays_(s,i+1,dp)%mod)%mod;
-                
+            for (int i = idx; i < s.length(); i++) {
+                nums = nums * 10l + (s.charAt(i) - '0');
+                if (nums > k)
+                    break;
+                ans = (ans % mod + numberOfArrays_(s, i + 1, dp) % mod) % mod;
+
             }
-            return dp[idx] = ans%mod; 
+            return dp[idx] = ans % mod;
+        }
+    }
+
+    class LC839 {
+        int[] par;
+
+        public int numSimilarGroups(String[] strs) {
+            int n = strs.length;
+            par = new int[n];
+            for (int i = 0; i < n; i++) {
+                par[i] = i;
+            }
+
+            int groups = n;
+
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (areSimilar(strs[i], strs[j])) {
+                        int p1 = findPar(i);
+                        int p2 = findPar(j);
+
+                        if (p1 != p2) {
+                            par[p2] = p1;
+                            groups--;
+                        }
+                    }
+                }
+            }
+
+            return groups;
+        }
+
+        public int findPar(int u) {
+            if (par[u] == u)
+                return u;
+            else {
+                int t = findPar(par[u]);
+                par[u] = t;
+                return t;
+            }
+        }
+
+        public boolean areSimilar(String a, String b) {
+            if (a.length() != b.length())
+                return false;
+
+            int n = a.length();
+            int swaps = 0;
+            ;
+
+            for (int i = 0; i < n; i++) {
+                if (a.charAt(i) != b.charAt(i))
+                    swaps++;
+                if (swaps > 2)
+                    return false;
+            }
+
+            return true;
         }
     }
 
     class LC1046 {
-    public int lastStoneWeight(int[] stones) {
-        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{
-            return stones[b] - stones[a];
-        });
-        int n = stones.length;
-        for(int i = 0;i<n;i++) pq.add(i);
+        public int lastStoneWeight(int[] stones) {
+            PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
+                return stones[b] - stones[a];
+            });
+            int n = stones.length;
+            for (int i = 0; i < n; i++)
+                pq.add(i);
 
-        while(pq.size()>1){
-            int max = pq.remove();
-            int smax = pq.peek();
+            while (pq.size() > 1) {
+                int max = pq.remove();
+                int smax = pq.peek();
 
-            if(stones[max]==stones[smax]){
-                pq.remove();
-            }else{
-                stones[max] -= stones[smax];
-                pq.remove();
-                pq.add(max);
+                if (stones[max] == stones[smax]) {
+                    pq.remove();
+                } else {
+                    stones[max] -= stones[smax];
+                    pq.remove();
+                    pq.add(max);
+                }
             }
+
+            return pq.size() > 0 ? stones[pq.peek()] : 0;
+
         }
-
-        return pq.size()>0 ? stones[pq.peek()] : 0 ;
-
-
     }
-}
 }
