@@ -45,7 +45,33 @@ public class BiweeklyContest96 {
 
     //2542. Maximum Subsequence Score
     public long maxScore(int[] nums1, int[] nums2, int k) {
-        return 0l;
+        int n = nums1.length;
+
+        ArrayList<int[]>list = new ArrayList<>();
+        for(int i = 0;i<n;i++){
+            list.add(new int[]{nums1[i],nums2[i]});
+        }
+
+        Collections.sort(list,(a,b)->{return b[1] - a[1];});
+
+        PriorityQueue<Integer>pq = new PriorityQueue<>((a,b)->{return a-b;});
+        long sof  = 0;
+        for(int i = 0;i<k-1;i++){
+            int[]arr = list.get(i);
+            sof+=(long)arr[0];
+            pq.add(arr[0]);
+        }
+
+        long ans = 0l;
+        for(int i = k-1;i<n;i++){
+            int[]arr = list.get(i);
+            sof += (long)arr[0];
+            pq.add(arr[0]);
+            ans = Math.max(ans,sof*arr[1]);
+            sof -= pq.remove();
+        }
+
+        return ans;
     }
 
 }

@@ -2749,4 +2749,73 @@ public class LC_Daily {
 
         }
     }
+
+    class LC1697 {
+        int[]par;
+        int ptr = 0;
+        public int findPar(int u){
+            if(par[u]==u) return u;
+            else{
+                int t = findPar(par[u]);
+                par[u] = t;
+                return t;
+            }
+        }
+    
+        public boolean[] distanceLimitedPathsExist(int n, int[][] edgeList, int[][] queries) {
+            boolean[]ans  = new boolean[queries.length];
+    
+            par = new int[n];
+            for(int i = 0;i<n;i++)par[i] = i;
+            ArrayList<int[]>edges= new ArrayList<>();
+            ArrayList<int[]>qrs= new ArrayList<>();
+            for(int i = 0 ; i<queries.length;i++){
+                qrs.add(new int[]{queries[i][0],queries[i][1],queries[i][2],i});
+            }
+    
+            for(int i = 0;i<edgeList.length;i++){
+                edges.add(new int[]{edgeList[i][0],edgeList[i][1],edgeList[i][2]});
+            }
+    
+    
+    
+            Collections.sort(qrs,(a,b)->{
+                return a[2] - b[2];
+            });
+    
+            Collections.sort(edges,(a,b)->{
+                return a[2] - b[2];
+            });
+    
+            for(int[]q :qrs  ){
+                int u = q[0];
+                int v = q[1];
+                int idx = q[3];
+                buildGraph(edges,q[2]);
+    
+                int p1 = findPar(u);
+                int p2 = findPar(v);
+    
+                ans[idx] = p1==p2;
+            }
+            
+            return ans;
+        }
+    
+        public void buildGraph(ArrayList<int[]>edges,int lim){
+            
+            while(ptr<edges.size() && lim>edges.get(ptr)[2]){
+                int u = edges.get(ptr)[0];
+                int v = edges.get(ptr)[1];
+    
+                int p1 = findPar(u);
+                int p2 = findPar(v);
+    
+                if(p1!=p2){
+                    par[p2] = p1;
+                }
+                ptr++;
+            }
+        }
+    }
 }
