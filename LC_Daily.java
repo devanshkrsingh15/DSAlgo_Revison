@@ -2818,4 +2818,27 @@ public class LC_Daily {
             }
         }
     }
+
+    public boolean LC2543(int targetX, int targetY) {
+        //doing reverse operation 
+        while(targetX%2==0) targetX = targetX/2;
+        while(targetY%2==0) targetY = targetY/2;
+        
+
+        while(targetY>=1 || targetX>=1){
+            if(targetY>targetX){
+                targetY-=targetX;
+            }else if(targetY<targetX){
+                targetX-=targetY;
+            }else{
+                if(targetY==1 && targetX==1) return true;
+                else{
+                    //if x==a && y==a && a!=1, we can only do 0 not 1
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
