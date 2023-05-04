@@ -2844,8 +2844,8 @@ public class LC_Daily {
 
 
     public String LC649(String senate) {
-        Queue<Integer>rq = new ArrayDeque<>();
-        Queue<Integer>dq = new ArrayDeque<>();
+        ArrayDeque<Integer>rq = new ArrayDeque<>();
+        ArrayDeque<Integer>dq = new ArrayDeque<>();
 
         int n = senate.length();
 
