@@ -2864,4 +2864,30 @@ public class LC_Daily {
         return rq.size() > dq.size() ? "Radiant" : "Dire" ; 
     }
 
+    public int LC1498(int[] nums, int target) {
+        long ans = 0l;
+        int n = nums.length; 
+        long mod = (long)1e9 + 7;
+        Arrays.sort(nums);
+        long[]powers = new long[n+1];
+        powers[0] = 1l;
+        for(int i = 1 ;i<=n;i++){
+            powers[i] = (powers[i-1]%mod*(long)2%mod)%mod;
+        }
+
+        int i = 0;
+        int j = n-1;
+
+        while(i<=j){
+            if(nums[i] +nums[j]<=target){
+                ans = (ans%mod + powers[j-i]%mod)%mod;
+                i++;
+            }else{
+                j--;
+            }
+        }
+
+        return (int)(ans%mod);
+    }
+
 }
