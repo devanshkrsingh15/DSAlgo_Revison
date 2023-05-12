@@ -1655,6 +1655,26 @@ public class LC_Daily {
         }
     }
 
+    class LC2140 {
+    public long mostPoints(int[][] questions) {
+        int n = questions.length;
+
+        long[]dp = new long[n+1];
+        Arrays.fill(dp,-1l);
+
+        return mostPoints_(questions,0,dp);
+    }
+    public long mostPoints_(int[][]arr,int idx,long[]dp){
+        if(idx>=arr.length) return 0l;
+        if(dp[idx]!=-1l) return dp[idx];
+
+        long exc = mostPoints_(arr,idx+1,dp);
+        long inc = mostPoints_(arr,idx+arr[idx][1]+1,dp) + arr[idx][0];
+
+        return dp[idx] = Math.max(exc,inc);
+    }
+}
+
     class LC1539 {
         public int findKthPositive(int[] arr, int k) {
             int n = arr.length;
