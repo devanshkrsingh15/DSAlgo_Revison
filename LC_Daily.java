@@ -1654,25 +1654,27 @@ public class LC_Daily {
 
         }
     }
+
     class LC2466 {
-    int L;
-    int H;
-    int z;
-    int o; 
-    public int countGoodStrings(int low, int high, int zero, int one) {
-        L = low;
-        H = high;
-        z = zero;
-        o = one;
+        int L;
+        int H;
+        int z;
+        int o;
 
-        long[]dp = new long[H+1];
-        Arrays.fill(dp,-1l);
-        
-        return (int)countGoodStrings_(0,dp);
-    }
+        public int countGoodStrings(int low, int high, int zero, int one) {
+            L = low;
+            H = high;
+            z = zero;
+            o = one;
 
+            long[] dp = new long[H + 1];
+            Arrays.fill(dp, -1l);
 
-    long mod = (long)1e9 + 7;
+            return (int) countGoodStrings_(0, dp);
+        }
+
+        long mod = (long) 1e9 + 7;
+
     public long countGoodStrings_(int len,long[]dp){
         if(len>=dp.length) return 0l;
 
@@ -1681,33 +1683,36 @@ public class LC_Daily {
         long zeros = countGoodStrings_(len + z,dp);
         long ones = countGoodStrings_(len + o,dp);
         
-        long ans = (zeros%mod + ones%mod)%mod;
+        long ans = (zeros%mod + ones%mod)%mod;c
         if(len>=L && len<=H) ans = (ans%mod + 1l)%mod;
 
 
         return dp[len] = ans;
     }
-}
+    }
 
     class LC2140 {
-    public long mostPoints(int[][] questions) {
-        int n = questions.length;
+        public long mostPoints(int[][] questions) {
+            int n = questions.length;
 
-        long[]dp = new long[n+1];
-        Arrays.fill(dp,-1l);
+            long[] dp = new long[n + 1];
+            Arrays.fill(dp, -1l);
 
-        return mostPoints_(questions,0,dp);
+            return mostPoints_(questions, 0, dp);
+        }
+
+        public long mostPoints_(int[][] arr, int idx, long[] dp) {
+            if (idx >= arr.length)
+                return 0l;
+            if (dp[idx] != -1l)
+                return dp[idx];
+
+            long exc = mostPoints_(arr, idx + 1, dp);
+            long inc = mostPoints_(arr, idx + arr[idx][1] + 1, dp) + arr[idx][0];
+
+            return dp[idx] = Math.max(exc, inc);
+        }
     }
-    public long mostPoints_(int[][]arr,int idx,long[]dp){
-        if(idx>=arr.length) return 0l;
-        if(dp[idx]!=-1l) return dp[idx];
-
-        long exc = mostPoints_(arr,idx+1,dp);
-        long inc = mostPoints_(arr,idx+arr[idx][1]+1,dp) + arr[idx][0];
-
-        return dp[idx] = Math.max(exc,inc);
-    }
-}
 
     class LC1539 {
         public int findKthPositive(int[] arr, int k) {
@@ -2805,67 +2810,68 @@ public class LC_Daily {
     }
 
     class LC1697 {
-        int[]par;
+        int[] par;
         int ptr = 0;
-        public int findPar(int u){
-            if(par[u]==u) return u;
-            else{
+
+        public int findPar(int u) {
+            if (par[u] == u)
+                return u;
+            else {
                 int t = findPar(par[u]);
                 par[u] = t;
                 return t;
             }
         }
-    
+
         public boolean[] distanceLimitedPathsExist(int n, int[][] edgeList, int[][] queries) {
-            boolean[]ans  = new boolean[queries.length];
-    
+            boolean[] ans = new boolean[queries.length];
+
             par = new int[n];
-            for(int i = 0;i<n;i++)par[i] = i;
-            ArrayList<int[]>edges= new ArrayList<>();
-            ArrayList<int[]>qrs= new ArrayList<>();
-            for(int i = 0 ; i<queries.length;i++){
-                qrs.add(new int[]{queries[i][0],queries[i][1],queries[i][2],i});
+            for (int i = 0; i < n; i++)
+                par[i] = i;
+            ArrayList<int[]> edges = new ArrayList<>();
+            ArrayList<int[]> qrs = new ArrayList<>();
+            for (int i = 0; i < queries.length; i++) {
+                qrs.add(new int[] { queries[i][0], queries[i][1], queries[i][2], i });
             }
-    
-            for(int i = 0;i<edgeList.length;i++){
-                edges.add(new int[]{edgeList[i][0],edgeList[i][1],edgeList[i][2]});
+
+            for (int i = 0; i < edgeList.length; i++) {
+                edges.add(new int[] { edgeList[i][0], edgeList[i][1], edgeList[i][2] });
             }
-    
-    
-    
-            Collections.sort(qrs,(a,b)->{
+
+            Collections.sort(qrs, (a, b) -> {
                 return a[2] - b[2];
             });
-    
-            Collections.sort(edges,(a,b)->{
+
+            Collections.sort(edges, (a, b) -> {
                 return a[2] - b[2];
             });
-    
-            for(int[]q :qrs  ){
+
+            for (int[] q : qrs) {
                 int u = q[0];
                 int v = q[1];
                 int idx = q[3];
-                buildGraph(edges,q[2]);
-    
+                buildGraph(edges, q[2]);
+
                 int p1 = findPar(u);
                 int p2 = findPar(v);
-    
-                ans[idx] = p1==p2;
+
+                ans[idx] = p1 == p2;
             }
-            
+
             return ans;
         }
-    
-        public void buildGraph(ArrayList<int[]>edges,int lim){
-            
-            while(ptr<edges.size() && lim>edges.get(ptr)[2]){
+
+        public void buildGraph(ArrayList<int[]> edges, int lim) {
+
+            while (ptr < edges.size() && lim > edges.get(ptr)[2]) {
                 int u = edges.get(ptr)[0];
                 int v = edges.get(ptr)[1];
-    
+
                 int p1 = findPar(u);
                 int p2 = findPar(v);
-    
-                if(p1!=p2){
+
+                if (p1 != p2) {
                     par[p2] = p1;
                 }
                 ptr++;
@@ -2874,20 +2880,22 @@ public class LC_Daily {
     }
 
     public boolean LC2543(int targetX, int targetY) {
-        //doing reverse operation 
-        while(targetX%2==0) targetX = targetX/2;
-        while(targetY%2==0) targetY = targetY/2;
-        
+        // doing reverse operation
+        while (targetX % 2 == 0)
+            targetX = targetX / 2;
+        while (targetY % 2 == 0)
+            targetY = targetY / 2;
 
-        while(targetY>=1 || targetX>=1){
-            if(targetY>targetX){
-                targetY-=targetX;
-            }else if(targetY<targetX){
-                targetX-=targetY;
-            }else{
-                if(targetY==1 && targetX==1) return true;
-                else{
-                    //if x==a && y==a && a!=1, we can only do 0 not 1
+        while (targetY >= 1 || targetX >= 1) {
+            if (targetY > targetX) {
+                targetY -= targetX;
+            } else if (targetY < targetX) {
+                targetX -= targetY;
+            } else {
+                if (targetY == 1 && targetX == 1)
+                    return true;
+                else {
+                    // if x==a && y==a && a!=1, we can only do 0 not 1
                     return false;
                 }
             }
@@ -2896,52 +2904,55 @@ public class LC_Daily {
         return true;
     }
 
-
     public String LC649(String senate) {
-        ArrayDeque<Integer>rq = new ArrayDeque<>();
-        ArrayDeque<Integer>dq = new ArrayDeque<>();
+        ArrayDeque<Integer> rq = new ArrayDeque<>();
+        ArrayDeque<Integer> dq = new ArrayDeque<>();
 
         int n = senate.length();
 
-        for(int i = 0 ;i<n;i++){
-            if(senate.charAt(i)=='R') rq.add(i);
-            else dq.add(i);
+        for (int i = 0; i < n; i++) {
+            if (senate.charAt(i) == 'R')
+                rq.add(i);
+            else
+                dq.add(i);
         }
 
-        while(rq.size()!=0 && dq.size()!=0){
+        while (rq.size() != 0 && dq.size() != 0) {
             int ridx = rq.remove();
             int didx = dq.remove();
-            if(ridx<didx) rq.add(ridx + n);
-            else dq.add(didx + n);
+            if (ridx < didx)
+                rq.add(ridx + n);
+            else
+                dq.add(didx + n);
         }
 
-        return rq.size() > dq.size() ? "Radiant" : "Dire" ; 
+        return rq.size() > dq.size() ? "Radiant" : "Dire";
     }
 
     public int LC1498(int[] nums, int target) {
         long ans = 0l;
-        int n = nums.length; 
-        long mod = (long)1e9 + 7;
+        int n = nums.length;
+        long mod = (long) 1e9 + 7;
         Arrays.sort(nums);
-        long[]powers = new long[n+1];
+        long[] powers = new long[n + 1];
         powers[0] = 1l;
-        for(int i = 1 ;i<=n;i++){
-            powers[i] = (powers[i-1]%mod*(long)2%mod)%mod;
+        for (int i = 1; i <= n; i++) {
+            powers[i] = (powers[i - 1] % mod * (long) 2 % mod) % mod;
         }
 
         int i = 0;
-        int j = n-1;
+        int j = n - 1;
 
-        while(i<=j){
-            if(nums[i] +nums[j]<=target){
-                ans = (ans%mod + powers[j-i]%mod)%mod;
+        while (i <= j) {
+            if (nums[i] + nums[j] <= target) {
+                ans = (ans % mod + powers[j - i] % mod) % mod;
                 i++;
-            }else{
+            } else {
                 j--;
             }
         }
 
-        return (int)(ans%mod);
+        return (int) (ans % mod);
     }
 
 }
