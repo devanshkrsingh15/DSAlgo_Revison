@@ -1654,6 +1654,40 @@ public class LC_Daily {
 
         }
     }
+    class LC2466 {
+    int L;
+    int H;
+    int z;
+    int o; 
+    public int countGoodStrings(int low, int high, int zero, int one) {
+        L = low;
+        H = high;
+        z = zero;
+        o = one;
+
+        long[]dp = new long[H+1];
+        Arrays.fill(dp,-1l);
+        
+        return (int)countGoodStrings_(0,dp);
+    }
+
+
+    long mod = (long)1e9 + 7;
+    public long countGoodStrings_(int len,long[]dp){
+        if(len>=dp.length) return 0l;
+
+        if(dp[len]!=-1l) return dp[len];
+
+        long zeros = countGoodStrings_(len + z,dp);
+        long ones = countGoodStrings_(len + o,dp);
+        
+        long ans = (zeros%mod + ones%mod)%mod;
+        if(len>=L && len<=H) ans = (ans%mod + 1l)%mod;
+
+
+        return dp[len] = ans;
+    }
+}
 
     class LC2140 {
     public long mostPoints(int[][] questions) {
