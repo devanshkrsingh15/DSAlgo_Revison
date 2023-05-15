@@ -1783,6 +1783,53 @@ public class LC_Daily {
         }
     }
 
+    class LC1799 {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        public int maxScore(int[] nums) {
+            int n = nums.length;
+            return helper(nums, n / 2, 0);
+        }
+
+        public int helper(int[] nums, int n, int vis) {
+            String key = n + "/" + vis;
+            if (n == 0)
+                return 0;
+
+            if (map.containsKey(key))
+                return map.get(key);
+
+            int max = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if ((vis & (1 << i)) == 0) {
+                    vis ^= (1 << i);
+                    int x = nums[i];
+
+                    for (int j = i + 1; j < nums.length; j++) {
+                        if ((vis & (1 << j)) == 0) {
+                            vis ^= (1 << j);
+                            int y = nums[j];
+
+                            max = Math.max(max, helper(nums, n - 1, vis) + n * gcd(x, y));
+                            vis ^= (1 << j);
+                        }
+                    }
+
+                    vis ^= (1 << i);
+                }
+            }
+
+            map.put(key, max);
+            return max;
+        }
+
+        public int gcd(int a, int b) {
+            if (b == 0)
+                return a;
+            return gcd(b, a % b);
+        }
+    }
+
     class Trie {
         class TrieNode {
             char ch;
