@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import LinkedList.ListNode;
+
 import java.util.*;
 
 public class LC_Daily {
@@ -3000,6 +3002,58 @@ public class LC_Daily {
         }
 
         return (int) (ans % mod);
+    }
+
+    class LC24 {
+
+        class ListNode {
+            int val;
+            ListNode next;
+
+            ListNode() {
+            }
+
+            ListNode(int val) {
+                this.val = val;
+            }
+
+            ListNode(int val, ListNode next) {
+                this.val = val;
+                this.next = next;
+            }
+        }
+
+        // 24. Swap Nodes in Pairs
+        public ListNode swapPairs(ListNode head) {
+            if (head == null || head.next == null)
+                return head;
+
+            ListNode a = head;
+            ListNode b = head.next;
+
+            ListNode dummy = new ListNode(-1);
+            ListNode ptr = dummy;
+
+            while (a != null && b != null) {
+                ListNode na = b.next;
+                ListNode nb = na != null ? na.next : null;
+
+                a.next = null;
+                b.next = null;
+
+                ptr.next = b;
+                b.next = a;
+                ptr = ptr.next.next;
+
+                a = na;
+                b = nb;
+            }
+
+            if (a != null)
+                ptr.next = a;
+
+            return dummy.next;
+        }
     }
 
 }
