@@ -2831,6 +2831,26 @@ public class LC_Daily {
         }
     }
 
+    class LC1557 {
+        public List<Integer> findSmallestSetOfVertices(int n, List<List<Integer>> edges) {
+            ArrayList<Integer> ans = new ArrayList<>();
+
+            int[] indeg = new int[n];
+            for (List<Integer> ed : edges) {
+                int u = ed.get(0);
+                int v = ed.get(1);
+                indeg[v]++;
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (indeg[i] == 0)
+                    ans.add(i);
+            }
+
+            return ans;
+        }
+    }
+
     class LC1046 {
         public int lastStoneWeight(int[] stones) {
             PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> {
