@@ -3024,6 +3024,77 @@ public class LC_Daily {
         return (int) (ans % mod);
     }
 
+    class LC399 {
+        public class Pair {
+            String idx;
+            double wt;
+
+            Pair(String idx, double wt) {
+                this.idx = idx;
+                this.wt = wt;
+            }
+        }
+
+        public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+            HashMap<String, HashSet<Pair>> graph = buildGraph(equations, values);
+            double[] ans = new double[queries.size()];
+
+            for (int i = 0; i < queries.size(); i++) {
+                String src = queries.get(i).get(0);
+                String des = queries.get(i).get(1);
+
+                if (!graph.containsKey(src) || !graph.containsKey(des)) {
+                    ans[i] = -1.0;
+                } else {
+                    HashSet<String> vis = new HashSet<>();
+                    double tmp[] = dfs(graph, src, des, vis);
+                    if (tmp[1] == 0)
+                        ans[i] = -1;
+                    else
+                        ans[i] = tmp[0];
+                }
+            }
+
+            return ans;
+        }
+
+        // wt,found
+        public double[] dfs(HashMap<String, HashSet<Pair>> graph, String s, String d, HashSet<String> vis) {
+            if (s.equals(d))
+                return new double[] { (double) 1, (double) 1 };
+
+            vis.add(s);
+            for (Pair rp : graph.get(s)) {
+                if (!vis.contains(rp.idx)) {
+                    double fans[] = dfs(graph, rp.idx, d, vis);
+                    if (fans[1] == 1)
+                        return new double[] { fans[0] * rp.wt, (double) 1 };
+                }
+            }
+
+            return new double[] { (double) -1, (double) 0 };
+        }
+
+        public HashMap<String, HashSet<Pair>> buildGraph(List<List<String>> equations, double[] values) {
+            HashMap<String, HashSet<Pair>> graph = new HashMap<>();
+            for (int i = 0; i < equations.size(); i++) {
+                List<String> ed = equations.get(i);
+                String u = ed.get(0);
+                String v = ed.get(1);
+                double w1 = values[i];
+                double w2 = (double) 1.0 / values[i];
+
+                graph.putIfAbsent(u, new HashSet<>());
+                graph.putIfAbsent(v, new HashSet<>());
+
+                graph.get(u).add(new Pair(v, w1));
+                graph.get(v).add(new Pair(u, w2));
+            }
+
+            return graph;
+        }
+    }
+
     class LC24 {
 
         class ListNode {
