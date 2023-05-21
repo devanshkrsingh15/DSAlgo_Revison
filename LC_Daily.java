@@ -3024,6 +3024,84 @@ public class LC_Daily {
         return (int) (ans % mod);
     }
 
+    class LC934 {
+        int[][]direcs ={{0,1},{1,0},{0,-1},{-1,0}};
+        public int shortestBridge(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+    
+            int[][]vis = new int[n][m];
+            for(int[]v :vis) Arrays.fill(v,-1);
+    
+            Queue<Integer>q = new ArrayDeque<>();
+            for(int i = 0 ;i<n;i++){
+                boolean found = false;
+                for(int j = 0 ;j<m;j++){
+                    if(grid[i][j]==1){
+                        dfs(grid,i*m+j,vis,q); 
+                        found = true;
+                        break;
+                    }
+                }
+    
+                if(found) break;
+            }
+    
+            int min = n*m;
+    
+            int level = 0;
+            while(q.size()!=0){
+                int s = q.size();
+                while(s-->0){
+                    int idx = q.remove();
+                   
+                    int r = idx/m;
+                    int c = idx%m;
+    
+                    if(grid[r][c]==1 && vis[r][c]>0) return vis[r][c]-1;
+    
+                    for(int k = 0 ;k<direcs.length ;k++){
+                        int x = r + direcs[k][0];
+                        int y = c + direcs[k][1];
+                        
+                        if(x>=0 && y>=0 && x<n && y<m){
+                            if(vis[x][y]==-1 || vis[x][y] > level+1){
+                                q.add(x*m+y);
+                                vis[x][y] = level+1;
+                            }
+                        }
+                    }
+                }
+    
+                level++;
+            }
+    
+            return -1;
+        }
+    
+        public void dfs(int[][] grid,int idx,int[][]vis, Queue<Integer>q){
+            int n = grid.length;
+            int m = grid[0].length;
+    
+            int r = idx/m;
+            int c = idx%m;
+    
+            q.add(idx);
+            vis[r][c] = 0;
+    
+            for(int k = 0 ;k<direcs.length ;k++){
+                int x = r + direcs[k][0];
+                int y = c + direcs[k][1];
+                        
+                if(x>=0 && y>= 0 && x<n && y<m){
+                    if(grid[x][y]==1 && vis[x][y]==-1){
+                        dfs(grid,x*m +y,vis,q);
+                    }
+                }
+            }
+        }
+    }
+
     class LC399 {
         public class Pair {
             String idx;

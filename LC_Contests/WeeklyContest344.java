@@ -111,4 +111,40 @@ public class WeeklyContest344 {
     }
 
     //2673. Make Costs of Paths Equal in a Binary Tree
+    class L2673 {
+        int maxPathSum = 0;
+        int ops = 0;
+        public int minIncrements(int n, int[] cost) {
+            maxCost(1,cost,0);
+            calCulateInc(1,cost,0);
+            return ops; 
+        }
+    
+        //will return ops that can be done at each level to get the max path sum
+        public int calCulateInc(int idx,int[]cost,int sof){
+            sof += cost[idx-1];
+             if( 2*idx>=cost.length && (2*idx+1)>=cost.length ){
+                ops +=  maxPathSum - sof;
+                return maxPathSum - sof;
+            }
+        
+            int left = calCulateInc(2*idx,cost,sof);
+            int right = calCulateInc(2*idx+1,cost,sof);
+    
+            int commonOps = Math.min(left,right);
+            ops -= commonOps;
+            return commonOps;
+        }
+    
+    
+        public void maxCost(int idx,int[]cost,int sof){
+            if( 2*idx>=cost.length && (2*idx+1)>=cost.length ){
+                maxPathSum = Math.max(maxPathSum,sof +cost[idx-1]);
+                return;
+            }
+    
+            maxCost(2*idx,cost,sof + cost[idx-1]);
+            maxCost(2*idx + 1 ,cost,sof + cost[idx-1]);
+        }
+    }
 }
