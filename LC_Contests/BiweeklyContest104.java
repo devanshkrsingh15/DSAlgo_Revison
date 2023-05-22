@@ -47,7 +47,7 @@ public class BiweeklyContest104 {
     public long maximumOr(int[] nums, int k) {
         // it is always better to shift a number k times or multiple 2^k times rather
         // than one x times and other k-x times;
-        // as we want the max OR, ie, set bit should be at max pos 
+        // as we want the max OR, ie, set bit should be at max pos
         // 2^9 > 2^5 + 2^4 ALWAYS
         int n = nums.length;
         long[] prefixOr = getORSummation(nums, true);
@@ -77,5 +77,24 @@ public class BiweeklyContest104 {
         }
 
         return ans;
+    }
+
+    // 2681. Power of Heroes
+    public int sumOfPower(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        long mod = (long) 1e9 + 7;
+        long ans = 0;
+        long pre = 0;
+
+        for (int i = 0; i < n; i++) {
+            ans = (ans % mod + ((long) nums[i] % mod * ((long) nums[i] % mod * (long) nums[i] % mod) % mod) % mod)
+                    % mod;
+            ans = (ans % mod + (pre % mod * ((long) nums[i] % mod * (long) nums[i] % mod) % mod) % mod) % mod;
+            pre = ((2 * pre) % mod + (long) nums[i] % mod) % mod;
+        }
+
+        return (int) (ans % mod);
+
     }
 }
