@@ -3024,78 +3024,135 @@ public class LC_Daily {
         return (int) (ans % mod);
     }
 
+    class LC837 {
+        public double new21Game_tle(int n, int k, int maxPts) {
+            int maxFeasiblePoints = k - 1 + maxPts;
+            int minFeasiblePoints = k - 1;
+
+            if (k == 0 || n >= maxFeasiblePoints)
+                return 1.0;
+            double[] prob = new double[n + 1];
+            prob[0] = 1.0;
+            for (int i = 1; i < prob.length; i++) {
+                for (int j = 1; j <= maxPts; j++) {
+                    // we can only make next move if i-j<k
+                    if (i - j >= 0 && i - j < k)
+                        prob[i] += prob[i - j] / (double) maxPts;
+                }
+            }
+
+            double ans = 0.0;
+            for (int i = k; i <= n; i++) {
+                ans += prob[i];
+            }
+
+            return ans;
+        }
+
+        public double new21Game_opti(int n, int k, int maxPts) {
+            int maxFeasiblePoints = k - 1 + maxPts;
+            int minFeasiblePoints = k - 1;
+
+            if (k == 0 || n >= maxFeasiblePoints)
+                return 1.0;
+            double[] dp = new double[n + 1];
+            dp[0] = 1.0;
+            double sum = dp[0];
+            for (int i = 1; i <= n; i++) {
+                dp[i] = sum / (double) maxPts;
+
+                if (i < k)
+                    sum += dp[i];
+                if (i - maxPts >= 0)
+                    sum -= dp[i - maxPts];
+
+            }
+
+            double ans = 0.0;
+            for (int i = k; i <= n; i++) {
+                ans += dp[i];
+            }
+
+            return ans;
+        }
+    }
+
     class LC934 {
-        int[][]direcs ={{0,1},{1,0},{0,-1},{-1,0}};
+        int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
         public int shortestBridge(int[][] grid) {
             int n = grid.length;
             int m = grid[0].length;
-    
-            int[][]vis = new int[n][m];
-            for(int[]v :vis) Arrays.fill(v,-1);
-    
-            Queue<Integer>q = new ArrayDeque<>();
-            for(int i = 0 ;i<n;i++){
+
+            int[][] vis = new int[n][m];
+            for (int[] v : vis)
+                Arrays.fill(v, -1);
+
+            Queue<Integer> q = new ArrayDeque<>();
+            for (int i = 0; i < n; i++) {
                 boolean found = false;
-                for(int j = 0 ;j<m;j++){
-                    if(grid[i][j]==1){
-                        dfs(grid,i*m+j,vis,q); 
+                for (int j = 0; j < m; j++) {
+                    if (grid[i][j] == 1) {
+                        dfs(grid, i * m + j, vis, q);
                         found = true;
                         break;
                     }
                 }
-    
-                if(found) break;
+
+                if (found)
+                    break;
             }
-    
-            int min = n*m;
-    
+
+            int min = n * m;
+
             int level = 0;
-            while(q.size()!=0){
+            while (q.size() != 0) {
                 int s = q.size();
-                while(s-->0){
+                while (s-- > 0) {
                     int idx = q.remove();
-                   
-                    int r = idx/m;
-                    int c = idx%m;
-    
-                    if(grid[r][c]==1 && vis[r][c]>0) return vis[r][c]-1;
-    
-                    for(int k = 0 ;k<direcs.length ;k++){
+
+                    int r = idx / m;
+                    int c = idx % m;
+
+                    if (grid[r][c] == 1 && vis[r][c] > 0)
+                        return vis[r][c] - 1;
+
+                    for (int k = 0; k < direcs.length; k++) {
                         int x = r + direcs[k][0];
                         int y = c + direcs[k][1];
-                        
-                        if(x>=0 && y>=0 && x<n && y<m){
-                            if(vis[x][y]==-1 || vis[x][y] > level+1){
-                                q.add(x*m+y);
-                                vis[x][y] = level+1;
+
+                        if (x >= 0 && y >= 0 && x < n && y < m) {
+                            if (vis[x][y] == -1 || vis[x][y] > level + 1) {
+                                q.add(x * m + y);
+                                vis[x][y] = level + 1;
                             }
                         }
                     }
                 }
-    
+
                 level++;
             }
-    
+
             return -1;
         }
-    
-        public void dfs(int[][] grid,int idx,int[][]vis, Queue<Integer>q){
+
+        public void dfs(int[][] grid, int idx, int[][] vis, Queue<Integer> q) {
             int n = grid.length;
             int m = grid[0].length;
-    
-            int r = idx/m;
-            int c = idx%m;
-    
+
+            int r = idx / m;
+            int c = idx % m;
+
             q.add(idx);
             vis[r][c] = 0;
-    
-            for(int k = 0 ;k<direcs.length ;k++){
+
+            for (int k = 0; k < direcs.length; k++) {
                 int x = r + direcs[k][0];
                 int y = c + direcs[k][1];
-                        
-                if(x>=0 && y>= 0 && x<n && y<m){
-                    if(grid[x][y]==1 && vis[x][y]==-1){
-                        dfs(grid,x*m +y,vis,q);
+
+                if (x >= 0 && y >= 0 && x < n && y < m) {
+                    if (grid[x][y] == 1 && vis[x][y] == -1) {
+                        dfs(grid, x * m + y, vis, q);
                     }
                 }
             }
@@ -3170,6 +3227,78 @@ public class LC_Daily {
             }
 
             return graph;
+        }
+    }
+
+    // Stone Game II
+    class LC1140 {
+        public int stoneGameII(int[] piles) {
+            int n = piles.length;
+            int[] suffixArray = new int[n];
+            suffixArray[n - 1] = piles[n - 1];
+            for (int i = n - 2; i >= 0; i--) {
+                suffixArray[i] += suffixArray[i + 1] + piles[i];
+            }
+
+            int[][] dp = new int[n + 1][n + 1];
+            for (int[] d : dp)
+                Arrays.fill(d, -1);
+
+            return stoneGameII_(piles, 0, suffixArray, 1, dp);
+        }
+
+        // at each step, person will try to max their pts
+        public int stoneGameII_(int[] piles, int idx, int[] suffixAArray, int M, int[][] dp) {
+            if (idx >= suffixAArray.length)
+                return 0;
+            if (idx + 2 * M >= suffixAArray.length)
+                return suffixAArray[idx];
+
+            if (dp[idx][M] != -1)
+                return dp[idx][M];
+
+            int ans = 0;
+
+            for (int x = 1; x <= 2 * M; x++) {
+                ans = Math.max(ans, suffixAArray[idx] - stoneGameII_(piles, idx + x, suffixAArray, Math.max(M, x), dp));
+            }
+
+            return dp[idx][M] = ans;
+
+        }
+    }
+    // Stone Game III
+
+    class LC1406 {
+        public String stoneGameIII(int[] stoneValue) {
+            int n = stoneValue.length;
+            int[] suffixArray = new int[n];
+            suffixArray[n - 1] = stoneValue[n - 1];
+            for (int i = n - 2; i >= 0; i--)
+                suffixArray[i] += suffixArray[i + 1] + stoneValue[i];
+
+            int[] dp = new int[n + 1];
+            Arrays.fill(dp, -(int) 1e8);
+
+            int aliceScore = stoneGameIII_(suffixArray, 0, dp);
+            int bobScore = suffixArray[0] - aliceScore;
+
+            return aliceScore > bobScore ? "Alice" : bobScore > aliceScore ? "Bob" : "Tie";
+        }
+
+        public int stoneGameIII_(int[] suff, int idx, int[] dp) {
+            if (idx >= suff.length)
+                return 0;
+            if (dp[idx] != -(int) 1e8)
+                return dp[idx];
+
+            int ans = -(int) 1e9;
+
+            for (int x = 1; x <= 3; x++) {
+                ans = Math.max(ans, suff[idx] - stoneGameIII_(suff, idx + x, dp));
+            }
+
+            return dp[idx] = ans;
         }
     }
 
