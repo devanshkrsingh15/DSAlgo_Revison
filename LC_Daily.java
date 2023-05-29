@@ -1785,6 +1785,61 @@ public class LC_Daily {
         }
     }
 
+    class ParkingSystem {
+        int[] arr;
+
+        public ParkingSystem(int big, int medium, int small) {
+            arr = new int[3];
+            arr[0] = big;
+            arr[1] = medium;
+            arr[2] = small;
+        }
+
+        public boolean addCar(int carType) {
+            if (arr[carType - 1] == 0)
+                return false;
+            arr[carType - 1]--;
+            return true;
+        }
+    }
+
+    class LC1547 {
+        public int minCost(int n, int[] cuts) {
+            ArrayList<Integer> list = new ArrayList<>();
+            list.add(0);
+            for (int ele : cuts)
+                list.add(ele);
+            list.add(n);
+
+            Collections.sort(list);
+
+            int[][] dp = new int[list.size() + 1][list.size() + 1];
+            for (int[] d : dp)
+                Arrays.fill(d, -1);
+            return minCost_(list, 1, list.size() - 2, dp);
+        }
+
+        public int minCost_(ArrayList<Integer> cuts, int st, int en, int[][] dp) {
+            if (st > en)
+                return 0;
+            if (dp[st][en] != -1)
+                return dp[st][en];
+
+            int ans = (int) 1e9;
+            int stPos = cuts.get(st - 1);
+            int enPos = cuts.get(en + 1);
+            for (int ct = st; ct <= en; ct++) {
+                int leftCost = minCost_(cuts, st, ct - 1, dp);
+                int rightCost = minCost_(cuts, ct + 1, en, dp);
+                int myCost = enPos - stPos;
+                ans = Math.min(ans, leftCost + rightCost + myCost);
+
+            }
+
+            return dp[st][en] = ans;
+        }
+    }
+
     class LC1799 {
         HashMap<String, Integer> map = new HashMap<>();
 
