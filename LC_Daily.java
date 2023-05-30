@@ -1785,6 +1785,81 @@ public class LC_Daily {
         }
     }
 
+    class MyHashSet {
+
+        LinkedList<Integer>buckets[];
+        int size= 0 ;
+
+        public MyHashSet() {
+            initialize(20);
+        }
+
+        public void initialize(int size){
+            buckets = new LinkedList[size]; 
+            for(int i = 0 ; i<size;i++) buckets[i] = new LinkedList<>();
+        }
+        
+        public void add(int key) {
+            int bi = ((Integer)key).hashCode();
+            bi = Math.abs(bi);
+            bi = bi%buckets.length;
+
+            int idx= -1;
+            for(int ele : buckets[bi]){
+                if(ele==key) idx++;
+            }
+            
+            if(idx==-1){
+                buckets[bi].add(key);
+                size++;
+            }
+           
+            if( size*1.0 / buckets.length  > 2.0) rehash();
+
+        }
+
+        public void rehash(){
+            LinkedList<Integer>obuckets[] = buckets;
+            initialize(2*obuckets.length);
+
+            for(int  i  = 0 ;i<obuckets.length;i++){
+                for(int ele :obuckets[i]) add(ele);
+            }
+           
+        }
+        
+        public void remove(int key) {
+            int bi = ((Integer)key).hashCode();
+            bi = Math.abs(bi);
+            bi = bi%buckets.length;
+
+            int idx = 0;
+            for(int ele : buckets[bi]){
+                if(ele==key){
+                    buckets[bi].remove(idx);
+                     size--;
+                    return;
+                }
+                idx++;
+            }
+            
+          
+        }
+        
+        public boolean contains(int key) {
+            int bi = ((Integer)key).hashCode();
+            bi = Math.abs(bi);
+            bi = bi%buckets.length;
+
+            for(int ele : buckets[bi]){
+                if(ele==key) return true;
+            }
+
+            return false;
+        }
+    }
+
+
     class ParkingSystem {
         int[] arr;
 
