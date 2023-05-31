@@ -1785,80 +1785,117 @@ public class LC_Daily {
         }
     }
 
+    class UndergroundSystem {
+
+        HashMap<Integer, String[]> checkedIn_IdMapping; // id :{st_name,time}
+        HashMap<String, int[]> routesMapping; // st_name/en_ame : totalTime,trips
+        
+        public UndergroundSystem() {
+            checkedIn_IdMapping = new HashMap<>();
+            routesMapping = new HashMap<>();
+        }
+
+        public void checkIn(int id, String stationName, int t) {
+            checkedIn_IdMapping.putIfAbsent(id,new String[2]);
+            checkedIn_IdMapping.get(id)[0] = stationName;
+            checkedIn_IdMapping.get(id)[1] = ""+t;
+        }
+
+        public void checkOut(int id, String stationName, int t) {
+            int stTime = Integer.parseInt(checkedIn_IdMapping.get(id)[1]);
+            String key = checkedIn_IdMapping.get(id)[0] + "+" + stationName;
+            int time = t - stTime;
+            routesMapping.putIfAbsent(key,new int[2]);
+            routesMapping.get(key)[0]++;
+            routesMapping.get(key)[1]+=time;
+            checkedIn_IdMapping.remove(id);
+        }
+
+        public double getAverageTime(String startStation, String endStation) {
+            String key = startStation + "+" + endStation;
+            int sum = routesMapping.get(key)[1];
+            int trips = routesMapping.get(key)[0];
+            return sum/(double)trips;
+
+        }
+    }
     class MyHashSet {
 
-        LinkedList<Integer>buckets[];
-        int size= 0 ;
+        LinkedList<Integer> buckets[];
+        int size = 0;
 
         public MyHashSet() {
             initialize(20);
         }
 
-        public void initialize(int size){
-            buckets = new LinkedList[size]; 
-            for(int i = 0 ; i<size;i++) buckets[i] = new LinkedList<>();
+        public void initialize(int size) {
+            buckets = new LinkedList[size];
+            for (int i = 0; i < size; i++)
+                buckets[i] = new LinkedList<>();
         }
-        
-        public void add(int key) {
-            int bi = ((Integer)key).hashCode();
-            bi = Math.abs(bi);
-            bi = bi%buckets.length;
 
-            int idx= -1;
-            for(int ele : buckets[bi]){
-                if(ele==key) idx++;
+        public void add(int key) {
+            int bi = ((Integer) key).hashCode();
+            bi = Math.abs(bi);
+            bi = bi % buckets.length;
+
+            int idx = -1;
+            for (int ele : buckets[bi]) {
+                if (ele == key)
+                    idx++;
             }
-            
-            if(idx==-1){
+
+            if (idx == -1) {
                 buckets[bi].add(key);
                 size++;
             }
-           
-            if( size*1.0 / buckets.length  > 2.0) rehash();
+
+            if (size * 1.0 / buckets.length > 2.0)
+                rehash();
 
         }
 
-        public void rehash(){
-            LinkedList<Integer>obuckets[] = buckets;
-            initialize(2*obuckets.length);
+        public void rehash() {
+            LinkedList<Integer> obuckets[] = buckets;
+            initialize(2 * obuckets.length);
 
-            for(int  i  = 0 ;i<obuckets.length;i++){
-                for(int ele :obuckets[i]) add(ele);
+            for (int i = 0; i < obuckets.length; i++) {
+                for (int ele : obuckets[i])
+                    add(ele);
             }
-           
+
         }
-        
+
         public void remove(int key) {
-            int bi = ((Integer)key).hashCode();
+            int bi = ((Integer) key).hashCode();
             bi = Math.abs(bi);
-            bi = bi%buckets.length;
+            bi = bi % buckets.length;
 
             int idx = 0;
-            for(int ele : buckets[bi]){
-                if(ele==key){
+            for (int ele : buckets[bi]) {
+                if (ele == key) {
                     buckets[bi].remove(idx);
-                     size--;
+                    size--;
                     return;
                 }
                 idx++;
             }
-            
-          
-        }
-        
-        public boolean contains(int key) {
-            int bi = ((Integer)key).hashCode();
-            bi = Math.abs(bi);
-            bi = bi%buckets.length;
 
-            for(int ele : buckets[bi]){
-                if(ele==key) return true;
+        }
+
+        public boolean contains(int key) {
+            int bi = ((Integer) key).hashCode();
+            bi = Math.abs(bi);
+            bi = bi % buckets.length;
+
+            for (int ele : buckets[bi]) {
+                if (ele == key)
+                    return true;
             }
 
             return false;
         }
     }
-
 
     class ParkingSystem {
         int[] arr;
