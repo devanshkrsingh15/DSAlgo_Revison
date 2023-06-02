@@ -1785,29 +1785,75 @@ public class LC_Daily {
         }
     }
 
+    class LC2101 {
+        public int maximumDetonation(int[][] bombs) {
+            int ans = 0;
+            int n = bombs.length;
+            HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
+            for (int i = 0; i < n; i++) {
+                map.putIfAbsent(i, new HashSet<>());
+                for (int j = 0; j < n; j++) {
+                    if (i != j) {
+                        if (canReach(bombs, i, j)) {
+                            map.get(i).add(j);
+                        }
+                    }
+                }
+            }
+            int max = 0;
+            for (int i = 0; i < n; i++) {
+                max = Math.max(max, dfs(map, i, new boolean[n]));
+
+            }
+
+            return max;
+        }
+
+        public int dfs(HashMap<Integer, HashSet<Integer>> map, int src, boolean[] vis) {
+            vis[src] = true;
+            int ans = 1;
+
+            for (int nbr : map.get(src)) {
+                if (!vis[nbr])
+                    ans += dfs(map, nbr, vis);
+            }
+
+            return ans;
+        }
+
+        public boolean canReach(int[][] bombs, int i, int j) {
+            double xi = bombs[i][0];
+            double yi = bombs[i][1];
+            double xj = bombs[j][0];
+            double yj = bombs[j][1];
+            return (xi - xj) * (xi - xj) + (yi - yj) * (yi - yj) <= (double) bombs[i][2] * (double) bombs[i][2];
+
+        }
+    }
+
     class UndergroundSystem {
 
         HashMap<Integer, String[]> checkedIn_IdMapping; // id :{st_name,time}
         HashMap<String, int[]> routesMapping; // st_name/en_ame : totalTime,trips
-        
+
         public UndergroundSystem() {
             checkedIn_IdMapping = new HashMap<>();
             routesMapping = new HashMap<>();
         }
 
         public void checkIn(int id, String stationName, int t) {
-            checkedIn_IdMapping.putIfAbsent(id,new String[2]);
+            checkedIn_IdMapping.putIfAbsent(id, new String[2]);
             checkedIn_IdMapping.get(id)[0] = stationName;
-            checkedIn_IdMapping.get(id)[1] = ""+t;
+            checkedIn_IdMapping.get(id)[1] = "" + t;
         }
 
         public void checkOut(int id, String stationName, int t) {
             int stTime = Integer.parseInt(checkedIn_IdMapping.get(id)[1]);
             String key = checkedIn_IdMapping.get(id)[0] + "+" + stationName;
             int time = t - stTime;
-            routesMapping.putIfAbsent(key,new int[2]);
+            routesMapping.putIfAbsent(key, new int[2]);
             routesMapping.get(key)[0]++;
-            routesMapping.get(key)[1]+=time;
+            routesMapping.get(key)[1] += time;
             checkedIn_IdMapping.remove(id);
         }
 
@@ -1815,10 +1861,11 @@ public class LC_Daily {
             String key = startStation + "+" + endStation;
             int sum = routesMapping.get(key)[1];
             int trips = routesMapping.get(key)[0];
-            return sum/(double)trips;
+            return sum / (double) trips;
 
         }
     }
+
     class MyHashSet {
 
         LinkedList<Integer> buckets[];
