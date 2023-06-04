@@ -1785,6 +1785,73 @@ public class LC_Daily {
         }
     }
 
+    class LC547 {
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected.length;
+        int[]par = new int[n];
+        for(int i = 0 ; i<n;i++){
+            par[i] = i;
+        }
+
+        int provinces = n;
+
+        for(int i = 0 ; i<n;i++){
+            for(int j = i+1;j<n;j++){
+                if(isConnected[i][j]==1){
+                    int p1 = findPar(i,par);
+                    int p2 = findPar(j,par);
+
+                    if(p1!=p2){
+                        par[p2] = p1;
+                        provinces--;
+                    }
+                }
+            }
+        }
+
+        return provinces;
+    }
+
+    public int findPar(int u,int[]par){
+        if(par[u]==u) return u;
+        else{
+            return par[u] = findPar(par[u],par);
+        }
+
+    }
+}
+
+    class LC1376 {
+        int maxT = 0;
+
+        public int numOfMinutes(int n, int headID, int[] manager, int[] informTime) {
+            ArrayList<Integer> graph[] = new ArrayList[n];
+            for (int i = 0; i < n; i++)
+                graph[i] = new ArrayList<>();
+
+            for (int i = 0; i < manager.length; i++) {
+                int emp = i;
+                int man = manager[i];
+                if (man != -1)
+                    graph[man].add(emp);
+            }
+
+            dfs(graph, new boolean[n], informTime, headID, 0);
+            return maxT;
+        }
+
+        public void dfs(ArrayList<Integer> graph[], boolean vis[], int[] time, int src, int t) {
+            if (graph[src].size() == 0)
+                maxT = Math.max(maxT, t);
+            vis[src] = true;
+            for (int nbr : graph[src]) {
+                if (!vis[nbr])
+                    dfs(graph, vis, time, nbr, t + time[src]);
+            }
+
+        }
+    }
+
     class LC2101 {
         public int maximumDetonation(int[][] bombs) {
             int ans = 0;

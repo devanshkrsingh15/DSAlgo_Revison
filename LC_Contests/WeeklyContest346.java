@@ -100,14 +100,130 @@ public class WeeklyContest346 {
         boolean res = false;
         for (int i = idx; i < tmp.length(); i++) {
             int num = Integer.parseInt(tmp.substring(idx, i + 1));
-            if (tar - num  >= 0)
+            if (tar - num >= 0)
                 res = res || check(tmp, i + 1, num, dp);
         }
 
         return dp[idx][tar] = res;
     }
 
+    // 2699. Modify Graph Edge Weights
+    class Solution {
+        public int[][] modifiedGraphEdges(int n, int[][] edges, int source, int destination, int target) {
+            ArrayList<int[]> graph[] = new ArrayList[n];
+            for (int i = 0; i < n; i++)
+                graph[i] = new ArrayList<>();
+            HashMap<String, Integer> map = new HashMap<>();
 
-    //2699. Modify Graph Edge Weights
+            for (int i = 0; i < edges.length; i++) {
+                int u = edges[i][0];
+                int v = edges[i][1];
+                int w = edges[i][2];
+                graph[u].add(new int[] { v, w });
+                graph[v].add(new int[] { u, w });
+
+                String key = Math.max(u, v) + "/" + Math.min(u, v);
+                map.put(key, i);
+            }
+            int[] disR = new int[n];
+            int[] parR = new int[n];
+            dijkstra(graph, destination, source, disR, parR, false); // back , right to left
+            if (disR[source] < target)
+                return new int[0][]; // min path without the neg value is less than tar
+
+            int[] dis = new int[n];
+            int[] par = new int[n];
+            dijkstra(graph, source, destination, dis, par, true); // forward , left to right
+            if (dis[destination] > target)
+                return new int[0][]; // min path considering the min value is greater than tar
+
+            ArrayList<int[]> path = getPath(par, destination, source);
+
+            HashMap<Integer, Integer> assinedWt = new HashMap<>();
+            int wsof = 0;
+            for (int[] ed : path) {
+                int u = ed[0];
+                int v = ed[1];
+                String key = Math.max(u, v) + "/" + Math.min(u, v);
+
+                int wt = edges[map.get(key)][2];
+
+                if (wt == -1) {
+                    int diff = target - wsof - disR[v];
+                    diff = Math.max(diff, 1);
+                    wt = diff;
+                    assinedWt.put(map.get(key), wt);
+                }
+                wsof += wt;
+            }
+
+            for (int i = 0; i < edges.length; i++) {
+                if (edges[i][2] == -1) {
+                    edges[i][2] = assinedWt.containsKey(i) ? assinedWt.get(i) : 2 * (int) 1e9;
+                }
+            }
+
+            return edges;
+
+        }
+
+        public ArrayList<int[]> getPath(int[] par, int des, int src) {
+            ArrayList<int[]> path = new ArrayList<>();
+            int vtx = des;
+
+            while (par[vtx] != -1) {
+                int u = par[vtx];
+                int v = vtx;
+                path.add(new int[] { u, v });
+                vtx = u;
+            }
+
+            Collections.reverse(path);
+            return path;
+        }
+
+        public void dijkstra(ArrayList<int[]> graph[], int src, int des, int[] dis, int[] par, boolean consaiderNeg) {
+            // idx,wt
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+                return a[1] - b[1];
+            });
+            Arrays.fill(par, -1);
+            Arrays.fill(dis, (int) 1e9);
+            pq.add(new int[] { src, 0 });
+            dis[src] = 0;
+            par[src] = -1;
+
+            while (pq.size() != 0) {
+                int s = pq.size();
+                while (s-- > 0) {
+                    int[] rem = pq.remove();
+                    int id = rem[0];
+                    int wsof = rem[1];
+                    if (dis[id] < wsof)
+                        continue;
+
+                    if (id == des)
+                        return;
+
+                    for (int[] ed : graph[id]) {
+                        int nbr = ed[0];
+                        int wt = ed[1];
+                        if (wt == -1) {
+                            if (consaiderNeg)
+                                wt = 1;
+                            else
+                                continue;
+                        }
+
+                        if (dis[nbr] > wsof + wt) {
+                            dis[nbr] = wsof + wt;
+                            par[nbr] = id;
+                            pq.add(new int[] { nbr, wsof + wt });
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
