@@ -1785,41 +1785,62 @@ public class LC_Daily {
         }
     }
 
-    class LC547 {
-    public int findCircleNum(int[][] isConnected) {
-        int n = isConnected.length;
-        int[]par = new int[n];
-        for(int i = 0 ; i<n;i++){
-            par[i] = i;
+    class LC1232 {
+        public boolean checkStraightLine(int[][] coordinates) {
+            double m = findSlope(coordinates[0], coordinates[1]);
+            for (int i = 1; i < coordinates.length; i++) {
+                if (m != findSlope(coordinates[i], coordinates[i - 1]))
+                    return false;
+            }
+
+            return true;
         }
 
-        int provinces = n;
+        public double findSlope(int[] a, int[] b) {
+            if ((b[0] - a[0]) == 0)
+                return (double) 1e9;
+            if ((b[1] - a[1]) == 0)
+                return 0.0;
+            return (b[1] - a[1]) * 1.0 / (b[0] - a[0]) * 1.0;
+        }
+    }
 
-        for(int i = 0 ; i<n;i++){
-            for(int j = i+1;j<n;j++){
-                if(isConnected[i][j]==1){
-                    int p1 = findPar(i,par);
-                    int p2 = findPar(j,par);
+    class LC547 {
+        public int findCircleNum(int[][] isConnected) {
+            int n = isConnected.length;
+            int[] par = new int[n];
+            for (int i = 0; i < n; i++) {
+                par[i] = i;
+            }
 
-                    if(p1!=p2){
-                        par[p2] = p1;
-                        provinces--;
+            int provinces = n;
+
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (isConnected[i][j] == 1) {
+                        int p1 = findPar(i, par);
+                        int p2 = findPar(j, par);
+
+                        if (p1 != p2) {
+                            par[p2] = p1;
+                            provinces--;
+                        }
                     }
                 }
             }
+
+            return provinces;
         }
 
-        return provinces;
-    }
+        public int findPar(int u, int[] par) {
+            if (par[u] == u)
+                return u;
+            else {
+                return par[u] = findPar(par[u], par);
+            }
 
-    public int findPar(int u,int[]par){
-        if(par[u]==u) return u;
-        else{
-            return par[u] = findPar(par[u],par);
         }
-
     }
-}
 
     class LC1376 {
         int maxT = 0;
