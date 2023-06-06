@@ -1805,6 +1805,18 @@ public class LC_Daily {
         }
     }
 
+    /// 1502. Can Make Arithmetic Progression From Sequence
+    public boolean canMakeArithmeticProgression(int[] arr) {
+        Arrays.sort(arr);
+        int diff = arr[1] - arr[0];
+        for (int i = 1; i < arr.length - 1; i++) {
+            if (arr[i + 1] - arr[i] != diff)
+                return false;
+        }
+
+        return true;
+    }
+
     class LC547 {
         public int findCircleNum(int[][] isConnected) {
             int n = isConnected.length;
