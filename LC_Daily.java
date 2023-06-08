@@ -1784,6 +1784,55 @@ public class LC_Daily {
             return false;
         }
     }
+    
+    class LC1351 {
+        public int countNegatives(int[][] grid) {
+            int n = grid.length;
+            int m = grid[0].length;
+    
+            int r = n-1;
+            int c = 0;
+    
+            int ans = 0;
+    
+            while(r>=0 && c<m){
+                if(grid[r][c]<0){
+                    ans += (m-c);
+                    r--;
+                }else{
+                    c++;
+                }
+            }
+    
+            return ans;
+        }
+    }
+
+    class LC1318 {
+    public int minFlips(int a, int b, int c) {
+        int ans = 0;
+        for(int i = 0 ;i<32;i++){
+            int mask = (1<<i);
+            ans += flippingReq(a,b,c,mask);
+        }
+        return ans;
+    }
+
+    public int flippingReq(int a,int b,int c,int mask){
+        int a_bit = (a&(mask));
+        int b_bit = (b&(mask));
+        int c_bit = (c&(mask));
+
+        if(c_bit==0 && (a_bit!=0 || b_bit!=0)){
+            return (a_bit!=0 && b_bit!=0) ? 2 : 1 ;
+        }
+
+        if(c_bit!=0 && a_bit==0 && b_bit==0)  return 1;
+
+        return 0;
+
+    }
+}
 
     class LC1232 {
         public boolean checkStraightLine(int[][] coordinates) {
