@@ -40,7 +40,37 @@ public class WeeklyContest348 {
         return pos;
     }
 
+    // 2718. Sum of Matrix After Queries
+    public long matrixSumQueries(int N, int[][] queries) {
+        long ans = 0;
+        long rowCount = 0l;
+        long colCount = 0l;
+        long n = N;
 
-    //2718. Sum of Matrix After Queries
-    
+        boolean[] carr = new boolean[N];
+        boolean[] rarr = new boolean[N];
+
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int[] q = queries[i];
+            long val = q[2];
+            int idx = q[1];
+
+            if (q[0] == 0) {
+                if (colCount >= n || rarr[idx])
+                    continue;
+                ans += (long) val * (n - colCount);
+                rowCount++;
+                rarr[idx] = true;
+            } else {
+                if (rowCount >= n || carr[idx])
+                    continue;
+                ans += (long) val * (n - rowCount);
+                colCount++;
+                carr[idx] = true;
+            }
+        }
+
+        return ans;
+    }
+
 }
