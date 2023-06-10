@@ -1784,6 +1784,44 @@ public class LC_Daily {
             return false;
         }
     }
+
+    class LC1802 {
+    public int maxValue(int n, int index, int maxSum) {
+       int lo = 1;
+       int hi = (int)1e9;
+       int ans = -1;
+
+       while(lo<=hi){
+           int mid= lo + (hi-lo)/2;
+           if(!check(n,index,maxSum,mid)){
+               hi = mid-1;
+           }else{
+               ans = mid;
+               lo = mid+1;
+           }
+       }
+
+       return ans;
+    }
+
+    public boolean check(int n,int idx,int tot,int max){
+        int leftEl = idx;
+        int rightEl = n-idx-1;
+
+        long left = getSum(Math.min(leftEl,max-1),max) ;
+        long right = getSum(Math.min(rightEl,max-1),max) ;
+
+        if(idx - (max-1) > 0 )  left += idx - (max-1);
+        if(idx +   (max-1) < n - 1 ) right += n - 1 - (idx +   (max-1)) ;
+        
+        return left + right + max <= (long)tot;
+
+    }
+
+    public long getSum(long n,long max){
+        return (n*max) - ((n * (1+n))/2);
+    }
+}
     
     class LC1351 {
         public int countNegatives(int[][] grid) {
