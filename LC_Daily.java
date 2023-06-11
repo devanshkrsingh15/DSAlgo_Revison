@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import LinkedList.ListNode;
 
 import java.util.*;
@@ -1786,91 +1783,124 @@ public class LC_Daily {
     }
 
     class LC1802 {
-    public int maxValue(int n, int index, int maxSum) {
-       int lo = 1;
-       int hi = (int)1e9;
-       int ans = -1;
+        public int maxValue(int n, int index, int maxSum) {
+            int lo = 1;
+            int hi = (int) 1e9;
+            int ans = -1;
 
-       while(lo<=hi){
-           int mid= lo + (hi-lo)/2;
-           if(!check(n,index,maxSum,mid)){
-               hi = mid-1;
-           }else{
-               ans = mid;
-               lo = mid+1;
-           }
-       }
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (!check(n, index, maxSum, mid)) {
+                    hi = mid - 1;
+                } else {
+                    ans = mid;
+                    lo = mid + 1;
+                }
+            }
 
-       return ans;
+            return ans;
+        }
+
+        public boolean check(int n, int idx, int tot, int max) {
+            int leftEl = idx;
+            int rightEl = n - idx - 1;
+
+            long left = getSum(Math.min(leftEl, max - 1), max);
+            long right = getSum(Math.min(rightEl, max - 1), max);
+
+            if (idx - (max - 1) > 0)
+                left += idx - (max - 1);
+            if (idx + (max - 1) < n - 1)
+                right += n - 1 - (idx + (max - 1));
+
+            return left + right + max <= (long) tot;
+
+        }
+
+        public long getSum(long n, long max) {
+            return (n * max) - ((n * (1 + n)) / 2);
+        }
     }
 
-    public boolean check(int n,int idx,int tot,int max){
-        int leftEl = idx;
-        int rightEl = n-idx-1;
-
-        long left = getSum(Math.min(leftEl,max-1),max) ;
-        long right = getSum(Math.min(rightEl,max-1),max) ;
-
-        if(idx - (max-1) > 0 )  left += idx - (max-1);
-        if(idx +   (max-1) < n - 1 ) right += n - 1 - (idx +   (max-1)) ;
-        
-        return left + right + max <= (long)tot;
-
-    }
-
-    public long getSum(long n,long max){
-        return (n*max) - ((n * (1+n))/2);
-    }
-}
-    
     class LC1351 {
         public int countNegatives(int[][] grid) {
             int n = grid.length;
             int m = grid[0].length;
-    
-            int r = n-1;
+
+            int r = n - 1;
             int c = 0;
-    
+
             int ans = 0;
-    
-            while(r>=0 && c<m){
-                if(grid[r][c]<0){
-                    ans += (m-c);
+
+            while (r >= 0 && c < m) {
+                if (grid[r][c] < 0) {
+                    ans += (m - c);
                     r--;
-                }else{
+                } else {
                     c++;
                 }
             }
-    
+
             return ans;
         }
     }
 
+    class SnapshotArray {
+        int snapNumber = 0;
+        HashMap<Integer, HashMap<Integer, Integer>> map;
+        HashMap<Integer, TreeSet<Integer>> idxSnap;
+
+        public SnapshotArray(int n) {
+            map = new HashMap<>();
+            idxSnap = new HashMap<>();
+        }
+
+        public void set(int idx, int val) {
+            idxSnap.putIfAbsent(idx, new TreeSet<>());
+            idxSnap.get(idx).add(snapNumber);
+
+            map.putIfAbsent(snapNumber, new HashMap<>());
+            map.get(snapNumber).put(idx, val);
+        }
+
+        public int snap() {
+            snapNumber++;
+            return snapNumber - 1;
+        }
+
+        public int get(int idx, int snap_id) {
+            if (!idxSnap.containsKey(idx) || idxSnap.get(idx).floor(snap_id) == null)
+                return 0;
+            return map.get(idxSnap.get(idx).floor(snap_id)).get(idx);
+        }
+    }
+
     class LC1318 {
-    public int minFlips(int a, int b, int c) {
-        int ans = 0;
-        for(int i = 0 ;i<32;i++){
-            int mask = (1<<i);
-            ans += flippingReq(a,b,c,mask);
-        }
-        return ans;
-    }
-
-    public int flippingReq(int a,int b,int c,int mask){
-        int a_bit = (a&(mask));
-        int b_bit = (b&(mask));
-        int c_bit = (c&(mask));
-
-        if(c_bit==0 && (a_bit!=0 || b_bit!=0)){
-            return (a_bit!=0 && b_bit!=0) ? 2 : 1 ;
+        public int minFlips(int a, int b, int c) {
+            int ans = 0;
+            for (int i = 0; i < 32; i++) {
+                int mask = (1 << i);
+                ans += flippingReq(a, b, c, mask);
+            }
+            return ans;
         }
 
-        if(c_bit!=0 && a_bit==0 && b_bit==0)  return 1;
+        public int flippingReq(int a, int b, int c, int mask) {
+            int a_bit = (a & (mask));
+            int b_bit = (b & (mask));
+            int c_bit = (c & (mask));
 
-        return 0;
+            if (c_bit == 0 && (a_bit != 0 || b_bit != 0)) {
+                return (a_bit != 0 && b_bit != 0) ? 2 : 1;
+            }
 
+            if (c_bit != 0 && a_bit == 0 && b_bit == 0)
+                return 1;
+
+            return 0;
+
+        }
     }
-}
 
     class LC1232 {
         public boolean checkStraightLine(int[][] coordinates) {
