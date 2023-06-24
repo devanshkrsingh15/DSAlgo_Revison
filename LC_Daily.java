@@ -1875,6 +1875,34 @@ public class LC_Daily {
         }
     }
 
+    class LC956 {
+    int tot = 0;
+    public int tallestBillboard(int[] rods) {
+        for(int ele : rods) tot += ele;
+        int[][]dp = new int[rods.length + 1][3*tot];
+        for(int[]d:dp) Arrays.fill(d,-1);
+
+        return Math.max(tallestBillboard_(rods,0,0,dp),0);
+    }
+
+    //s1 - s1 = diff;
+    // s1 + a - s2 = diff => s1 - s2 = diff - a;
+    // s1 - (s2 + a) = diff => s1 - s2 = diff + a;
+    public int tallestBillboard_(int[]rods,int idx,int diff,int[][]dp){
+        if(idx==rods.length){
+            return diff==0 ? 0 : -(int)1e9;
+        }
+
+        if(dp[idx][diff + tot]!=-1) return dp[idx][diff + tot];
+
+        int max = tallestBillboard_(rods,idx+1,diff,dp); //not adding to any set;
+        max = Math.max(max,tallestBillboard_(rods,idx+1,diff-rods[idx],dp) + rods[idx]); //adding at s1;
+        max = Math.max(max,tallestBillboard_(rods,idx+1,diff+rods[idx],dp) ); //adding at s2;
+        return dp[idx][diff + tot] = max;
+    }
+}
+
+
     class LC1318 {
         public int minFlips(int a, int b, int c) {
             int ans = 0;
