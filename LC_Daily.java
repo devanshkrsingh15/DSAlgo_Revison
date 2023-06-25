@@ -1875,33 +1875,99 @@ public class LC_Daily {
         }
     }
 
-    class LC956 {
-    int tot = 0;
-    public int tallestBillboard(int[] rods) {
-        for(int ele : rods) tot += ele;
-        int[][]dp = new int[rods.length + 1][3*tot];
-        for(int[]d:dp) Arrays.fill(d,-1);
+    class LC1027 {
+        public int longestArithSeqLength(int[] nums) {
+            int n = nums.length;
 
-        return Math.max(tallestBillboard_(rods,0,0,dp),0);
+            int max = 2;
+
+            HashMap<Integer, Integer> dp[] = new HashMap[n];
+            for (int i = 0; i < n; i++)
+                dp[i] = new HashMap<>();
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < i; j++) {
+                    int diff = nums[i] - nums[j];
+                    int lenAti = 2;
+                    if (dp[j].containsKey(diff))
+                        lenAti = dp[j].get(diff) + 1;
+
+                    int currLenAtI = dp[i].getOrDefault(diff, 0);
+                    dp[i].put(diff, Math.max(lenAti, currLenAtI));
+
+                    max = Math.max(max, dp[i].get(diff));
+
+                }
+            }
+
+            return max;
+        }
     }
 
-    //s1 - s1 = diff;
-    // s1 + a - s2 = diff => s1 - s2 = diff - a;
-    // s1 - (s2 + a) = diff => s1 - s2 = diff + a;
-    public int tallestBillboard_(int[]rods,int idx,int diff,int[][]dp){
-        if(idx==rods.length){
-            return diff==0 ? 0 : -(int)1e9;
+
+    class LC1575 {
+    int fn;
+    public int countRoutes(int[] locations, int start, int finish, int fuel) {
+        fn = finish;
+        int n = locations.length;
+        long[][]dp = new long[n+1][fuel+1];
+        for(long[]d:dp) Arrays.fill(d,-1l);
+
+        return (int)countRoutes_(locations,start,fuel,dp);
+    }
+
+    long mod = (long)1e9 + 7;
+
+    public long countRoutes_(int[]pos,int st,int f,long[][]dp  ){
+         long ans = 0l;
+        if(st==fn){
+            ans = 1;
+            if(f==0) return ans;
         }
 
-        if(dp[idx][diff + tot]!=-1) return dp[idx][diff + tot];
+        if(dp[st][f]!=-1) return dp[st][f];
 
-        int max = tallestBillboard_(rods,idx+1,diff,dp); //not adding to any set;
-        max = Math.max(max,tallestBillboard_(rods,idx+1,diff-rods[idx],dp) + rods[idx]); //adding at s1;
-        max = Math.max(max,tallestBillboard_(rods,idx+1,diff+rods[idx],dp) ); //adding at s2;
-        return dp[idx][diff + tot] = max;
+        for(int i = 0 ; i<pos.length ; i++){
+            if(i!=st && (long)f - (long)Math.abs(pos[i] - pos[st]) >=0 ){
+                ans =  (ans%mod + countRoutes_(pos,i,f - Math.abs(pos[i] - pos[st]),dp)%mod)%mod;
+            }
+        }
+
+
+        return dp[st][f] = ans%mod;
     }
 }
 
+    class LC956 {
+        int tot = 0;
+
+        public int tallestBillboard(int[] rods) {
+            for (int ele : rods)
+                tot += ele;
+            int[][] dp = new int[rods.length + 1][3 * tot];
+            for (int[] d : dp)
+                Arrays.fill(d, -1);
+
+            return Math.max(tallestBillboard_(rods, 0, 0, dp), 0);
+        }
+
+        // s1 - s1 = diff;
+        // s1 + a - s2 = diff => s1 - s2 = diff - a;
+        // s1 - (s2 + a) = diff => s1 - s2 = diff + a;
+        public int tallestBillboard_(int[] rods, int idx, int diff, int[][] dp) {
+            if (idx == rods.length) {
+                return diff == 0 ? 0 : -(int) 1e9;
+            }
+
+            if (dp[idx][diff + tot] != -1)
+                return dp[idx][diff + tot];
+
+            int max = tallestBillboard_(rods, idx + 1, diff, dp); // not adding to any set;
+            max = Math.max(max, tallestBillboard_(rods, idx + 1, diff - rods[idx], dp) + rods[idx]); // adding at s1;
+            max = Math.max(max, tallestBillboard_(rods, idx + 1, diff + rods[idx], dp)); // adding at s2;
+            return dp[idx][diff + tot] = max;
+        }
+    }
 
     class LC1318 {
         public int minFlips(int a, int b, int c) {
