@@ -1904,39 +1904,80 @@ public class LC_Daily {
         }
     }
 
-
     class LC1575 {
-    int fn;
-    public int countRoutes(int[] locations, int start, int finish, int fuel) {
-        fn = finish;
-        int n = locations.length;
-        long[][]dp = new long[n+1][fuel+1];
-        for(long[]d:dp) Arrays.fill(d,-1l);
+        int fn;
 
-        return (int)countRoutes_(locations,start,fuel,dp);
-    }
+        public int countRoutes(int[] locations, int start, int finish, int fuel) {
+            fn = finish;
+            int n = locations.length;
+            long[][] dp = new long[n + 1][fuel + 1];
+            for (long[] d : dp)
+                Arrays.fill(d, -1l);
 
-    long mod = (long)1e9 + 7;
-
-    public long countRoutes_(int[]pos,int st,int f,long[][]dp  ){
-         long ans = 0l;
-        if(st==fn){
-            ans = 1;
-            if(f==0) return ans;
+            return (int) countRoutes_(locations, start, fuel, dp);
         }
 
-        if(dp[st][f]!=-1) return dp[st][f];
+        long mod = (long) 1e9 + 7;
 
-        for(int i = 0 ; i<pos.length ; i++){
-            if(i!=st && (long)f - (long)Math.abs(pos[i] - pos[st]) >=0 ){
-                ans =  (ans%mod + countRoutes_(pos,i,f - Math.abs(pos[i] - pos[st]),dp)%mod)%mod;
+        public long countRoutes_(int[] pos, int st, int f, long[][] dp) {
+            long ans = 0l;
+            if (st == fn) {
+                ans = 1;
+                if (f == 0)
+                    return ans;
             }
+
+            if (dp[st][f] != -1)
+                return dp[st][f];
+
+            for (int i = 0; i < pos.length; i++) {
+                if (i != st && (long) f - (long) Math.abs(pos[i] - pos[st]) >= 0) {
+                    ans = (ans % mod + countRoutes_(pos, i, f - Math.abs(pos[i] - pos[st]), dp) % mod) % mod;
+                }
+            }
+
+            return dp[st][f] = ans % mod;
         }
-
-
-        return dp[st][f] = ans%mod;
     }
-}
+
+    class LC373 {
+        public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+            int n = nums1.length;
+            int m = nums2.length;
+            List<List<Integer>> ans = new ArrayList<>();
+
+            if ((long) k >= (long) n * (long) m) {
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < m; j++) {
+                        ans.add(new ArrayList<>(Arrays.asList(nums1[i], nums2[j])));
+                    }
+                }
+                Collections.sort(ans, (a, b) -> {
+                    return (long) a.get(0) + (long) a.get(1) > (long) b.get(0) + (long) b.get(1) ? 1 : -1;
+                });
+                return ans;
+            }
+
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+                return (long) nums1[a[0]] + (long) nums2[a[1]] > (long) nums1[b[0]] + (long) nums2[b[1]] ? 1 : -1;
+            });
+
+            for (int j = 0; j < m && j < k; j++) {
+                pq.add(new int[] { 0, j });
+            }
+
+            while (k-- > 0) {
+                int[] curr = pq.remove();
+                int i = curr[0];
+                int j = curr[1];
+                ans.add(new ArrayList<>(Arrays.asList(nums1[i], nums2[j])));
+                if (i + 1 < n)
+                    pq.add(new int[] { i + 1, j });
+            }
+
+            return ans;
+        }
+    }
 
     class LC956 {
         int tot = 0;
@@ -2308,6 +2349,65 @@ public class LC_Daily {
 
             return dp[st][en] = ans;
         }
+    }
+    //
+
+    class LC1569 {
+        long[][] combination;
+        long mod = (long) 1e9 + 7;
+
+        public int numOfWays(int[] nums) {
+            int n = nums.length;
+            fillCombinations(n + 1);
+
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int ele : nums)
+                list.add(ele);
+            long ans = numOfWays_(list) - 1l;
+            return (int) (ans % mod);
+
+        }
+
+        public long numOfWays_(ArrayList<Integer> nums) {
+            int n = nums.size();
+            if (n <= 2)
+                return 1l;
+
+            ArrayList<Integer> left = new ArrayList<>();
+            ArrayList<Integer> right = new ArrayList<>();
+
+            for (int i = 1; i < n; i++) {
+                if (nums.get(0) < nums.get(i)) {
+                    right.add(nums.get(i));
+                } else {
+                    left.add(nums.get(i));
+                }
+            }
+
+            long leftAns = numOfWays_(left) % mod;
+            long rightAns = numOfWays_(right) % mod;
+            long myAns = combination[nums.size() - 1][left.size()] % mod;
+
+            long combLeftRight = (leftAns * rightAns) % mod;
+
+            return (combLeftRight * myAns) % mod;
+
+        }
+
+        public void fillCombinations(int n) {
+            combination = new long[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j <= i; j++) {
+                    if (j == 0 || i == j) {
+                        combination[i][j] = 1l;
+                    } else {
+                        combination[i][j] = (combination[i - 1][j - 1] % mod + combination[i - 1][j] % mod) % mod;
+                    }
+                }
+            }
+
+        }
+
     }
 
     class LC1799 {
