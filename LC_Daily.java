@@ -2460,6 +2460,75 @@ public class LC_Daily {
 
 }
 
+
+class LC1187 {
+    HashMap<String,Integer>map = new HashMap<>();
+    public int makeArrayIncreasing(int[] arr1, int[] arr2) {
+        Arrays.sort(arr2);
+
+        int ans =  makeArrayIncreasing_(arr1,arr2,0,-1);
+        return ans>=(int)1e7 ? -1 : ans;
+    }
+
+    public int makeArrayIncreasing_(int[]arr,int[]arr2,int idx,int prev){
+        StringBuilder sb= new  StringBuilder();
+        sb.append(idx);
+        sb.append("/");
+        sb.append(prev);
+
+        String key = sb.toString();
+
+        key = idx+"/"+prev;
+
+        if(idx==arr.length){
+            return 0;
+        }
+        
+        if(map.containsKey(key)){
+            return map.get(key);
+        }
+
+        int ans = (int)1e7;
+
+        if(arr[idx] > prev){
+            ans = makeArrayIncreasing_(arr,arr2,idx+1,arr[idx]);
+        }
+
+        int ci = findIndex(arr2,prev);
+
+        if(ci!=-1){
+            ans = Math.min(ans, makeArrayIncreasing_(arr,arr2,idx+1,arr2[ci]) + 1);
+        }
+
+
+        map.put(key,ans);
+        return ans;
+    }
+    
+    public int findIndex(int[]arr,int val){
+        int tar = -1;
+        int lo = 0;
+        int hi = arr.length-1;
+
+        while(lo<=hi){
+            int mid = lo  + (hi-lo)/2;
+
+            if(arr[mid]>val){
+                tar= mid;
+                hi = mid-1;
+            }else{
+                lo = mid+1;
+            }
+        }
+
+
+        return tar;
+    }
+
+
+}
+
+
     class LC1799 {
         HashMap<String, Integer> map = new HashMap<>();
 
