@@ -2410,6 +2410,56 @@ public class LC_Daily {
 
     }
 
+
+
+
+    class LC1514 {
+    double max = -1.0;
+    public class Node{
+        int v;
+        double p;
+        Node(int v,double p){
+            this.v = v;
+            this.p = p;
+        }
+    }
+
+    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+        ArrayList<Node>graph[]= new ArrayList[n];
+        for(int i = 0 ;i<n ;i++)graph[i] = new ArrayList<>();
+
+        for(int i = 0 ; i<edges.length ; i++){
+            int ed[] = edges[i];
+            int u = ed[0];
+            int v = ed[1];
+            double pr = succProb[i];
+            graph[u].add(new Node(v,pr));
+            graph[v].add(new Node(u,pr));
+        }
+
+        boolean[]vis = new boolean[n];
+        PriorityQueue<Node>pq= new PriorityQueue<>((a,b)->{return a.p <= b.p ? 1 : -1;});
+
+        pq.add(new Node(start,1.0));
+
+        while(pq.size()!=0){
+            Node rp  = pq.remove();
+            if(rp.v==end) return rp.p;
+            if(vis[rp.v]) continue;
+            vis[rp.v]= true;
+
+            for(Node ed :graph[rp.v]){
+                if(!vis[ed.v]){
+                    pq.add(new Node(ed.v, rp.p*ed.p));
+                }
+            }
+        }
+
+        return 0.0;
+    }
+
+}
+
     class LC1799 {
         HashMap<String, Integer> map = new HashMap<>();
 
