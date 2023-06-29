@@ -837,6 +837,87 @@ public class LC_Daily {
         }
     }
 
+    class LC864 {
+        public int shortestPathAllKeys(String[] grid) {
+            int n = grid.length;
+            int m = grid[0].length();
+
+            // idx,keys
+            ArrayDeque<int[]> pq = new ArrayDeque<>();
+            HashSet<String> set = new HashSet<>();
+
+            int tot = 0;
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (grid[i].charAt(j) == '@') {
+                        pq.add(new int[] { i * m + j, 0 });
+                    } else if (grid[i].charAt(j) >= 'a' && grid[i].charAt(j) <= 'z') {
+                        tot++;
+                    }
+                }
+            }
+
+            int[][] direcs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+            int level = 0;
+
+            while (pq.size() != 0) {
+                int s = pq.size();
+                while (s-- > 0) {
+                    int[] arr = pq.remove();
+                    int idx = arr[0];
+                    int keys = arr[1];
+                    int r = idx / m;
+                    int c = idx % m;
+
+                    if (getCnt(keys) == tot) {
+                        return level;
+                    }
+
+                    if (set.contains(keys + "+" + idx))
+                        continue;
+                    set.add(keys + "+" + idx);
+
+                    for (int k = 0; k < 4; k++) {
+                        int x = r + direcs[k][0];
+                        int y = c + direcs[k][1];
+                        if (x >= 0 && y >= 0 && x < n && y < m && grid[x].charAt(y) != '#') {
+                            char nch = grid[x].charAt(y);
+                            int nkeys = keys;
+                            int nidx = x * m + y;
+
+                            if (nch >= 'a' && nch <= 'z')
+                                nkeys = keys | (1 << (nch - 'a'));
+
+                            if (nch >= 'A' && nch <= 'Z' && ((keys & (1 << (nch - 'A'))) == 0))
+                                continue;
+
+                            if (!set.contains(keys + "+" + nidx)) {
+                                pq.add(new int[] { nidx, nkeys });
+                            }
+
+                        }
+
+                    }
+
+                }
+                level++;
+            }
+
+            return -1;
+        }
+
+        public int getCnt(int k) {
+            int c = 0;
+            while (k != 0) {
+                k = (k & (k - 1));
+                c++;
+            }
+
+            return c;
+        }
+    }
+
     class LC2306 {
         public long distinctNames(String[] ideas) {
             HashSet<String> sets[] = new HashSet[26];
@@ -2410,124 +2491,150 @@ public class LC_Daily {
 
     }
 
-
-
-
     class LC1514 {
-    double max = -1.0;
-    public class Node{
-        int v;
-        double p;
-        Node(int v,double p){
-            this.v = v;
-            this.p = p;
-        }
-    }
+        double max = -1.0;
 
-    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
-        ArrayList<Node>graph[]= new ArrayList[n];
-        for(int i = 0 ;i<n ;i++)graph[i] = new ArrayList<>();
+        public class Node {
+            int v;
+            double p;
 
-        for(int i = 0 ; i<edges.length ; i++){
-            int ed[] = edges[i];
-            int u = ed[0];
-            int v = ed[1];
-            double pr = succProb[i];
-            graph[u].add(new Node(v,pr));
-            graph[v].add(new Node(u,pr));
+            Node(int v, double p) {
+                this.v = v;
+                this.p = p;
+            }
         }
 
-        boolean[]vis = new boolean[n];
-        PriorityQueue<Node>pq= new PriorityQueue<>((a,b)->{return a.p <= b.p ? 1 : -1;});
+        public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+            ArrayList<Node> graph[] = new ArrayList[n];
+            for (int i = 0; i < n; i++)
+                graph[i] = new ArrayList<>();
 
-        pq.add(new Node(start,1.0));
+            for (int i = 0; i < edges.length; i++) {
+                int ed[] = edges[i];
+                int u = ed[0];
+                int v = ed[1];
+                double pr = succProb[i];
+                graph[u].add(new Node(v, pr));
+                graph[v].add(new Node(u, pr));
+            }
 
-        while(pq.size()!=0){
-            Node rp  = pq.remove();
-            if(rp.v==end) return rp.p;
-            if(vis[rp.v]) continue;
-            vis[rp.v]= true;
+            boolean[] vis = new boolean[n];
+            PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> {
+                return a.p <= b.p ? 1 : -1;
+            });
 
-            for(Node ed :graph[rp.v]){
-                if(!vis[ed.v]){
-                    pq.add(new Node(ed.v, rp.p*ed.p));
+            pq.add(new Node(start, 1.0));
+
+            while (pq.size() != 0) {
+                Node rp = pq.remove();
+                if (rp.v == end)
+                    return rp.p;
+                if (vis[rp.v])
+                    continue;
+                vis[rp.v] = true;
+
+                for (Node ed : graph[rp.v]) {
+                    if (!vis[ed.v]) {
+                        pq.add(new Node(ed.v, rp.p * ed.p));
+                    }
                 }
             }
+
+            return 0.0;
         }
 
-        return 0.0;
     }
 
-}
+    class LC1187 {
+        HashMap<String, Integer> map = new HashMap<>();
 
+        public int makeArrayIncreasing(int[] arr1, int[] arr2) {
+            Arrays.sort(arr2);
 
-class LC1187 {
-    HashMap<String,Integer>map = new HashMap<>();
-    public int makeArrayIncreasing(int[] arr1, int[] arr2) {
-        Arrays.sort(arr2);
+            int ans = makeArrayIncreasing_(arr1, arr2, 0, -1);
+            return ans >= (int) 1e7 ? -1 : ans;
+        }
 
-        int ans =  makeArrayIncreasing_(arr1,arr2,0,-1);
-        return ans>=(int)1e7 ? -1 : ans;
+        public int makeArrayIncreasing_(int[] arr, int[] arr2, int idx, int prev) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(idx);
+            sb.append("/");
+            sb.append(prev);
+
+            String key = sb.toString();
+
+            key = idx + "/" + prev;
+
+            if (idx == arr.length) {
+                return 0;
+            }
+
+            if (map.containsKey(key)) {
+                return map.get(key);
+            }
+
+            int ans = (int) 1e7;
+
+            if (arr[idx] > prev) {
+                ans = makeArrayIncreasing_(arr, arr2, idx + 1, arr[idx]);
+            }
+
+            int ci = findIndex(arr2, prev);
+
+            if (ci != -1) {
+                ans = Math.min(ans, makeArrayIncreasing_(arr, arr2, idx + 1, arr2[ci]) + 1);
+            }
+
+            map.put(key, ans);
+            return ans;
+        }
+
+        public int findIndex(int[] arr, int val) {
+            int tar = -1;
+            int lo = 0;
+            int hi = arr.length - 1;
+
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+
+                if (arr[mid] > val) {
+                    tar = mid;
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            return tar;
+        }
+
     }
 
-    public int makeArrayIncreasing_(int[]arr,int[]arr2,int idx,int prev){
-        StringBuilder sb= new  StringBuilder();
-        sb.append(idx);
-        sb.append("/");
-        sb.append(prev);
+    class Solution {
+        public class Pair {
+            int idx;
+            boolean[] keys;
+            int numberOfKey;
+            int moves;
 
-        String key = sb.toString();
-
-        key = idx+"/"+prev;
-
-        if(idx==arr.length){
-            return 0;
-        }
-        
-        if(map.containsKey(key)){
-            return map.get(key);
-        }
-
-        int ans = (int)1e7;
-
-        if(arr[idx] > prev){
-            ans = makeArrayIncreasing_(arr,arr2,idx+1,arr[idx]);
-        }
-
-        int ci = findIndex(arr2,prev);
-
-        if(ci!=-1){
-            ans = Math.min(ans, makeArrayIncreasing_(arr,arr2,idx+1,arr2[ci]) + 1);
-        }
-
-
-        map.put(key,ans);
-        return ans;
-    }
-    
-    public int findIndex(int[]arr,int val){
-        int tar = -1;
-        int lo = 0;
-        int hi = arr.length-1;
-
-        while(lo<=hi){
-            int mid = lo  + (hi-lo)/2;
-
-            if(arr[mid]>val){
-                tar= mid;
-                hi = mid-1;
-            }else{
-                lo = mid+1;
+            Pair(int idx, boolean[] nkeys, int numberOfKey, int moves) {
+                this.idx = idx;
+                this.keys = new boolean[26];
+                for (int i = 0; i < 26; i++) {
+                    this.keys[i] = nkeys[i];
+                }
+                this.numberOfKey = numberOfKey;
+                this.moves = moves;
             }
         }
 
+    public int shortestPathAllKeys(String[] grid) {
+        int n =  grid.length;
+        int m = grid[0].lenght;
 
-        return tar;
+        Queue<
     }
-
-
-}
-
+    }
 
     class LC1799 {
         HashMap<String, Integer> map = new HashMap<>();
