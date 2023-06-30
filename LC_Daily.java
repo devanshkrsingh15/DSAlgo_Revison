@@ -4205,4 +4205,110 @@ public class LC_Daily {
         }
     }
 
+
+
+class LC1970 {
+    int[][]direcs = {{0,1},{1,0},{-1,0},{0,-1}};
+    public int latestDayToCross(int r, int c, int[][] cells) {
+        int lo = 1;
+        int hi = cells.length;
+        int ans = 0;
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(bfs(new int[r][c],mid,cells)){
+                ans = mid;
+                lo = mid+1;
+            }else{
+                hi = mid-1;
+            }
+        }
+
+        return ans;
+    }
+
+    public boolean bfs(int[][]graph,int idx,int[][]cells){
+        int n = graph.length;
+        int m = graph[0].length;
+
+        for(int i = 0 ; i<idx;i++){
+            int[]cl = cells[i];
+            int r = cl[0] - 1;
+            int c = cl[1] - 1;
+            graph[r][c] = 1;
+        }
+
+        Queue<Integer>q = new ArrayDeque<>();
+        for(int j = 0 ; j<m ; j++){
+            if(graph[0][j]==0) q.add(0*m + j);
+        }
+
+        while(q.size()!=0){
+            int s = q.size();
+            while(s-->0){
+                int ridx = q.remove();
+                int r = ridx/m; int c = ridx%m;
+                if(graph[r][c]==1) continue;
+                graph[r][c] = 1;
+                if(r==n-1) return true;
+
+                for(int k = 0 ;k<4; k ++){
+                    int x = r + direcs[k][0];
+                    int y = c + direcs[k][1];
+
+                    if(x>=0 && y>=0 && x<n && y<m && graph[x][y]==0){
+                        q.add(x*m + y);
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+}
+class LC2328 {
+    int[][]direcs = {{1,0},{0,1},{-1,0},{0,-1}};
+    long mod = (long)1e9 + 7;
+    long[][]dp;
+    public int countPaths(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        dp = new long[n][m];
+        for(long[]d :dp) Arrays.fill(d,-1l);
+
+        long ans = 0l;
+        for(int i = 0 ; i< n; i++){
+            for(int j = 0;j<m ; j++){
+                ans = (ans%mod + countPaths_(grid,i,j)%mod)%mod;
+            }
+        }
+
+        return (int)(ans%mod);
+
+    }
+
+    public long countPaths_(int[][]grid,int r,int c){
+        int n = grid.length;
+        int m = grid[0].length;
+
+        if(dp[r][c]!=-1l) return dp[r][c]; 
+
+        long ans = 0;
+
+        for(int k  = 0;k<direcs.length ;k++){
+            int x = r + direcs[k][0];
+            int y = c + direcs[k][1];
+
+            if(x>=0 && y>=0 && x<n && y<m && grid[x][y]>grid[r][c]){
+                ans = (ans%mod + countPaths_(grid,x,y)%mod)%mod;
+            }
+
+        }
+
+        ans  = (ans%mod + 1l%mod)%mod;
+
+        return dp[r][c] = ans;
+    }
+}
 }
