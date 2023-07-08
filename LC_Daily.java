@@ -4441,6 +4441,54 @@ class LC1601 {
     }
 }
 
+class LC2305 {
+    int ans = (int) 1e9;
+
+    public int distributeCookies(int[] cookies, int k) {
+        int n = cookies.length;
+        Arrays.sort(cookies);
+        if (k == cookies.length)
+            return cookies[n - 1];
+        distributeCookies_(cookies, new int[k], 0);
+        return ans;
+    }
+
+    public void distributeCookies_(int[] cookies, int[] children, int idx) {
+        if (idx == cookies.length) {
+            int uf = getUnfairness(children, cookies);
+            ans = Math.min(uf, ans);
+            return;
+        }
+
+        int mask = (1 << idx);
+        for (int i = 0; i < children.length; i++) {
+            children[i] ^= mask;
+            distributeCookies_(cookies, children, idx + 1);
+            children[i] ^= mask;
+        }
+
+    }
+
+    public int getUnfairness(int[] children, int[] cookies) {
+        int max = 0;
+        for (int ele : children) {
+            max = Math.max(max, cal(ele, cookies));
+        }
+
+        return max;
+    }
+
+    public int cal(int ele, int[] arr) {
+        int ans = 0;
+        for (int i = 0; i < arr.length; i++) {
+            int mask = (1 << i);
+            if ((ele & mask) != 0)
+                ans += arr[i];
+        }
+        return ans;
+    }
+}
+
 class LC2551 {
     public long putMarbles(int[] weights, int k) {
         int n = weights.length;
