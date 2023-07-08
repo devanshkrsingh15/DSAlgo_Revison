@@ -4348,3 +4348,120 @@ class LC2024 {
         return max;
     }
 }
+
+class LC137 {
+    public int singleNumber(int[] nums) {
+        int ans = 0;
+        int k = 3;
+
+        for (int i = 0; i < 32; i++) {
+            int mask = (1 << i);
+            int cnt = 0;
+            for (int ele : nums) {
+                if ((ele & (mask)) != 0)
+                    cnt++;
+            }
+            // this bit appears one extra time -> single occurence number
+            if (cnt % k == 1)
+                ans |= mask;
+        }
+
+        return ans;
+    }
+}
+
+class LC859 {
+    public boolean buddyStrings(String s, String goal) {
+        int n = s.length();
+        int m = goal.length();
+        if (n != m)
+            return false;
+
+        if (s.equals(goal)) {
+            int[] arr = new int[26];
+            for (int i = 0; i < n; i++) {
+                arr[s.charAt(i) - 'a']++;
+                if (arr[s.charAt(i) - 'a'] >= 2)
+                    return true;
+            }
+            return false;
+        }
+
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != goal.charAt(i))
+                indices.add(i);
+        }
+
+        if (indices.size() != 2)
+            return false;
+
+        return s.charAt(indices.get(0)) == goal.charAt(indices.get(1))
+                && s.charAt(indices.get(1)) == goal.charAt(indices.get(0));
+
+    }
+}
+
+class LC1601 {
+    int N;
+
+    public int maximumRequests(int n, int[][] requests) {
+        N = n;
+        return helper(requests, 0, 0);
+    }
+
+    public int helper(int[][] req, int ridx, int tmp) {
+        if (ridx == req.length) {
+            int[] indeg = new int[N];
+            int[] outdeg = new int[N];
+            int cnt = 0;
+            for (int i = 0; i < req.length; i++) {
+                int rmask = (1 << i);
+                if ((tmp & rmask) != 0) {
+                    cnt++;
+                    outdeg[req[i][0]]++;
+                    indeg[req[i][1]]++;
+                }
+            }
+
+            for (int i = 0; i < N; i++) {
+                if (indeg[i] != outdeg[i]) {
+                    return -1;
+                }
+            }
+
+            return cnt;
+        }
+
+        int mask = (1 << ridx);
+        int inc = helper(req, ridx + 1, (tmp | mask));
+        int exc = helper(req, ridx + 1, tmp);
+
+        return Math.max(exc, inc);
+    }
+}
+
+class LC2551 {
+    public long putMarbles(int[] weights, int k) {
+        int n = weights.length;
+        if (n == k)
+            return 0l;
+
+        ArrayList<Long> list = new ArrayList<>();
+        for (int i = 1; i < n; i++) {
+            list.add((long) weights[i] + (long) weights[i - 1]);
+        }
+
+        Collections.sort(list);
+        long max = 0l;
+        long min = 0l;
+
+        // k-1 cuts, end pts of subarray matters
+        for (int i = 0; i < k - 1; i++) {
+            min += list.get(i);
+            max += list.get(list.size() - i - 1);
+        }
+
+        return max - min;
+    }
+}
