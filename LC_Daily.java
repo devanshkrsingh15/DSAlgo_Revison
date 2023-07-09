@@ -4513,3 +4513,56 @@ class LC2551 {
         return max - min;
     }
 }
+
+
+class LC2272 {
+    public int largestVariance(String s) {
+        int maxVar = 0;
+        String rev= new StringBuilder(s).reverse().toString();
+        int sMask = 0;
+        for(int i = 0 ;i<s.length() ;i++){
+            int k = s.charAt(i) - 'a';
+            int mask = (1<<k);
+            sMask |= mask;
+        }
+
+        for(int i = 0 ; i<26 ; i++){
+            for(int j = 0 ; j<26 ; j++){
+                if(  (sMask&(1<<i))==0 || (sMask&(1<<j))==0 ) continue;
+                int myVar = 0;
+                if(i!=j){
+                    myVar = Math. max(findVarOfTwoCharacters(s,(char)('a'+i), (char)('a'+j)),findVarOfTwoCharacters(rev,(char)('a'+i), (char)('a'+j)));
+                }
+                maxVar = Math.max(maxVar,myVar);
+            }
+        }
+
+
+        return maxVar;
+    }
+
+
+    public int findVarOfTwoCharacters(String s,char max,char min){
+        int n = s.length();
+        int maxF = 0;
+        int minF = 0;
+
+        int var  =0;
+        for(int i = 0 ;i<n ; i++){
+            maxF += s.charAt(i)==max ? 1 : 0; 
+            minF += s.charAt(i)==min ? 1 : 0; 
+
+            if(maxF < minF){
+                maxF = 0 ;
+                minF = 0 ;
+            }
+
+            if(maxF > 0 && minF > 0){
+                var = Math.max(var,maxF - minF);
+            }
+
+        }
+
+        return var;
+    }
+}
