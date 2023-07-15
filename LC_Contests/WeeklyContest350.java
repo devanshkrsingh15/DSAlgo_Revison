@@ -83,6 +83,33 @@ public class WeeklyContest350 {
         return cnt;
     }
 
+    // 2742. Painting the Walls
+    public int paintWalls(int[] cost, int[] time) {
+        int n = cost.length;
+        int t = 0;
 
-    //2742. Painting the Walls
+        int[][] dp = new int[n + 1][n + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
+
+        return paintWalls_(cost, time, 0, 0, dp);
+    }
+
+    // paidPaintersTime >= tot - paidPainters
+    // paidPaintersTime + paidPainters >= tot
+    public int paintWalls_(int[] cost, int[] time, int idx, int paidPaintersTime, int[][] dp) {
+        int tot = cost.length;
+        if (paidPaintersTime >= tot)
+            return 0;
+        if (idx == tot)
+            return (int) 1e9;
+
+        if (dp[idx][paidPaintersTime] != -1)
+            return dp[idx][paidPaintersTime];
+
+        int takePaidPainter = paintWalls_(cost, time, idx + 1, paidPaintersTime + time[idx] + 1, dp) + cost[idx];
+        int notTakePaidPainter = paintWalls_(cost, time, idx + 1, paidPaintersTime, dp);
+
+        return dp[idx][paidPaintersTime] = Math.min(takePaidPainter, notTakePaidPainter);
+    }
 }
