@@ -4514,55 +4514,111 @@ class LC2551 {
     }
 }
 
-
 class LC2272 {
     public int largestVariance(String s) {
         int maxVar = 0;
-        String rev= new StringBuilder(s).reverse().toString();
+        String rev = new StringBuilder(s).reverse().toString();
         int sMask = 0;
-        for(int i = 0 ;i<s.length() ;i++){
+        for (int i = 0; i < s.length(); i++) {
             int k = s.charAt(i) - 'a';
-            int mask = (1<<k);
+            int mask = (1 << k);
             sMask |= mask;
         }
 
-        for(int i = 0 ; i<26 ; i++){
-            for(int j = 0 ; j<26 ; j++){
-                if(  (sMask&(1<<i))==0 || (sMask&(1<<j))==0 ) continue;
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                if ((sMask & (1 << i)) == 0 || (sMask & (1 << j)) == 0)
+                    continue;
                 int myVar = 0;
-                if(i!=j){
-                    myVar = Math. max(findVarOfTwoCharacters(s,(char)('a'+i), (char)('a'+j)),findVarOfTwoCharacters(rev,(char)('a'+i), (char)('a'+j)));
+                if (i != j) {
+                    myVar = Math.max(findVarOfTwoCharacters(s, (char) ('a' + i), (char) ('a' + j)),
+                            findVarOfTwoCharacters(rev, (char) ('a' + i), (char) ('a' + j)));
                 }
-                maxVar = Math.max(maxVar,myVar);
+                maxVar = Math.max(maxVar, myVar);
             }
         }
-
 
         return maxVar;
     }
 
-
-    public int findVarOfTwoCharacters(String s,char max,char min){
+    public int findVarOfTwoCharacters(String s, char max, char min) {
         int n = s.length();
         int maxF = 0;
         int minF = 0;
 
-        int var  =0;
-        for(int i = 0 ;i<n ; i++){
-            maxF += s.charAt(i)==max ? 1 : 0; 
-            minF += s.charAt(i)==min ? 1 : 0; 
+        int var = 0;
+        for (int i = 0; i < n; i++) {
+            maxF += s.charAt(i) == max ? 1 : 0;
+            minF += s.charAt(i) == min ? 1 : 0;
 
-            if(maxF < minF){
-                maxF = 0 ;
-                minF = 0 ;
+            if (maxF < minF) {
+                maxF = 0;
+                minF = 0;
             }
 
-            if(maxF > 0 && minF > 0){
-                var = Math.max(var,maxF - minF);
+            if (maxF > 0 && minF > 0) {
+                var = Math.max(var, maxF - minF);
             }
 
         }
 
         return var;
+    }
+}
+class LC1751 {
+    public int maxValue(int[][] events, int k) {
+        // st,end,val
+        ArrayList<int[]> list = new ArrayList<>();
+        for (int[] ev : events)
+            list.add(ev);
+
+        Collections.sort(list, (a, b) -> {
+            return a[0] != b[0] ? a[0] - b[0] : (a[2] != b[2] ? b[2] - a[2] : a[1] - b[1]);
+        });
+
+        int n = list.size();
+        // for(int []ev :list) System.out.println(ev[0] + " " + ev[1] + " " + ev[2]);
+        long[][] dp = new long[n + 1][k + 1];
+        for (long[] d : dp)
+            Arrays.fill(d, -1l);
+
+        return (int) maxValue_(list, dp, 0, k);
+    }
+
+    private long maxValue_(ArrayList<int[]> list, long[][] dp, int i, int k) {
+        if (i >= list.size() || k == 0)
+            return 0;
+
+        if (dp[i][k] != -1)
+            return dp[i][k];
+
+        long ans = maxValue_(list, dp, i + 1, k); // exc
+
+        int ni = find(list, i + 1, list.get(i)[1] + 1);
+        ans = Math.max(ans, maxValue_(list, dp, ni, k - 1) + (long) list.get(i)[2]); // inc
+
+        return dp[i][k] = ans;
+
+    }
+
+    private int find(ArrayList<int[]> list, int st, int tar) {
+        int n = list.size();
+        int ans = n;
+        int lo = st;
+        int hi = n - 1;
+
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (list.get(mid)[0] >= tar) {
+                ans = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+
+        }
+
+        return ans;
     }
 }
