@@ -4565,6 +4565,78 @@ class LC2272 {
         return var;
     }
 }
+
+// 1125. Smallest Sufficient Team
+class LC1125 {
+    int reqSkillMask;
+    HashMap<String, Integer> map;
+    ArrayList<Integer>[][] dp;
+
+    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+        int n = people.size();
+        map = new HashMap<>();
+        for (int i = 0; i < req_skills.length; i++) {
+            map.put(req_skills[i], i);
+            reqSkillMask |= (1 << i);
+        }
+
+        dp = new ArrayList[n + 1][reqSkillMask + 1];
+
+        ArrayList<Integer> list = smallestSufficientTeam_(people, 0, 0);
+
+        int[] ans = new int[list.size()];
+        int ptr = 0;
+        for (int ele : list)
+            ans[ptr++] = ele;
+        return ans;
+
+    }
+
+    public int generateMask(List<String> skills) {
+        int mask = 0;
+        for (String s : skills) {
+            mask |= (1 << map.get(s));
+        }
+        return mask;
+    }
+
+    public ArrayList<Integer> smallestSufficientTeam_(List<List<String>> people, int idx, int skillMask) {
+        if (skillMask == reqSkillMask || idx == people.size()) {
+            ArrayList<Integer> base = new ArrayList<>();
+            base.add(-1);
+            return (skillMask == reqSkillMask) ? new ArrayList<>() : base;
+        }
+
+        if (dp[idx][skillMask] != null)
+            return dp[idx][skillMask];
+
+        ArrayList<Integer> exc = copy(smallestSufficientTeam_(people, idx + 1, skillMask));
+
+        int mask = generateMask(people.get(idx));
+        ArrayList<Integer> inc = copy(smallestSufficientTeam_(people, idx + 1, (skillMask | mask)));
+        if (inc.size() == 0 || inc.get(0) != -1)
+            inc.add(idx);
+
+        if (exc.size() > 0 && exc.get(0) == -1) {
+            return dp[idx][skillMask] = inc;
+        } else if (inc.size() > 0 && inc.get(0) == -1) {
+            return dp[idx][skillMask] = exc;
+        } else {
+            return dp[idx][skillMask] = exc.size() > inc.size() ? inc : exc;
+        }
+
+    }
+
+    public ArrayList<Integer> copy(ArrayList<Integer> tmp) {
+        ArrayList<Integer> ctmp = new ArrayList<>();
+        for (int ele : tmp) {
+            ctmp.add(ele);
+        }
+        return ctmp;
+    }
+
+}
+
 class LC1751 {
     public int maxValue(int[][] events, int k) {
         // st,end,val
