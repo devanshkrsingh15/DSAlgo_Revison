@@ -100,4 +100,31 @@ public class WeeklyContest352 {
         return ans;
     }
 
+    // 2763. Sum of Imbalance Numbers of All Subarrays
+    public int sumImbalanceNumbers(int[] nums) {
+        int ans = 0;
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            HashSet<Integer> set = new HashSet<>();
+            int cnt = 0;
+            for (int j = i; j < n; j++) {
+                int ele = nums[j];
+                if (!set.contains(ele)) {
+                    if (set.contains(ele + 1) && set.contains(ele - 1)) {
+                        cnt--;
+                    } else if (set.size() != 0 && !set.contains(ele + 1) && !set.contains(ele - 1)) {
+                        cnt++;
+                    }
+
+                }
+                set.add(ele);
+                ans += cnt;
+            }
+
+        }
+
+        return ans;
+    }
+
 }

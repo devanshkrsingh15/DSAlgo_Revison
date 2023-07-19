@@ -4694,3 +4694,26 @@ class LC1751 {
         return ans;
     }
 }
+
+class LC435 {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int n = intervals.length;
+
+        Arrays.sort(intervals, (a, b) -> {
+            return a[1] != b[1] ? a[1] - b[1] : a[0] - b[0];
+        });
+
+        Stack<Integer> st = new Stack<>();
+
+        int idx = 0;
+        while (idx < n) {
+            if (st.size() != 0 && intervals[idx][0] < intervals[st.peek()][1]) {
+                intervals[st.peek()][1] = Math.min(intervals[idx][1], intervals[st.peek()][1]);
+            } else {
+                st.push(idx);
+            }
+        }
+
+        return n - st.size();
+    }
+}
