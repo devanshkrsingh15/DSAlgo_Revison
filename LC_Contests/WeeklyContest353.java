@@ -95,7 +95,27 @@ public class WeeklyContest353 {
 
     // 2772. Apply Operations to Make All Array Elements Equal to Zero
     public boolean checkArray(int[] nums, int k) {
-       
+        int n = nums.length;
+        int[] impact = new int[n]; // this will store its imapct, kind of psum
+        impact[0] += nums[0];
+        if (k < n)
+            impact[k] -= nums[0];
 
+        for (int i = 1; i < n; i++) {
+            impact[i] += impact[i - 1];
+            if (nums[i] == impact[i])
+                continue;
+            if (impact[i] > nums[i])
+                return false;
+            if (i + k - 1 >= n)
+                return false;
+
+            int diff = nums[i] - impact[i];
+            impact[i] += diff;
+            if (i + k < n)
+                impact[i + k] -= diff;
+        }
+
+        return true;
     }
 }
