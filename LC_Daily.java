@@ -4717,3 +4717,42 @@ class LC435 {
         return n - st.size();
     }
 }
+
+// 688. Knight Probability in Chessboard
+class LC688 {
+    double[][] dp;
+    int[][] direcs = { { -2, +1 }, { -1, +2 }, { +1, +2 }, { +2, +1 }, { +2, -1 }, { +1, -2 }, { -1, -2 }, { -2, -1 } };
+
+    public double knightProbability(int n, int k, int row, int column) {
+        dp = new double[n * n + 1][k + 1];
+        for (double[] d : dp)
+            Arrays.fill(d, -1.0);
+
+        return knightProbability_(n, row * n + column, k);
+    }
+
+    public double knightProbability_(int n, int idx, int moves) {
+        if (moves == 0)
+            return (double) 1;
+
+        if (dp[idx][moves] != -1.0)
+            return dp[idx][moves];
+
+        double ans = 0;
+
+        int r = idx / n;
+        int c = idx % n;
+
+        for (int k = 0; k < direcs.length; k++) {
+            int x = r + direcs[k][0];
+            int y = c + direcs[k][1];
+
+            if (x >= 0 && y >= 0 && x < n && y < n) {
+                double fans = knightProbability_(n, x * n + y, moves - 1);
+                ans += fans * (1.0 / 8.0);
+            }
+        }
+
+        return dp[idx][moves] = ans;
+    }
+}
