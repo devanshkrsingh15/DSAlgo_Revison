@@ -86,4 +86,47 @@ public class WeeklyContest354 {
         return arr;
     }
 
+    // 2781. Length of the Longest Valid Substring
+    public int longestValidSubstring(String word, List<String> forbidden) {
+        HashSet<String> set = new HashSet<>();
+        int max = 0;
+        for (String s : forbidden) {
+            max = Math.max(max, s.length());
+            set.add(s);
+        }
+        int[] startPtsLimit = new int[word.length() + 1];
+        Arrays.fill(startPtsLimit, -1);
+
+        for (int i = 0; i < word.length(); i++) {
+            for (int j = 1; j <= max; j++) {
+                int st = i;
+                int en = st + j;
+                if (en <= word.length()) {
+                    String tmp = word.substring(st, en);
+                    if (set.contains(tmp)) {
+                        startPtsLimit[en - 1] = st;
+                    }
+
+                }
+            }
+        }
+
+        int st = 0;
+        int en = 0;
+        int ans = 0;
+
+        int n = word.length();
+
+        while (en < n) {
+            while (startPtsLimit[en] >= st) {
+                st++;
+            }
+            if (st <= en)
+                ans = Math.max(ans, en - st + 1);
+            en++;
+        }
+
+        return ans;
+    }
+
 }

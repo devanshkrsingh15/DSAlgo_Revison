@@ -135,3 +135,38 @@ public class BiweeklyContest108 {
         return x >= 0 && y >= 0 && x + 1 < n && y + 1 < m;
     }
 }
+
+class LC894 {
+    HashMap<Integer, List<TreeNode>> dp = new HashMap<>();
+
+    public List<TreeNode> allPossibleFBT(int n) {
+        if (n == 1) {
+            List<TreeNode> base = new ArrayList<>();
+            base.add(new TreeNode(0));
+            return base;
+        }
+
+        if (dp.containsKey(n))
+            return dp.get(n);
+
+        List<TreeNode> ans = new ArrayList<>();
+
+        for (int i = 1; i <= n - 1; i++) {
+            if (n - i - 1 > 0) {
+                List<TreeNode> lans = allPossibleFBT(i);
+                List<TreeNode> rans = allPossibleFBT(n - i - 1);
+                for (TreeNode lr : lans) {
+                    for (TreeNode rr : rans) {
+                        TreeNode tmp = new TreeNode(0);
+                        tmp.left = lr;
+                        tmp.right = rr;
+                        ans.add(tmp);
+                    }
+                }
+            }
+        }
+
+        dp.put(n, ans);
+        return ans;
+    }
+}
