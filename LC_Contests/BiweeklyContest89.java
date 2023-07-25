@@ -153,4 +153,29 @@ public class BiweeklyContest89 {
             graph[v].add(u);
         }
     }
+
+    //2787. Ways to Express an Integer as Sum of Powers
+    int x;
+    long dp[][];
+    public int numberOfWays(int n, int X) {
+       x = X;
+       dp  = new long[n+1][n+1];
+       for(long[]d:dp)Arrays.fill(d,-1l);
+
+       return (int)numberOfWays_(n,1);
+    }
+
+    long mod = (long)1e9 + 7;
+    public long numberOfWays_(int n,int b){
+        if(n==0) return 1;
+        if(n < b) return 0;
+        if(dp[n][b]!=-1l) return dp[n][b];
+
+        long ans = 0l;
+
+        if((long)n- (long)Math.pow(b,x)>=0l) ans = (ans%mod + numberOfWays_(n-(int)Math.pow(b,x) ,b+1)%mod)%mod;
+        ans = (ans%mod + numberOfWays_(n,b+1)%mod)%mod;
+        
+        return dp[n][b] = ans;
+    }
 }
