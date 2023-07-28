@@ -4656,6 +4656,36 @@ class LC1125 {
 
 }
 
+class LC486 {
+    public boolean PredictTheWinner(int[] nums) {
+        int sof = 0;
+        for(int ele : nums) sof+=ele;
+        int n = nums.length;
+
+        int[][]dp = new int[n+1][n+1];
+        for(int[]d:dp)Arrays.fill(d,-1);
+
+        int scoreA = PredictTheWinner_(nums,0,n-1,dp);
+        int scoreB = sof - scoreA;
+        return scoreA >= scoreB;
+    }
+
+    public int PredictTheWinner_(int[]nums,int i,int j,int[][]dp){
+        if(i>=j){
+            return i==j ? nums[i] : 0;
+        }
+
+        int op1 = PredictTheWinner_(nums,i,j-2,dp);
+        int op2 = PredictTheWinner_(nums,i+2,j,dp);
+        int op3 = PredictTheWinner_(nums,i+1,j-1,dp);
+
+        int first = Math.min(op2,op3);
+        int last = Math.min(op1,op3);
+
+        return dp[i][j]= Math.max(first+ nums[i],last + nums[j]);
+    }
+}
+
 class LC1751 {
     public int maxValue(int[][] events, int k) {
         // st,end,val
