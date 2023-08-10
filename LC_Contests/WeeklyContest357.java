@@ -1,5 +1,7 @@
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 public class WeeklyContest357 {
@@ -60,71 +62,131 @@ public class WeeklyContest357 {
         return dp[st][en] = ans;
     }
 
-    //2812. Find the Safest Path in a Grid
+    // 2812. Find the Safest Path in a Grid
     public int maximumSafenessFactor(List<List<Integer>> grid) {
         int n = grid.size();
         int m = grid.get(0).size();
 
-        if(grid.get(0).get(0)==1 || grid.get(n-1).get(m-1)==1) return 0;
+        if (grid.get(0).get(0) == 1 || grid.get(n - 1).get(m - 1) == 1)
+            return 0;
+        int[][] sf = generateClosenessArray(grid);
+        int ans = maximumSafenessFactor_(grid, sf, new boolean[n][m]);
+        return ans == -(int) 1e9 ? 0 : ans;
 
-        TreeSet<Integer>thieves = new TreeSet<>();
-        for(int i = 0;i<n;i++){
-            for(int j =0 ;j<m;j++){
-                if(grid.get(i).get(j)==1){
-                    thieves.add(i*m + j);
+    }
+
+    public int[][] generateClosenessArray(List<List<Integer>> grid) {
+        int n = grid.size();
+        int m = grid.get(0).size();
+
+        int[][] sf = new int[n][m];
+        for (int[] arr : sf)
+            Arrays.fill(arr, -1);
+
+        ArrayDeque<int[]> q = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid.get(i).get(j) == 1) {
+                    q.add(new int[] { i * m + j, i * m + j }); // one index, my index
                 }
             }
         }
 
-        int[]ans= maximumSafenessFactor_(grid,0,thieves,new boolean[n][m]);
+        boolean[][] vis = new boolean[n][m];
+        int level = 0;
 
-        return ans[1]==1 ? 0 : ans[0];
+        while (q.size() != 0) {
+            int s = q.size();
+            while (s-- > 0) {
+                int arr[] = q.remove();
+                int ridx = arr[1];
+                int oidx = arr[0];
+                int r = ridx / m;
+                int c = ridx % m;
 
-    
-    }
+                if (vis[r][c])
+                    continue;
 
-    int[][]direcs = {{0,1},{1,0},{-1,0},{0,-1}};
+                vis[r][c] = true;
+                if (sf[r][c] == -1)
+                    sf[r][c] = oidx;
 
-    public int[] maximumSafenessFactor_(List<List<Integer>> grid,int idx, TreeSet<Integer>thieves,boolean[][]vis ){
-        int n = grid.size();
-        int m = grid.get(0).size();
-
-        int r = idx/m;
-        int c = idx%m;
-
-        vis[r][c] = true;
-
-        if(r==n-1 || c==m-1){
-            int sf = getSafenessFactor(thieves,idx,n,m);
-            return new int[] { grid.get(n-1).get(m-1), sf};
+                for (int k = 0; k < direcs.length; k++) {
+                    int x = r + direcs[k][0];
+                    int y = c + direcs[k][1];
+                    if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y] && grid.get(x).get(y) == 0) {
+                        q.add(new int[] { oidx, x * n + y });
+                    }
+                }
+            }
+            level++;
         }
 
-        int msf = getSafenessFactor(thieves,idx,n,m);
-        boolean hasThief =  grid.get(r).get(c)==1;
-
-        for(int k = 0 ; k < direcs.length ;k++){
-            int x = r + direcs[k][0];
-            int y = c + direcs[k][1];
-
-            if(x>=0 && y>=0 && x<n && y<m && !vis[x][y]){
-                int[]fans = maximumSafenessFactor_(grid,x*m+y,thieves,vis);
-                hasThief = hasThief || fans[1]!=1 ;
-                msf = Math.max(msf,fans[0]);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                sf[i][j] = getSafenessFactor(i * n + j, sf[i][j], n, m);
             }
         }
 
-        return new int[]{msf,hasThief ? 1 : 0};
-
+        return sf;
 
     }
 
-    public int getSafenessFactor(TreeSet<Integer>thieves,int idx,int n,int m){
-        int r = idx/m;
-        int c = idx%m;
-        int tidx = thieves.ceiling(idx) == null ?  thieves.floor(idx) :  thieves.ceiling(idx);
-        int tr = tidx/m ; int tc = tidx%m;
-        int sf = Math.abs(r-tr) +  Math.abs(c-tc);
+    int[][] direcs = { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } };
 
+    public int maximumSafenessFactor_(List<List<Integer>> grid, int[][] sf, boolean[][] vis) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            return b[1] - a[1];
+        }); // idx, sf
+
+        int n = grid.size();
+        int m = grid.get(0).size();
+
+        pq.add(new int[] { 0, sf[0][0] });
+
+        while (pq.size() != 0) {
+            int s = pq.size();
+
+            while (s-- > 0) {
+                int[] arr = pq.remove();
+
+                int idx = arr[0];
+                int sff = arr[1];
+
+                int r = idx / m;
+                int c = idx % m;
+
+                if (r == n - 1 && c == m - 1) {
+                    return sff;
+                }
+
+                if (vis[r][c])
+                    continue;
+
+                vis[r][c] = true;
+
+                for (int k = 0; k < direcs.length; k++) {
+                    int x = r + direcs[k][0];
+                    int y = c + direcs[k][1];
+
+                    if (x >= 0 && y >= 0 && x < n && y < m && !vis[x][y] && grid.get(x).get(y) == 0) {
+
+                        pq.add(new int[] { x * m + y, Math.min(sf[x][y], sff) });
+                    }
+                }
+            }
+        }
+
+        return -(int) 1e9;
+
+    }
+
+    public int getSafenessFactor(int idx, int tidx, int n, int m) {
+        int r = idx / m;
+        int c = idx % m;
+        int tr = tidx / m;
+        int tc = tidx % m;
+        int sf = Math.abs(r - tr) + Math.abs(c - tc);
         return sf;
     }
 }
