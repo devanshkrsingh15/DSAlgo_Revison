@@ -388,66 +388,7 @@ public class Questions {
 
     }
 
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        if (l1 == null || l2 == null) {
-            return l1 != null ? l1 : l2;
-        }
-
-        ListNode rl1 = reverseList(l1);
-        ListNode rl2 = reverseList(l2);
-
-        ListNode dummy = new ListNode(-1);
-        ListNode ptr = dummy;
-
-        ListNode c1 = rl1;
-        ListNode c2 = rl2;
-        int carry = 0;
-
-        while (c1 != null && c2 != null) {
-            int d1 = c1.val;
-            int d2 = c2.val;
-            int sum = d1 + d2 + carry;
-
-            c1.val = sum % 10;
-            ptr.next = c1;
-
-            carry = sum / 10;
-            c1 = c1.next;
-            c2 = c2.next;
-            ptr = ptr.next;
-        }
-
-        while (c1 != null) {
-            int d1 = c1.val;
-            int sum = d1 + carry;
-
-            c1.val = sum % 10;
-            ptr.next = c1;
-            ptr = ptr.next;
-            carry = sum / 10;
-
-            c1 = c1.next;
-
-        }
-
-        while (c2 != null) {
-            int d2 = c2.val;
-            int sum = d2 + carry;
-            c2.val = sum % 10;
-            ptr.next = c2;
-            ptr = ptr.next;
-            carry = sum / 10;
-
-            c2 = c2.next;
-
-        }
-
-        if (carry == 1)
-            ptr.next = new ListNode(1);
-
-        return reverseList(dummy.next);
-    }
-
+   
     public int getVal(ListNode l1) {
         int val = 0;
         while (l1 != null) {
