@@ -93,41 +93,42 @@ public class WeeklyContest359 {
 
     //2831. Find the Longest Equal Subarray
     public int longestEqualSubarray(List<Integer> nums, int k) {
-        HashMap<Integer,ArrayList<Integer>>indices = new HashMap<>();
-        HashMap<Integer,Integer>kUsed = new HashMap<>();
-        HashMap<Integer,Integer>maxLen = new HashMap<>();
-
-        int  n = nums.size();
-
-        for(int i = 0 ;i< n ;i++){
-            int ele = nums.get(i);
-            if(!indices.containsKey(ele)){
-                indices.put(ele,new ArrayList<>());
-                indices.get(ele).add(i);
-                kUsed.put(ele,0);
-                maxLen.put(ele,1);
-            }else{
-                ArrayList<Integer>list = indices.get(ele);
-                int toRemove = i - list.get(list.size()-1) - 1;
-                int newLenAdded = i - list.get(list.size()-1);
-                list.add(i);
-                if(kUsed.get(ele) + toRemove  <= k){
-                    kUsed.put(ele,kUsed.get(ele) + toRemove);
-                    maxLen.put(ele,maxLen.get(ele)+newLenAdded);
-                }else if( toRemove <= k){
-                    kUsed.put(ele,toRemove);
-                    int cm  =Math.max(maxLen.get(ele),newLenAdded+1);
-                    maxLen.put(ele,cm);
-                }
-
-            }
+        HashMap<Integer,ArrayList<Integer>>map = new HashMap<>();
+        int n = nums.size();
+        for(int i = 0 ;i<n;i++ ){
+            int ele= nums.get(i);
+            map.putIfAbsent(ele,new ArrayList<>());
+            map.get(ele).add(i);
         }
 
-
-
         int max = 1;
-        for(int ele : maxLen.keySet()){
-            max = Math.max(max,maxLen.get(ele));
+        for(int ele: map.keySet()){
+            max = Math.max(max,getMaxForThisElement(map.get(ele),k)); 
+        }
+
+        return max;
+    }
+
+    public int getMaxForThisElement(ArrayList<Integer>list,int k){
+        int st = 0;
+        int en = 0;
+
+        int n= list.size();
+        int cnt = 1;
+        int max = 1;
+        int kUsed = 0;
+        while(en +1 < n){
+            cnt++;
+            en++;
+            kUsed += list.get(en) - list.get(en-1) - 1;
+
+            while(kUsed > k){
+                st++;
+                cnt--;
+                kUsed -= list.get(st) - list.get(st-1) - 1;
+            }
+
+            max= Math.max(max,cnt);
         }
 
         return max;
