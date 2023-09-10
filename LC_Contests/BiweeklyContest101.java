@@ -149,4 +149,25 @@ public class BiweeklyContest101 {
         }
         return ans;
     }
+
+    public int countOrders(int n) {
+        long sum[] = new long[n + n + 10];
+        sum[0] = sum[1] = 1l;
+        for (int i = 2; i < sum.length; i++) {
+            sum[i] = (sum[i - 1] % mod + (long) i % mod) % mod;
+        }
+
+        long[] dp = new long[n + 1];
+        dp[1] = 1l;
+        for (int i = 2; i <= n; i++) {
+            // PiDi -> 0,1,2,3,,,,,,,,2*(i-1) spaces in between
+            long ways = sum[2 * i - 1];
+            dp[i] = (dp[i - 1] % mod * ways % mod) % mod;
+        }
+
+        return (int) dp[n];
+
+    }
+
+    long mod = (long) 1e9 + 7;
 }
