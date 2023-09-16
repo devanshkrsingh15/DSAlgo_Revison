@@ -170,4 +170,48 @@ public class BiweeklyContest101 {
     }
 
     long mod = (long) 1e9 + 7;
+
+    // 1631. Path With Minimum Effort
+
+    public int minimumEffortPath(int[][] heights) {
+        int n = heights.length;
+        int m = heights[0].length;
+        boolean[][] vis = new boolean[n][m];
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        pq.add(new int[] { 0, 0 });
+
+        while (pq.size() != 0) {
+            int s = pq.size();
+
+            while (s-- > 0) {
+                int[] arr = pq.remove();
+                int idx = arr[0];
+                int eff = arr[1];
+
+                int r = idx / m;
+                int c = idx % m;
+                if (r == n - 1 && c == m - 1)
+                    return eff;
+
+                if (vis[r][c])
+                    continue;
+                vis[r][c] = true;
+
+                for (int k = 0; k < direcs.length; k++) {
+                    int x = r + direcs[k][0];
+                    int y = c + direcs[k][1];
+                    if (x >= 0 & y >= 0 && x < n && y < m && !vis[x][y]) {
+                        int ceff = Math.abs(heights[r][c] - heights[x][y]);
+                        int maxEff = Math.max(ceff, eff);
+                        pq.add(new int[] { x * m + y, maxEff });
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    int[][] direcs = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 }
