@@ -87,25 +87,21 @@ public class WeeklyContest361 {
         return ans;
     }
 
-    //2845. Count of Interesting Subarrays
-    public long countInterestingSubarrays(List<Integer> nums, int modulo, int k) {
-        long ans= 0 ;
-        HashMap<Long,Integer>map= new HashMap<>();
-        int n= nums.size();
-        long cnt = 0;
-        for(int i  = 0; i < n; i++){
-            int c = nums.get(i)%modulo == k ? 1 : 0;
-            cnt += c;
+    // 2845. Count of Interesting Subarrays
+    public long countInterestingSubarrays(List<Integer> nums, int mod, int k) {
+        long ans = 0;
+        HashMap<Long, Long> map = new HashMap<>();
+        map.put(0l, 1l);
 
-            long r = cnt%modulo;
-
-            if(r==(long)k){
-                ans++;
-                map.put(r,i);
-            }else{
-                if(map.contians)
-            }
+        long cnt = 0l;
+        for (int e : nums) {
+            cnt += e % mod == k ? 1 : 0;
+            long r = cnt % mod;
+            ans += map.getOrDefault((r - k + mod) % mod, 0l);
+            map.put(r, map.getOrDefault(r, 0l) + 1l);
         }
+
+        return ans;
     }
 
 }

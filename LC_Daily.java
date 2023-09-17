@@ -4656,33 +4656,74 @@ class LC1125 {
 
 }
 
+class LC847 {
+    public int shortestPathLength(int[][] graph) {
+        int n = graph.length;
+        Queue<int[]> q = new ArrayDeque<>();
+        boolean[][] vis = new boolean[n][(1 << n)];
+        for (int i = 0; i < n; i++)
+            q.add(new int[] { i, (1 << i) });
+
+        int dis = 0;
+        while (q.size() != 0) {
+            int s = q.size();
+            while (s-- > 0) {
+                int[] arr = q.remove();
+                int idx = arr[0];
+                int v = arr[1];
+
+                if (v == ((1 << n) - 1))
+                    return dis;
+
+                if (vis[idx][v])
+                    continue;
+                vis[idx][v] = true;
+
+                for (int nbr : graph[idx]) {
+                    int nv = (v | (1 << nbr));
+
+                    if (vis[nbr][nv] == false) {
+                        q.add(new int[] { nbr, nv });
+                    }
+                }
+            }
+            dis++;
+        }
+
+        return (int) 1e9;
+    }
+
+}
+
 class LC486 {
     public boolean PredictTheWinner(int[] nums) {
         int sof = 0;
-        for(int ele : nums) sof+=ele;
+        for (int ele : nums)
+            sof += ele;
         int n = nums.length;
 
-        int[][]dp = new int[n+1][n+1];
-        for(int[]d:dp)Arrays.fill(d,-1);
+        int[][] dp = new int[n + 1][n + 1];
+        for (int[] d : dp)
+            Arrays.fill(d, -1);
 
-        int scoreA = PredictTheWinner_(nums,0,n-1,dp);
+        int scoreA = PredictTheWinner_(nums, 0, n - 1, dp);
         int scoreB = sof - scoreA;
         return scoreA >= scoreB;
     }
 
-    public int PredictTheWinner_(int[]nums,int i,int j,int[][]dp){
-        if(i>=j){
-            return i==j ? nums[i] : 0;
+    public int PredictTheWinner_(int[] nums, int i, int j, int[][] dp) {
+        if (i >= j) {
+            return i == j ? nums[i] : 0;
         }
 
-        int op1 = PredictTheWinner_(nums,i,j-2,dp);
-        int op2 = PredictTheWinner_(nums,i+2,j,dp);
-        int op3 = PredictTheWinner_(nums,i+1,j-1,dp);
+        int op1 = PredictTheWinner_(nums, i, j - 2, dp);
+        int op2 = PredictTheWinner_(nums, i + 2, j, dp);
+        int op3 = PredictTheWinner_(nums, i + 1, j - 1, dp);
 
-        int first = Math.min(op2,op3);
-        int last = Math.min(op1,op3);
+        int first = Math.min(op2, op3);
+        int last = Math.min(op1, op3);
 
-        return dp[i][j]= Math.max(first+ nums[i],last + nums[j]);
+        return dp[i][j] = Math.max(first + nums[i], last + nums[j]);
     }
 }
 
