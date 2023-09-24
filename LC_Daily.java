@@ -4846,3 +4846,33 @@ class LC688 {
         return dp[idx][moves] = ans;
     }
 }
+// 799. Champagne Tower
+
+class LC799 {
+    public double champagneTower(int poured, int query_row, int query_glass) {
+        if (poured <= 1.0) {
+            return poured == 0.0 ? 0.0 : query_row == 0.0 ? 1.0 : 0.0;
+        }
+
+        double[][] dp = new double[query_row + 2][query_row + 2];
+        dp[0][0] = poured;
+
+        for (int row = 1; row <= query_row; row++) {
+            for (int col = 0; col <= row; col++) {
+                if (col == 0 || col == row) {
+                    if (col == 0) {
+                        dp[row][col] = dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
+                    } else {
+                        dp[row][col] = dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
+                    }
+                } else {
+                    dp[row][col] += dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
+                    dp[row][col] += dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
+                }
+            }
+        }
+
+        return Math.min(dp[query_row][query_glass], 1.0);
+
+    }
+}
