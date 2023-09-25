@@ -1,5 +1,4 @@
 import LinkedList.ListNode;
-
 import java.util.*;
 
 public class LC_Daily {

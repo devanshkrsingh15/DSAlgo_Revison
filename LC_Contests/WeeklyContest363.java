@@ -41,5 +41,52 @@ public class WeeklyContest363 {
         return ans;
     }
 
+    //2861. Maximum Number of Alloys
+    public int maxNumberOfAlloys(int n, int k, int budget, List<List<Integer>> composition, List<Integer> stock, List<Integer> cost) {
+        int ans = 0;
+
+        //n
+        for(int i = 0 ; i< k;i++){
+            // logn
+            List<Integer>comp  = composition.get(i);
+            int myans = -1;
+            int lo = 0;
+            int hi = (int)1e9;
+
+            while(lo<=hi){
+                int mid = lo + (hi-lo)/2;
+
+                //n
+                if(isPossible(comp,stock,cost,mid,budget)){
+                    myans = mid;
+                    lo = mid+1;
+                }else{
+                    hi = mid-1;
+                }
+            }
+
+
+            ans = Math.max(ans,myans);
+        }
+
+        // TC = N*N*LogN
+        return ans;
+        
+    }
+
+    public boolean isPossible(List<Integer>composition,List<Integer> stock, List<Integer> cost,int tar,long budget){
+        long myCost = 0;
+        for(int i =0 ;i<composition.size() ; i++){
+            long reqForOne = (long)composition.get(i);
+            long totReq =  (long)tar*reqForOne;
+            long inStock =  (long)stock.get(i);
+            myCost += (long)Math.max(0,totReq - inStock)*(long)cost.get(i);
+            
+            if(myCost > budget) return false;
+        }
+
+        return true;
+    }
+
     
 }
