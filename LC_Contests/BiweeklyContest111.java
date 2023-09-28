@@ -89,6 +89,63 @@ public class BiweeklyContest111 {
     }
 
     // 2827. Number of Beautiful Integers in the Range
+    int K;
+
+    public int numberOfBeautifulIntegers(int low, int high, int k) {
+        String r = high + "";
+        String l = (low - 1) + "";
+
+        K = k;
+        // pos,boud,rem,cnt,firstPos
+        Integer[][][][][] dp = new Integer[r.length()][2][21][21][2];
+
+        int rcnt = numberOfBeautifulIntegers_(r, 0, true, 0, 0, true, dp);
+
+        dp = new Integer[l.length()][2][21][21][2];
+        int lcnt = numberOfBeautifulIntegers_(l, 0, true, 0, 0, true, dp);
+
+        return (rcnt - lcnt);
+    }
+
+    public int numberOfBeautifulIntegers_(String s, int pos, boolean bound, int rem, int cnt, boolean firstPos,
+            Integer[][][][][] dp) {
+        if (pos == s.length()) {
+            return rem == 0 && cnt == 0 ? 1 : 0;
+        }
+
+        if (dp[pos][bound ? 1 : 0][rem][cnt + 10][firstPos ? 1 : 0] != null)
+            return dp[pos][bound ? 1 : 0][rem][cnt + 10][firstPos ? 1 : 0];
+
+        int max = 9;
+        if (bound) {
+            max = s.charAt(pos) - '0';
+        }
+
+        int ans = 0;
+        for (int i = 0; i <= max; i++) {
+            int npos = pos + 1;
+            boolean nbound = bound && (i == max);
+            int nrem = (rem * 10 + i) % K;
+
+            int ncnt = cnt;
+            if (firstPos) {
+                if (i != 0 && i % 2 == 0)
+                    ncnt++;
+                else if (i % 2 == 1)
+                    ncnt--;
+            } else {
+                if (i % 2 == 0)
+                    ncnt++;
+                else if (i % 2 == 1)
+                    ncnt--;
+            }
+
+            boolean nfirstPos = firstPos && (i == 0);
+            ans += numberOfBeautifulIntegers_(s, npos, nbound, nrem, ncnt, nfirstPos, dp);
+        }
+
+        return dp[pos][bound ? 1 : 0][rem][cnt + 10][firstPos ? 1 : 0] = ans;
+    }
 
     // 880. Decoded String at Index
     public String decodeAtIndex(String s, int K) {
