@@ -223,4 +223,53 @@ public class BiweeklyContest111 {
         return sl.toString();
     }
 
+    // 456. 132 Pattern
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+        if (n < 3)
+            return false;
+        if (check(nums, true) || check(nums, false))
+            return false;
+
+        int[] min = new int[n];
+        min[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            min[i] = Math.min(min[i - 1], nums[i]);
+        }
+
+        TreeSet<Integer> set = new TreeSet<>();
+        set.add(nums[n - 1]);
+
+        // fixing ith and jth first, then finding kth -> jth to n-1;
+        for (int i = n - 2; i > 0; i--) {
+            int jth = nums[i];
+            int ith = min[i - 1];
+
+            if (jth > ith) {
+                // finding the element btw [ith,jth] => both exclusive
+                if (set.ceiling(ith + 1) != null) {
+                    int kth = set.ceiling(ith + 1);
+                    if (kth < jth)
+                        return true;
+                }
+
+            }
+
+            set.add(nums[i]);
+        }
+
+        return false;
+    }
+
+    public boolean check(int[] nums, boolean inc) {
+        for (int i = 0; i + 1 < nums.length; i++) {
+            if (nums[i] > nums[i + 1] && inc)
+                return false;
+            else if (nums[i] < nums[i + 1] && !inc)
+                return false;
+        }
+
+        return true;
+    }
+
 }
