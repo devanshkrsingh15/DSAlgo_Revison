@@ -118,4 +118,39 @@ public class WeeklyContest364 {
 
         return ans;
     }
+
+    // 2038. Remove Colored Pieces if Both Neighbors are the Same Color
+    public boolean winnerOfGame(String colors) {
+        int[] arr = new int[2]; // Alice chances,Bob chances
+        fillChances(colors, 'A', arr);
+        fillChances(colors, 'B', arr);
+
+        return arr[0] > arr[1];
+
+    }
+
+    public void fillChances(String colors, char ch, int[] arr) {
+        int n = colors.length();
+        int ei = 0;
+        int st = 0;
+        int cnt = 0;
+
+        while (ei < n) {
+            if (colors.charAt(ei) != ch)
+                cnt++;
+            ei++;
+
+            while (cnt > 0) {
+                if (colors.charAt(st) != ch)
+                    cnt--;
+                st++;
+            }
+
+            if (ei - st >= 3)
+                arr[ch - 'A'] += 1;
+
+        }
+
+    }
+
 }
