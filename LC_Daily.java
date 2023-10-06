@@ -4845,6 +4845,27 @@ class LC688 {
         return dp[idx][moves] = ans;
     }
 }
+
+public int integerBreak(int n) {
+        int[]dp = new int[n+1];
+        Arrays.fill(dp,-1);
+
+        return integerBreak_(n,dp);
+    }
+
+    public int integerBreak_(int n,int[]dp){
+        if(n==1) return 1;
+
+        if(dp[n]!=-1) return dp[n];
+
+        int ans = 1;
+        for(int i = 1 ; i<n ;i++){
+            ans = Math.max(ans,integerBreak_(n-i,dp)*i);
+            ans = Math.max(ans,i*(n-i));
+        }
+
+        return dp[n] = ans;
+    }
 // 799. Champagne Tower
 
 class LC799 {
