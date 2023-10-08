@@ -4844,55 +4844,94 @@ class LC688 {
 
         return dp[idx][moves] = ans;
     }
+
 }
 
-public int integerBreak(int n) {
-        int[]dp = new int[n+1];
-        Arrays.fill(dp,-1);
+    public int integerBreak(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
 
-        return integerBreak_(n,dp);
+        return integerBreak_(n, dp);
     }
 
-    public int integerBreak_(int n,int[]dp){
-        if(n==1) return 1;
+    public int integerBreak_(int n, int[] dp) {
+        if (n == 1)
+            return 1;
 
-        if(dp[n]!=-1) return dp[n];
+        if (dp[n] != -1)
+            return dp[n];
 
         int ans = 1;
-        for(int i = 1 ; i<n ;i++){
-            ans = Math.max(ans,integerBreak_(n-i,dp)*i);
-            ans = Math.max(ans,i*(n-i));
+        for (int i = 1; i < n; i++) {
+            ans = Math.max(ans, integerBreak_(n - i, dp) * i);
+            ans = Math.max(ans, i * (n - i));
         }
 
         return dp[n] = ans;
     }
-// 799. Champagne Tower
+    // 799. Champagne Tower
 
-class LC799 {
-    public double champagneTower(int poured, int query_row, int query_glass) {
-        if (poured <= 1.0) {
-            return poured == 0.0 ? 0.0 : query_row == 0.0 ? 1.0 : 0.0;
-        }
+    class LC799 {
+        public double champagneTower(int poured, int query_row, int query_glass) {
+            if (poured <= 1.0) {
+                return poured == 0.0 ? 0.0 : query_row == 0.0 ? 1.0 : 0.0;
+            }
 
-        double[][] dp = new double[query_row + 2][query_row + 2];
-        dp[0][0] = poured;
+            double[][] dp = new double[query_row + 2][query_row + 2];
+            dp[0][0] = poured;
 
-        for (int row = 1; row <= query_row; row++) {
-            for (int col = 0; col <= row; col++) {
-                if (col == 0 || col == row) {
-                    if (col == 0) {
-                        dp[row][col] = dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
+            for (int row = 1; row <= query_row; row++) {
+                for (int col = 0; col <= row; col++) {
+                    if (col == 0 || col == row) {
+                        if (col == 0) {
+                            dp[row][col] = dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
+                        } else {
+                            dp[row][col] = dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
+                        }
                     } else {
-                        dp[row][col] = dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
+                        dp[row][col] += dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
+                        dp[row][col] += dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
                     }
-                } else {
-                    dp[row][col] += dp[row - 1][col] <= 1.0 ? 0 : (dp[row - 1][col] - 1.0) / 2.0;
-                    dp[row][col] += dp[row - 1][col - 1] <= 1.0 ? 0 : (dp[row - 1][col - 1] - 1.0) / 2.0;
                 }
+            }
+
+            return Math.min(dp[query_row][query_glass], 1.0);
+
+        }
+    }
+
+    // 1420. Build Array Where You Can Find The Maximum Exactly K Comparisons 
+    long mod = (long) 1e9 + 7;
+    public int numOfArrays(int n, int m, int k) {
+        long[][][] dp = new long[51][101][51];
+        for (long[][] d2 : dp) {
+            for (long[] d1 : d2) {
+                Arrays.fill(d1, -1l);
             }
         }
 
-        return Math.min(dp[query_row][query_glass], 1.0);
+        long ans = 0l;
+
+        for (int max = 1; max <= m; max++) {
+            ans = (ans % mod + numOfArrays_(n, max, k, dp) % mod) % mod;
+        }
+
+        return (int) ans;
 
     }
-}
+
+    public long numOfArrays_(int len,int max,int cost,long[][][]dp){
+        if(len==0 || cost==0) return 0l;
+        if(len == 1 && cost==1) return 1l;
+            
+        if(dp[len][max][cost]!=-1l) return dp[len][max][cost];
+
+        long ans= 0l;
+        ans = ans%mod+ (max%mod * numOfArrays_(len-1,max,cost,dp)%mod)%mod;
+
+        for(int x = 1; x<max ; x++){
+            ans = (ans%mod + numOfArrays_(len-1,x,cost-1,dp)%mod)%mod;
+        }
+
+        return dp[len][max][cost] = ans;
+    }
