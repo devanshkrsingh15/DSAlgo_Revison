@@ -4807,6 +4807,53 @@ class LC435 {
     }
 }
 
+
+class LC2009{
+    //2009. Minimum Number of Operations to Make Array Continuous
+    public int minOperations(int[] nums) {
+        int n = nums.length;
+        int maxValidSequence = 0;
+
+        nums = removeDuplicates(nums);
+
+        for(int i = 0 ; i <nums.length; i ++){
+            int min  = nums[i];
+            int max = n-1+min;
+            int midx = find(nums,max,i);
+            maxValidSequence = Math.max(maxValidSequence,midx - i);
+        }
+        
+        return n - maxValidSequence;
+    }
+
+    private int find(int[] nums, int tar, int i) {
+        int n = nums.length;
+        int lo = i;
+        int hi = n-1;
+
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(nums[mid] >= tar) lo= mid+1;
+            else hi = mid-1;
+        }
+
+        return lo;
+    }
+
+    private int[] removeDuplicates(int[] nums) {
+        HashSet<Integer>set = new HashSet<>();
+
+        for(int ele : nums) set.add(ele);
+        int[]ans = new int[set.size()];
+
+        int idx = 0;
+        for(int ele : set) ans[idx++] = ele;
+
+        return ans;
+    }
+}
+
 // 688. Knight Probability in Chessboard
 class LC688 {
     double[][] dp;
