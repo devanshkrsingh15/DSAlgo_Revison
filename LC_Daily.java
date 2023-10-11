@@ -4854,6 +4854,55 @@ class LC2009{
     }
 }
 
+//2251. Number of Flowers in Full Bloom
+
+class LC2251{
+     public int[] fullBloomFlowers(int[][] flowers, int[] people) {
+        int[]ans = new int[people.length];
+        int[]start = new int[flowers.length];
+        int[]end = new int[flowers.length];
+    
+        for(int i = 0 ; i<flowers.length ; i++){
+            int[]fl = flowers[i];
+            int st = fl[0];
+            int en = fl[1];
+            start[i] = st;
+            end[i] = en;
+        }
+
+        Arrays.sort(start);
+        Arrays.sort(end);
+
+        for(int i =0;i<people.length;i++){
+            int t = people[i];
+            int numOfFlowerStartedBlooming = find(start,t);
+            int numOfFlowerStoppedBlooming = find(end,t-1);
+            ans[i] = numOfFlowerStartedBlooming -numOfFlowerStoppedBlooming;
+        }
+        return ans;
+    }
+
+    public int find(int[]arr,int tar){
+        int lo = 0;
+        int hi = arr.length-1;
+
+        while(lo<=hi){
+            int mid = lo + (hi-lo)/2;
+
+            if(arr[mid]==tar){
+                lo =mid+1;
+            }else if(arr[mid] > tar){
+                hi = mid-1;
+            }else{
+                lo = mid+1;
+            }
+        }
+
+        return lo;
+    }
+
+}
+
 // 688. Knight Probability in Chessboard
 class LC688 {
     double[][] dp;
