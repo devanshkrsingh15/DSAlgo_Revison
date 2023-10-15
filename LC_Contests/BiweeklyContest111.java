@@ -273,3 +273,38 @@ public class BiweeklyContest111 {
     }
 
 }
+
+
+//1269. Number of Ways to Stay in the Same Place After Some Steps
+
+class LC1269 {
+    public int numWays(int steps, int arrLen) {
+        long[][]dp = new long[steps+1][steps+1];
+        for(long[]d1:dp) Arrays.fill(d1,-1l);
+        
+
+        return (int)numWays_(arrLen,0,steps,dp);
+
+    }
+    long mod = (long)1e9 + 7;
+
+    public long numWays_(int n,int pos,int steps,long[][]dp){
+        if(pos >= n || pos < 0 ) return 0l;
+
+        if(steps == 0){
+            return pos==0 ? 1l : 0l;
+        }
+
+        if(dp[pos][steps]!=-1l){
+            return dp[pos][steps];
+        }
+
+        long ans = 0;
+
+        ans = (ans%mod + numWays_(n,pos+1,steps-1,dp)%mod)%mod;
+        ans = (ans%mod + numWays_(n,pos-1,steps-1,dp)%mod)%mod;
+        ans = (ans%mod + numWays_(n,pos,steps-1,dp)%mod)%mod;
+
+        return dp[pos][steps] = ans;
+    }
+}
