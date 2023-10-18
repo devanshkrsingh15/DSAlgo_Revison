@@ -288,6 +288,7 @@ class LC1269 {
     }
     long mod = (long)1e9 + 7;
 
+
     public long numWays_(int n,int pos,int steps,long[][]dp){
         if(pos >= n || pos < 0 ) return 0l;
 
@@ -306,5 +307,65 @@ class LC1269 {
         ans = (ans%mod + numWays_(n,pos,steps-1,dp)%mod)%mod;
 
         return dp[pos][steps] = ans;
+    }
+}
+
+
+//1361. Validate Binary Tree Nodes
+class LC1361 {
+
+    public int findPar(int u,int[]par){
+        if(par[u]==u) return u;
+        else{
+            int t= findPar(par[u],par);
+            return par[u] = t;
+        }
+    }
+    public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
+        ArrayList<int[]>edges = new ArrayList<>();
+        int[]par= new int[n];
+        Arrays.fill(par,-1);
+
+        for(int i = 0 ; i< n ;i++){
+            int u= i;
+            if(leftChild[i]!=-1){
+                int v = leftChild[i];
+                if(par[v]!=-1) return false;
+                par[v] = u;
+                edges.add(new int[]{u,v});
+            }
+
+            if(rightChild[i]!=-1){
+                int v = rightChild[i];
+                if(par[v]!=-1) return false;
+                par[v] = u;
+                edges.add(new int[]{u,v});
+            }
+        }
+
+        int tot = n;
+
+
+        for(int  i = 0 ;i< n;i++){
+            par[i] = i;
+        }
+
+        for(int[]ed: edges){
+            int u = ed[0];
+            int v = ed[1];
+
+            int p1 = findPar(u,par);
+            int p2 = findPar(v,par);
+
+            if(p1==p2) return false;
+            else{
+                tot--;
+                par[p2] = p1;
+            }
+        }
+
+        return tot==1;
+
+
     }
 }
