@@ -274,98 +274,150 @@ public class BiweeklyContest111 {
 
 }
 
-
-//1269. Number of Ways to Stay in the Same Place After Some Steps
+// 1269. Number of Ways to Stay in the Same Place After Some Steps
 
 class LC1269 {
     public int numWays(int steps, int arrLen) {
-        long[][]dp = new long[steps+1][steps+1];
-        for(long[]d1:dp) Arrays.fill(d1,-1l);
-        
+        long[][] dp = new long[steps + 1][steps + 1];
+        for (long[] d1 : dp)
+            Arrays.fill(d1, -1l);
 
-        return (int)numWays_(arrLen,0,steps,dp);
+        return (int) numWays_(arrLen, 0, steps, dp);
 
     }
-    long mod = (long)1e9 + 7;
 
+    long mod = (long) 1e9 + 7;
 
-    public long numWays_(int n,int pos,int steps,long[][]dp){
-        if(pos >= n || pos < 0 ) return 0l;
+    public long numWays_(int n, int pos, int steps, long[][] dp) {
+        if (pos >= n || pos < 0)
+            return 0l;
 
-        if(steps == 0){
-            return pos==0 ? 1l : 0l;
+        if (steps == 0) {
+            return pos == 0 ? 1l : 0l;
         }
 
-        if(dp[pos][steps]!=-1l){
+        if (dp[pos][steps] != -1l) {
             return dp[pos][steps];
         }
 
         long ans = 0;
 
-        ans = (ans%mod + numWays_(n,pos+1,steps-1,dp)%mod)%mod;
-        ans = (ans%mod + numWays_(n,pos-1,steps-1,dp)%mod)%mod;
-        ans = (ans%mod + numWays_(n,pos,steps-1,dp)%mod)%mod;
+        ans = (ans % mod + numWays_(n, pos + 1, steps - 1, dp) % mod) % mod;
+        ans = (ans % mod + numWays_(n, pos - 1, steps - 1, dp) % mod) % mod;
+        ans = (ans % mod + numWays_(n, pos, steps - 1, dp) % mod) % mod;
 
         return dp[pos][steps] = ans;
     }
 }
 
-
-//1361. Validate Binary Tree Nodes
+// 1361. Validate Binary Tree Nodes
 class LC1361 {
 
-    public int findPar(int u,int[]par){
-        if(par[u]==u) return u;
-        else{
-            int t= findPar(par[u],par);
+    public int findPar(int u, int[] par) {
+        if (par[u] == u)
+            return u;
+        else {
+            int t = findPar(par[u], par);
             return par[u] = t;
         }
     }
-    public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
-        ArrayList<int[]>edges = new ArrayList<>();
-        int[]par= new int[n];
-        Arrays.fill(par,-1);
 
-        for(int i = 0 ; i< n ;i++){
-            int u= i;
-            if(leftChild[i]!=-1){
+    public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
+        ArrayList<int[]> edges = new ArrayList<>();
+        int[] par = new int[n];
+        Arrays.fill(par, -1);
+
+        for (int i = 0; i < n; i++) {
+            int u = i;
+            if (leftChild[i] != -1) {
                 int v = leftChild[i];
-                if(par[v]!=-1) return false;
+                if (par[v] != -1)
+                    return false;
                 par[v] = u;
-                edges.add(new int[]{u,v});
+                edges.add(new int[] { u, v });
             }
 
-            if(rightChild[i]!=-1){
+            if (rightChild[i] != -1) {
                 int v = rightChild[i];
-                if(par[v]!=-1) return false;
+                if (par[v] != -1)
+                    return false;
                 par[v] = u;
-                edges.add(new int[]{u,v});
+                edges.add(new int[] { u, v });
             }
         }
 
         int tot = n;
 
-
-        for(int  i = 0 ;i< n;i++){
+        for (int i = 0; i < n; i++) {
             par[i] = i;
         }
 
-        for(int[]ed: edges){
+        for (int[] ed : edges) {
             int u = ed[0];
             int v = ed[1];
 
-            int p1 = findPar(u,par);
-            int p2 = findPar(v,par);
+            int p1 = findPar(u, par);
+            int p2 = findPar(v, par);
 
-            if(p1==p2) return false;
-            else{
+            if (p1 == p2)
+                return false;
+            else {
                 tot--;
                 par[p2] = p1;
             }
         }
 
-        return tot==1;
+        return tot == 1;
 
+    }
+}
 
+// 2050. Parallel Courses III
+
+class LC2050 {
+    public int minimumTime(int n, int[][] relations, int[] time) {
+        ArrayList<Integer> graph[] = new ArrayList[n + 1];
+        for (int i = 0; i <= n; i++)
+            graph[i] = new ArrayList<>();
+
+        int[] indegree = new int[n + 1];
+
+        for (int[] ed : relations) {
+            int u = ed[0];
+            int v = ed[1];
+            graph[u].add(v);
+            indegree[v]++;
+        }
+
+        ArrayDeque<int[]> q = new ArrayDeque<>();
+        for (int i = 1; i <= n; i++) {
+            if (indegree[i] == 0) {
+                q.add(new int[] { i, time[i - 1] }); // idx,completion time;
+            }
+        }
+
+        int ans = 0;
+        int[] timeTakenByChilren = new int[n + 1];
+
+        while (q.size() != 0) {
+            int s = q.size();
+            while (s-- > 0) {
+                int[] rem = q.remove();
+                int idx = rem[0];
+                int myTime = rem[1];
+                ans = Math.max(ans, myTime);
+
+                for (int v : graph[idx]) {
+                    indegree[v]--;
+                    timeTakenByChilren[v] = Math.max(timeTakenByChilren[v], myTime);
+
+                    if (indegree[v] == 0) {
+                        q.add(new int[] { v, timeTakenByChilren[v] + time[v - 1] });
+                    }
+                }
+            }
+        }
+
+        return ans;
     }
 }
