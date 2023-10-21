@@ -421,3 +421,51 @@ class LC2050 {
         return ans;
     }
 }
+
+// 341. Flatten Nested List Iterator
+
+interface NestedInteger {
+
+    // @return true if this NestedInteger holds a single integer, rather than a
+    // nested list.
+    public boolean isInteger();
+
+    // @return the single integer that this NestedInteger holds, if it holds a
+    // single integer
+    // Return null if this NestedInteger holds a nested list
+    public Integer getInteger();
+
+    // @return the nested list that this NestedInteger holds, if it holds a nested
+    // list
+    // Return empty list if this NestedInteger holds a single integer
+    public List<NestedInteger> getList();
+}
+
+class NestedIterator implements Iterator<Integer> {
+    int ptr = 0;
+    List<Integer> list = new ArrayList<>();
+
+    public NestedIterator(List<NestedInteger> nestedList) {
+        fillMyList(nestedList);
+    }
+
+    public void fillMyList(List<NestedInteger> nestedList) {
+        for (int i = 0; i < nestedList.size(); i++) {
+            if (nestedList.get(i).isInteger()) {
+                list.add(nestedList.get(i).getInteger());
+            } else {
+                fillMyList(nestedList.get(i).getList());
+            }
+        }
+    }
+
+    @Override
+    public Integer next() {
+        return list.get(ptr++);
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ptr < list.size();
+    }
+}
