@@ -4902,6 +4902,46 @@ class LC2251{
     }
 
 }
+class LC1793 {
+    public int maximumScore(int[] nums, int k) {
+        int n= nums.length;
+
+        int[]leftLim = getNextSmaller(nums,true);
+        int[]rightLim = getNextSmaller(nums,false);
+
+        int ans = 0;
+
+        for(int i = 0 ; i<n ;i++){
+            if(leftLim[i]  < k && rightLim[i] > k){
+                //i can act as min of subarray between (leftLim[i],rightLim[i]) excluding both
+                int min= nums[i];
+                int len= rightLim[i] - leftLim[i] - 1;
+                ans = Math.max(ans,min*len);
+            }
+        }
+
+        return ans;
+    }
+
+    public int[] getNextSmaller(int[]nums,boolean onLeft){
+        int n= nums.length;
+        int[]ans = new int[n];
+        Arrays.fill(ans,onLeft ? -1 : n);
+
+        Stack<Integer>st = new Stack<>();
+
+        for(int i = 0 ; i <n ;i++){
+            int idx = !onLeft  ? i : n-1-i;
+            while(st.size()!=0 && nums[idx] < nums[st.peek()]){
+                ans[st.pop()] = idx;
+            }
+
+            st.push(idx);
+        }
+
+        return ans;
+    }
+}
 
 // 688. Knight Probability in Chessboard
 class LC688 {
