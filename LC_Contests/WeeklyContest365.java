@@ -53,7 +53,41 @@ public class WeeklyContest365 {
         return ans;
     }
 
+    // 2875. Minimum Size Sub-array in Infinite Array
+    // suffix array ------- infinite copy of array ---- suffix array
+    public int minSizeSubarray(int[] nums, int target) {
+        int n = nums.length;
+        long sum = 0l;
+        for (int ele : nums)
+            sum += (long) ele;
 
-    //2875. Minimum Size Subarray in Infinite Array
-    
+        int inc = 0;
+        if ((long) target > sum) {
+            inc = (int) (target / (int) sum);
+            target = target % (int) sum;
+        }
+
+        int en = 0;
+        int st = 0;
+
+        long sof = 0;
+        long minLen = (long) 1e9;
+
+        while (st < 2 * n) {
+            sof += (long) nums[st % n];
+            st++;
+
+            while (sof > (long) target) {
+                sof -= (long) nums[en % n];
+                en++;
+            }
+
+            if (sof == (long) target) {
+                minLen = Math.min(minLen, st - en);
+            }
+        }
+
+        return minLen == (long) 1e9 ? -1 : (int) minLen + inc * n;
+    }
+
 }
