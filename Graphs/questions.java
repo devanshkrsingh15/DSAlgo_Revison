@@ -102,7 +102,7 @@ public class questions {
 
     }
 
-    // Leetcode 130. Surrounded Regions
+    // Leet-code 130. Surrounded Regions
     public void SurroundedRegions(char[][] board) {
         // to capture all regions that are 4-directionally surrounded by 'X'.
 

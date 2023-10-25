@@ -90,4 +90,21 @@ public class WeeklyContest365 {
         return minLen == (long) 1e9 ? -1 : (int) minLen + inc * n;
     }
 
+    // 779. K-th Symbol in Grammar
+
+    public int kthGrammar(int n, int k) {
+        if (n == 1 && k == 1)
+            return 0;
+
+        int tot = (1 << (n - 1));
+        int mid = tot / 2;
+
+        if (k <= mid) {
+            return kthGrammar(n - 1, k);
+        } else {
+            return Math.abs(1 - kthGrammar(n - 1, k - mid));
+        }
+
+    }
+
 }
