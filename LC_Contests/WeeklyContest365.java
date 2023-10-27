@@ -108,3 +108,98 @@ public class WeeklyContest365 {
     }
 
 }
+
+// 2876. Count Visited Nodes in a Directed Graph
+class LC2876 {
+    public int[] countVisitedNodes(List<Integer> edges) {
+        int n = edges.size();
+
+        ArrayList<Integer> graph[] = buildGraph(edges, true);
+        ArrayList<ArrayList<Integer>> strongComp = getStronglyConnectedComp(graph, edges);
+
+        int[] ans = new int[n];
+        for (ArrayList<Integer> cmp : strongComp) {
+            if (cmp.size() > 1) {
+                int size = cmp.size();
+                for (int ele : cmp) {
+                    ans[ele] = size;
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (ans[i] == 0) {
+                buildAns(i, graph, ans);
+            }
+        }
+
+        return ans;
+
+    }
+
+    public int buildAns(int src, ArrayList<Integer> graph[], int[] ans) {
+        if (ans[src] > 0)
+            return ans[src];
+        int tmp = 1;
+        for (int nbr : graph[src]) {
+            tmp += buildAns(nbr, graph, ans);
+
+        }
+        ans[src] = tmp;
+        return tmp;
+
+    }
+
+    public ArrayList<ArrayList<Integer>> getStronglyConnectedComp(ArrayList<Integer> graph[], List<Integer> edges) {
+        int n = edges.size();
+        ArrayList<Integer> topo = new ArrayList<>();
+        boolean[] vis = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                dfs(i, graph, vis, topo);
+            }
+        }
+
+        ArrayList<Integer> rgraph[] = buildGraph(edges, false);
+        vis = new boolean[n];
+
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        for (int i = topo.size() - 1; i >= 0; i--) {
+            int idx = topo.get(i);
+            if (!vis[idx]) {
+                ArrayList<Integer> comp = new ArrayList<>();
+                dfs(idx, rgraph, vis, comp);
+                ans.add(comp);
+            }
+        }
+
+        return ans;
+    }
+
+    public ArrayList<Integer>[] buildGraph(List<Integer> edges, boolean forward) {
+        int n = edges.size();
+        ArrayList<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n; i++) {
+            int u = forward ? i : edges.get(i);
+            int v = forward ? edges.get(i) : i;
+            graph[u].add(v);
+        }
+
+        return graph;
+    }
+
+    public void dfs(int src, ArrayList<Integer>[] graph, boolean[] vis, ArrayList<Integer> topo) {
+        vis[src] = true;
+        for (int nbr : graph[src]) {
+            if (!vis[nbr]) {
+                dfs(nbr, graph, vis, topo);
+            }
+        }
+        topo.add(src);
+
+    }
+}
