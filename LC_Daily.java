@@ -4807,63 +4807,66 @@ class LC435 {
     }
 }
 
-
-class LC2009{
-    //2009. Minimum Number of Operations to Make Array Continuous
+class LC2009 {
+    // 2009. Minimum Number of Operations to Make Array Continuous
     public int minOperations(int[] nums) {
         int n = nums.length;
         int maxValidSequence = 0;
 
         nums = removeDuplicates(nums);
 
-        for(int i = 0 ; i <nums.length; i ++){
-            int min  = nums[i];
-            int max = n-1+min;
-            int midx = find(nums,max,i);
-            maxValidSequence = Math.max(maxValidSequence,midx - i);
+        for (int i = 0; i < nums.length; i++) {
+            int min = nums[i];
+            int max = n - 1 + min;
+            int midx = find(nums, max, i);
+            maxValidSequence = Math.max(maxValidSequence, midx - i);
         }
-        
+
         return n - maxValidSequence;
     }
 
     private int find(int[] nums, int tar, int i) {
         int n = nums.length;
         int lo = i;
-        int hi = n-1;
+        int hi = n - 1;
 
-        while(lo<=hi){
-            int mid = lo + (hi-lo)/2;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
 
-            if(nums[mid] >= tar) lo= mid+1;
-            else hi = mid-1;
+            if (nums[mid] >= tar)
+                lo = mid + 1;
+            else
+                hi = mid - 1;
         }
 
         return lo;
     }
 
     private int[] removeDuplicates(int[] nums) {
-        HashSet<Integer>set = new HashSet<>();
+        HashSet<Integer> set = new HashSet<>();
 
-        for(int ele : nums) set.add(ele);
-        int[]ans = new int[set.size()];
+        for (int ele : nums)
+            set.add(ele);
+        int[] ans = new int[set.size()];
 
         int idx = 0;
-        for(int ele : set) ans[idx++] = ele;
+        for (int ele : set)
+            ans[idx++] = ele;
 
         return ans;
     }
 }
 
-//2251. Number of Flowers in Full Bloom
+// 2251. Number of Flowers in Full Bloom
 
-class LC2251{
-     public int[] fullBloomFlowers(int[][] flowers, int[] people) {
-        int[]ans = new int[people.length];
-        int[]start = new int[flowers.length];
-        int[]end = new int[flowers.length];
-    
-        for(int i = 0 ; i<flowers.length ; i++){
-            int[]fl = flowers[i];
+class LC2251 {
+    public int[] fullBloomFlowers(int[][] flowers, int[] people) {
+        int[] ans = new int[people.length];
+        int[] start = new int[flowers.length];
+        int[] end = new int[flowers.length];
+
+        for (int i = 0; i < flowers.length; i++) {
+            int[] fl = flowers[i];
             int st = fl[0];
             int en = fl[1];
             start[i] = st;
@@ -4873,28 +4876,28 @@ class LC2251{
         Arrays.sort(start);
         Arrays.sort(end);
 
-        for(int i =0;i<people.length;i++){
+        for (int i = 0; i < people.length; i++) {
             int t = people[i];
-            int numOfFlowerStartedBlooming = find(start,t);
-            int numOfFlowerStoppedBlooming = find(end,t-1);
-            ans[i] = numOfFlowerStartedBlooming -numOfFlowerStoppedBlooming;
+            int numOfFlowerStartedBlooming = find(start, t);
+            int numOfFlowerStoppedBlooming = find(end, t - 1);
+            ans[i] = numOfFlowerStartedBlooming - numOfFlowerStoppedBlooming;
         }
         return ans;
     }
 
-    public int find(int[]arr,int tar){
+    public int find(int[] arr, int tar) {
         int lo = 0;
-        int hi = arr.length-1;
+        int hi = arr.length - 1;
 
-        while(lo<=hi){
-            int mid = lo + (hi-lo)/2;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
 
-            if(arr[mid]==tar){
-                lo =mid+1;
-            }else if(arr[mid] > tar){
-                hi = mid-1;
-            }else{
-                lo = mid+1;
+            if (arr[mid] == tar) {
+                lo = mid + 1;
+            } else if (arr[mid] > tar) {
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
             }
         }
 
@@ -4902,37 +4905,38 @@ class LC2251{
     }
 
 }
+
 class LC1793 {
     public int maximumScore(int[] nums, int k) {
-        int n= nums.length;
+        int n = nums.length;
 
-        int[]leftLim = getNextSmaller(nums,true);
-        int[]rightLim = getNextSmaller(nums,false);
+        int[] leftLim = getNextSmaller(nums, true);
+        int[] rightLim = getNextSmaller(nums, false);
 
         int ans = 0;
 
-        for(int i = 0 ; i<n ;i++){
-            if(leftLim[i]  < k && rightLim[i] > k){
-                //i can act as min of subarray between (leftLim[i],rightLim[i]) excluding both
-                int min= nums[i];
-                int len= rightLim[i] - leftLim[i] - 1;
-                ans = Math.max(ans,min*len);
+        for (int i = 0; i < n; i++) {
+            if (leftLim[i] < k && rightLim[i] > k) {
+                // i can act as min of subarray between (leftLim[i],rightLim[i]) excluding both
+                int min = nums[i];
+                int len = rightLim[i] - leftLim[i] - 1;
+                ans = Math.max(ans, min * len);
             }
         }
 
         return ans;
     }
 
-    public int[] getNextSmaller(int[]nums,boolean onLeft){
-        int n= nums.length;
-        int[]ans = new int[n];
-        Arrays.fill(ans,onLeft ? -1 : n);
+    public int[] getNextSmaller(int[] nums, boolean onLeft) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        Arrays.fill(ans, onLeft ? -1 : n);
 
-        Stack<Integer>st = new Stack<>();
+        Stack<Integer> st = new Stack<>();
 
-        for(int i = 0 ; i <n ;i++){
-            int idx = !onLeft  ? i : n-1-i;
-            while(st.size()!=0 && nums[idx] < nums[st.peek()]){
+        for (int i = 0; i < n; i++) {
+            int idx = !onLeft ? i : n - 1 - i;
+            while (st.size() != 0 && nums[idx] < nums[st.peek()]) {
                 ans[st.pop()] = idx;
             }
 
@@ -4945,6 +4949,7 @@ class LC1793 {
 
 // 688. Knight Probability in Chessboard
 class LC688 {
+
     double[][] dp;
     int[][] direcs = { { -2, +1 }, { -1, +2 }, { +1, +2 }, { +2, +1 }, { +2, -1 }, { +1, -2 }, { -1, -2 }, { -2, -1 } };
 
@@ -5036,8 +5041,9 @@ class LC688 {
         }
     }
 
-    // 1420. Build Array Where You Can Find The Maximum Exactly K Comparisons 
+    // 1420. Build Array Where You Can Find The Maximum Exactly K Comparisons
     long mod = (long) 1e9 + 7;
+
     public int numOfArrays(int n, int m, int k) {
         long[][][] dp = new long[51][101][51];
         for (long[][] d2 : dp) {
@@ -5056,18 +5062,107 @@ class LC688 {
 
     }
 
-    public long numOfArrays_(int len,int max,int cost,long[][][]dp){
-        if(len==0 || cost==0) return 0l;
-        if(len == 1 && cost==1) return 1l;
-            
-        if(dp[len][max][cost]!=-1l) return dp[len][max][cost];
+    public long numOfArrays_(int len, int max, int cost, long[][][] dp) {
+        if (len == 0 || cost == 0)
+            return 0l;
+        if (len == 1 && cost == 1)
+            return 1l;
 
-        long ans= 0l;
-        ans = ans%mod+ (max%mod * numOfArrays_(len-1,max,cost,dp)%mod)%mod;
+        if (dp[len][max][cost] != -1l)
+            return dp[len][max][cost];
 
-        for(int x = 1; x<max ; x++){
-            ans = (ans%mod + numOfArrays_(len-1,x,cost-1,dp)%mod)%mod;
+        long ans = 0l;
+        ans = ans % mod + (max % mod * numOfArrays_(len - 1, max, cost, dp) % mod) % mod;
+
+        for (int x = 1; x < max; x++) {
+            ans = (ans % mod + numOfArrays_(len - 1, x, cost - 1, dp) % mod) % mod;
         }
 
         return dp[len][max][cost] = ans;
     }
+
+    // 1441. Build an Array With Stack Operations
+
+    class LC1441 {
+        public List<String> buildArray(int[] target, int n) {
+            int idx = 1;
+            int ptr = 0;
+            ArrayList<String> ans = new ArrayList<>();
+            int start = 0;
+
+            for (int i = 0; i < target.length; i++) {
+                int cand = target[i];
+                int added = 0;
+                while (idx <= cand - 1) {
+                    ans.add("Push");
+                    idx++;
+                    added++;
+                }
+
+                while (added-- > 0)
+                    ans.add("Pop");
+
+                ans.add("Push");
+                idx++;
+            }
+            return ans;
+        }
+    }
+
+    // 1845. Seat Reservation Manager
+    class SeatManager {
+        TreeSet<Integer> available;
+        HashSet<Integer> taken;
+
+        public SeatManager(int n) {
+            available = new TreeSet<>();
+            taken = new HashSet<>();
+
+            for (int i = 1; i <= n; i++) {
+                available.add(i);
+            }
+        }
+
+        public int reserve() {
+            int idx = available.first();
+            available.remove(idx);
+            taken.add(idx);
+            return idx;
+        }
+
+        public void unreserve(int seatNumber) {
+            taken.remove(seatNumber);
+            available.add(seatNumber);
+        }
+    }
+
+    // 1535. Find the Winner of an Array Game
+
+class LC1535 {
+    public int getWinner(int[] arr, int k) {
+        int len = arr.length;
+        if(k>=len){
+            int ans= arr[0];
+            for(int i = 1;i<len ;i++){
+                ans= Math.max(ans,arr[i]);
+            }
+            return ans;
+        }
+        
+
+        int winner = arr[0];
+        int wins = 0;
+        for(int i = 1; i<len ; i++){
+            if(winner > arr[i]){
+                wins++;
+            }else{
+                winner = arr[i];
+                wins = 1;
+            }
+
+            if(wins == k) return winner;
+        }
+
+        return winner;
+    }
+}
